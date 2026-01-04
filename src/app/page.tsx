@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeSelector } from "@/components/themes/selector";
+import { UserMenu } from "@/components/auth/user-menu";
 import { Send, ChefHat, Sparkles } from "lucide-react";
 
 export default function Page() {
@@ -42,7 +43,10 @@ export default function Page() {
               <p className="text-xs text-muted-foreground">Ghost Kitchen Co.</p>
             </div>
           </div>
-          <ThemeSelector />
+          <div className="flex items-center gap-2">
+            <ThemeSelector />
+            <UserMenu />
+          </div>
         </div>
       </header>
 

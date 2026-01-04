@@ -12,6 +12,12 @@
     },
     "fullstackrecipes": {
       "url": "https://fullstackrecipes.com/api/mcp"
+    },
+    "resend": {
+      "url": "https://mcp.resend.com/sse"
+    },
+    "better-auth": {
+      "url": "https://mcp.chonkie.ai/better-auth/better-auth-builder/mcp"
     }
   }
 }
