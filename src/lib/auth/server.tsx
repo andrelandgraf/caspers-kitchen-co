@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 import { db } from "../db/client";
 import { authConfig } from "./config";
 import { sendEmail } from "../resend/send";
@@ -17,9 +18,14 @@ export const auth = betterAuth({
     usePlural: true,
     schema: authSchema,
   }),
+  plugins: [
+    admin({
+      defaultRole: "user",
+    }),
+  ],
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
     async sendResetPassword({ user, url }) {
       void sendEmail({
         to: user.email,

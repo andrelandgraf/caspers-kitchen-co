@@ -1,0 +1,494 @@
+[
+  {
+    "category": "functional",
+    "description": "Location selector modal on first visit",
+    "steps": [
+      "Visit site for the first time (no location saved)",
+      "Verify location selector modal appears",
+      "Verify modal shows all 4 locations:",
+      "  - San Francisco",
+      "  - New York",
+      "  - Los Angeles",
+      "  - Seattle",
+      "Verify each location shows city name and optional details",
+      "Select a location",
+      "Verify modal closes and location is saved"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Location displayed in header",
+    "steps": [
+      "Select a location (e.g., San Francisco)",
+      "Verify location indicator in header shows 'San Francisco'",
+      "Verify location icon or pin next to city name",
+      "Click on location indicator",
+      "Verify location selector opens to change location"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Change location from header",
+    "steps": [
+      "Click location indicator in header",
+      "Verify location selector dropdown or modal opens",
+      "Select different location (e.g., New York)",
+      "Verify location updates in header",
+      "Verify page content updates for new location"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Location persists across sessions",
+    "steps": [
+      "Select San Francisco as location",
+      "Close browser completely",
+      "Reopen site",
+      "Verify San Francisco is still selected",
+      "Verify no location modal appears"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Location persists for authenticated users",
+    "steps": [
+      "Sign in as user",
+      "Select Los Angeles as location",
+      "Sign out",
+      "Sign in again",
+      "Verify Los Angeles is still selected (saved to account)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Landing page hero shows selected location",
+    "steps": [
+      "Select San Francisco as location",
+      "Navigate to landing page",
+      "Verify hero section mentions location:",
+      "  - 'Comfort food in San Francisco' or similar",
+      "  - Location-specific imagery if available",
+      "Change to New York",
+      "Verify hero updates for New York"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Landing page delivery area section shows location",
+    "steps": [
+      "Navigate to landing page",
+      "Scroll to delivery area section",
+      "Verify section shows delivery zones for selected location",
+      "Verify estimated delivery times for that city",
+      "Verify 'Change location' link available"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Featured menu on landing page is location-specific",
+    "steps": [
+      "Select San Francisco location",
+      "View featured menu section on landing page",
+      "Verify items shown are available at SF location",
+      "Change to Seattle",
+      "Verify featured items update (may differ by location)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Menu page filters by selected location",
+    "steps": [
+      "Select New York as location",
+      "Navigate to /menu",
+      "Verify only items available at New York location are shown",
+      "Verify location indicator visible on menu page",
+      "Change location to Los Angeles",
+      "Verify menu updates to show LA-available items"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Item availability varies by location",
+    "steps": [
+      "Select San Francisco location",
+      "View menu - note available items",
+      "Change to Seattle location",
+      "Verify some items may differ:",
+      "  - Regional specials only at certain locations",
+      "  - Some items marked 'Not available at this location'"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart is location-specific",
+    "steps": [
+      "Select San Francisco location",
+      "Add items to cart",
+      "Change location to New York",
+      "Verify warning about cart contents",
+      "Verify options:",
+      "  - Keep cart and check item availability",
+      "  - Clear cart for new location",
+      "If items unavailable at new location, show which ones"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Checkout shows order location",
+    "steps": [
+      "Add items to cart",
+      "Navigate to checkout",
+      "Verify 'Ordering from: San Francisco' displayed",
+      "Verify delivery address must be within location's delivery zone",
+      "Verify option to change location before completing order"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Delivery address validation by location",
+    "steps": [
+      "Select San Francisco location",
+      "Navigate to checkout",
+      "Enter address in New York",
+      "Verify error: 'Address outside San Francisco delivery area'",
+      "Verify suggestion to change location to New York",
+      "Enter valid SF address",
+      "Verify address accepted"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order is associated with location",
+    "steps": [
+      "Complete order at San Francisco location",
+      "View order confirmation",
+      "Verify location shown: 'Prepared at Casper's Kitchen - San Francisco'",
+      "View order in order history",
+      "Verify location displayed on order details"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order tracking shows location",
+    "steps": [
+      "Place order at Los Angeles location",
+      "Navigate to order tracking",
+      "Verify 'Your order is being prepared at our Los Angeles kitchen'",
+      "Verify location-specific contact info if applicable"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Location-specific operating hours",
+    "steps": [
+      "Select San Francisco location",
+      "Verify operating hours in footer/header for SF",
+      "Change to Seattle location",
+      "Verify operating hours may differ",
+      "If location is closed, show message and next opening time"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Location-specific delivery fees",
+    "steps": [
+      "Select New York location",
+      "Add items to cart",
+      "View cart summary",
+      "Note delivery fee for NYC",
+      "Change to Los Angeles",
+      "Verify delivery fee may differ based on location"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Detect location from browser geolocation",
+    "steps": [
+      "Visit site for first time",
+      "Allow browser location access when prompted",
+      "Verify nearest location is pre-selected or suggested",
+      "User can confirm or change suggested location"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Location selector shows distance if geolocation allowed",
+    "steps": [
+      "Allow browser geolocation",
+      "Open location selector",
+      "Verify each location shows distance from user:",
+      "  - San Francisco - 2.3 miles",
+      "  - Los Angeles - 382 miles",
+      "Verify locations sorted by proximity"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Footer shows selected location details",
+    "steps": [
+      "Select a location",
+      "Scroll to footer",
+      "Verify footer shows:",
+      "  - Selected location name",
+      "  - Location-specific hours",
+      "  - Contact for that location",
+      "Verify 'View all locations' link"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "All locations page",
+    "steps": [
+      "Navigate to /locations",
+      "Verify all 4 locations listed:",
+      "  - San Francisco",
+      "  - New York",
+      "  - Los Angeles",
+      "  - Seattle",
+      "Each location shows:",
+      "  - Address",
+      "  - Operating hours",
+      "  - Delivery zone info",
+      "  - 'Order from here' button"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Select location from locations page",
+    "steps": [
+      "Navigate to /locations",
+      "Click 'Order from here' on Seattle",
+      "Verify Seattle set as active location",
+      "Verify redirect to menu or home page"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Location closed - cannot order",
+    "steps": [
+      "Select location that is currently closed",
+      "Navigate to /menu",
+      "Verify banner: 'San Francisco is currently closed'",
+      "Verify 'Opens at 10:00 AM' or next open time",
+      "Verify 'Order from another location' option",
+      "Attempt to add item to cart",
+      "Verify prevented with message about closed location"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "All locations closed",
+    "steps": [
+      "Visit site when all locations are closed (e.g., 3 AM)",
+      "Verify message: 'All kitchens are currently closed'",
+      "Verify opening times for each location shown",
+      "Verify can still browse menu but not add to cart"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Cart items unavailable after location change",
+    "steps": [
+      "Add 'SF Sourdough Special' (only in SF) to cart",
+      "Change location to New York",
+      "Verify warning: '1 item not available in New York'",
+      "Verify options to remove item or switch back",
+      "Choose to remove unavailable item",
+      "Verify cart updated, available items remain"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Location selector modal design",
+    "steps": [
+      "Trigger location selector",
+      "Verify modal has warm, inviting design",
+      "Verify map or visual representation of locations",
+      "Verify each location card shows:",
+      "  - City name prominently",
+      "  - Neighborhood or area served",
+      "  - Current status (Open/Closed)",
+      "Verify hover/focus states on location cards"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Location indicator in header is subtle but clear",
+    "steps": [
+      "View any page with location selected",
+      "Verify location indicator doesn't dominate header",
+      "Verify pin icon or location symbol",
+      "Verify city name readable",
+      "Verify click affordance (hover state)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Location selector responsive design",
+    "steps": [
+      "Open location selector on mobile (375px)",
+      "Verify full-screen or bottom sheet design",
+      "Verify easy tap targets for each location",
+      "View on desktop",
+      "Verify modal or dropdown design"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Location change confirmation animation",
+    "steps": [
+      "Change location from SF to NYC",
+      "Verify smooth transition animation",
+      "Verify content updates visually (fade or slide)",
+      "Verify location indicator updates with animation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Location selector is keyboard accessible",
+    "steps": [
+      "Tab to location indicator in header",
+      "Press Enter to open selector",
+      "Use arrow keys to navigate locations",
+      "Press Enter to select location",
+      "Verify focus management correct"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Location changes announced to screen readers",
+    "steps": [
+      "Use screen reader",
+      "Change location",
+      "Verify announcement: 'Location changed to New York'",
+      "Verify page content changes announced appropriately"
+    ],
+    "passes": false
+  },
+  {
+    "category": "seo",
+    "description": "Location pages are SEO-friendly",
+    "steps": [
+      "Navigate to /locations/san-francisco",
+      "Verify unique title tag including 'San Francisco'",
+      "Verify meta description mentions SF delivery",
+      "Verify structured data for local business",
+      "Repeat for other location pages"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ai-assistant",
+    "description": "AI assistant knows current location",
+    "steps": [
+      "Select San Francisco location",
+      "Open AI assistant",
+      "Ask 'Which location am I ordering from?'",
+      "Verify assistant responds 'San Francisco'",
+      "Ask 'Can you deliver to Oakland?'",
+      "Verify assistant checks SF delivery zone"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ai-assistant",
+    "description": "AI assistant can change location",
+    "steps": [
+      "Open AI assistant",
+      "Say 'I want to order from New York'",
+      "Verify assistant changes location to New York",
+      "Verify confirmation message",
+      "Ask 'What locations do you have?'",
+      "Verify assistant lists all 4 locations"
+    ],
+    "passes": false
+  },
+  {
+    "category": "admin",
+    "description": "Admin can manage location settings",
+    "steps": [
+      "Sign in as admin",
+      "Navigate to /admin/locations",
+      "Verify list of all locations",
+      "Click on San Francisco",
+      "Verify can edit:",
+      "  - Operating hours",
+      "  - Delivery zones",
+      "  - Delivery fees",
+      "  - Contact info",
+      "Save changes",
+      "Verify updates reflected on public site"
+    ],
+    "passes": false
+  },
+  {
+    "category": "admin",
+    "description": "Admin can temporarily close a location",
+    "steps": [
+      "Navigate to /admin/locations",
+      "Find Seattle location",
+      "Toggle 'Temporarily Closed'",
+      "Enter closure reason (optional)",
+      "Save",
+      "Verify Seattle shows as closed on public site",
+      "Verify users prompted to select different location"
+    ],
+    "passes": false
+  },
+  {
+    "category": "admin",
+    "description": "Admin can set location-specific menu items",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Edit a menu item",
+      "Find 'Available at locations' setting",
+      "Uncheck 'Seattle' (item not at Seattle)",
+      "Save",
+      "Verify item not shown to users with Seattle selected"
+    ],
+    "passes": false
+  },
+  {
+    "category": "admin",
+    "description": "Admin orders filtered by location",
+    "steps": [
+      "Navigate to /admin/orders",
+      "Verify location filter dropdown",
+      "Select 'San Francisco'",
+      "Verify only SF orders shown",
+      "Select 'All Locations'",
+      "Verify all orders shown with location column"
+    ],
+    "passes": false
+  }
+]

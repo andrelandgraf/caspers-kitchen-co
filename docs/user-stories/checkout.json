@@ -1,0 +1,270 @@
+[
+  {
+    "category": "functional",
+    "description": "Checkout page requires items in cart",
+    "steps": [
+      "Ensure cart is empty",
+      "Navigate to /checkout page",
+      "Verify redirect to /menu or cart with message",
+      "Add items to cart",
+      "Navigate to /checkout",
+      "Verify checkout page loads successfully"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Checkout shows order summary",
+    "steps": [
+      "Add items to cart",
+      "Navigate to /checkout",
+      "Verify order summary section shows all cart items",
+      "Verify each item shows name, quantity, and price",
+      "Verify subtotal is displayed",
+      "Verify delivery fee is shown",
+      "Verify tax is calculated",
+      "Verify total matches cart total"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Guest checkout allows ordering without account",
+    "steps": [
+      "Ensure user is not signed in",
+      "Add items to cart and go to checkout",
+      "Verify guest checkout option is available",
+      "Enter email, name, and phone number",
+      "Complete delivery and payment info",
+      "Verify order can be placed without account"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Authenticated user checkout pre-fills info",
+    "steps": [
+      "Sign in as user with saved info",
+      "Navigate to /checkout",
+      "Verify email is pre-filled",
+      "Verify name is pre-filled",
+      "Verify saved addresses are available to select",
+      "Verify saved payment methods are available"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Delivery address form validation",
+    "steps": [
+      "Navigate to /checkout",
+      "Leave address fields empty",
+      "Attempt to continue",
+      "Verify validation errors for required fields:",
+      "  - Street address required",
+      "  - City required",
+      "  - Zip code required",
+      "Enter invalid zip code format",
+      "Verify zip code format error"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Delivery address autocomplete",
+    "steps": [
+      "Navigate to /checkout",
+      "Start typing in address field",
+      "Verify address suggestions appear",
+      "Select an address suggestion",
+      "Verify all address fields are populated"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Delivery time selection",
+    "steps": [
+      "Navigate to /checkout",
+      "Verify delivery time options are shown",
+      "Verify 'ASAP' option with estimated time",
+      "Verify scheduled delivery time slots",
+      "Select a future time slot",
+      "Verify selection is saved"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Payment method selection",
+    "steps": [
+      "Navigate to /checkout",
+      "Verify payment section shows options:",
+      "  - Credit/Debit card",
+      "  - Saved cards (if authenticated)",
+      "Select credit card payment",
+      "Verify card input fields appear"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Credit card form validation",
+    "steps": [
+      "Navigate to /checkout",
+      "Select credit card payment",
+      "Enter invalid card number",
+      "Verify 'Invalid card number' error",
+      "Enter expired date",
+      "Verify 'Card expired' error",
+      "Enter invalid CVV",
+      "Verify CVV error"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Promo code application",
+    "steps": [
+      "Navigate to /checkout",
+      "Verify 'Add promo code' option",
+      "Enter valid promo code",
+      "Click 'Apply'",
+      "Verify discount is applied",
+      "Verify order total is updated",
+      "Verify promo code is shown in summary"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Invalid promo code shows error",
+    "steps": [
+      "Navigate to /checkout",
+      "Enter invalid promo code",
+      "Click 'Apply'",
+      "Verify 'Invalid promo code' error message",
+      "Verify total is unchanged"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order special instructions",
+    "steps": [
+      "Navigate to /checkout",
+      "Verify special instructions text area",
+      "Enter delivery instructions",
+      "Complete checkout",
+      "Verify instructions are saved with order"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Successful order placement",
+    "steps": [
+      "Complete all checkout fields with valid data",
+      "Click 'Place Order' button",
+      "Verify loading state during processing",
+      "Verify redirect to order confirmation page",
+      "Verify order confirmation number is displayed",
+      "Verify order summary is shown",
+      "Verify estimated delivery time is displayed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order confirmation email sent",
+    "steps": [
+      "Complete successful checkout",
+      "Verify confirmation email is sent",
+      "Email should include order number, items, total, and delivery details"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart is cleared after successful order",
+    "steps": [
+      "Complete successful checkout",
+      "Navigate to /menu",
+      "Open cart drawer",
+      "Verify cart is empty"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Payment failure handling",
+    "steps": [
+      "Navigate to /checkout",
+      "Enter card that will be declined",
+      "Click 'Place Order'",
+      "Verify error message about payment failure",
+      "Verify user remains on checkout page",
+      "Verify cart items are preserved"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Address outside delivery zone",
+    "steps": [
+      "Navigate to /checkout",
+      "Enter address outside delivery area",
+      "Verify message that address is outside delivery zone",
+      "Verify checkout cannot proceed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Checkout step indicator",
+    "steps": [
+      "Navigate to /checkout",
+      "Verify step indicator shows progress",
+      "Verify steps: Delivery > Payment > Review",
+      "Complete delivery step",
+      "Verify indicator updates to show progress"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Checkout responsive design",
+    "steps": [
+      "View /checkout on mobile (375px)",
+      "Verify form fields are full width",
+      "Verify order summary is collapsible",
+      "Verify 'Place Order' button is sticky at bottom",
+      "View on desktop",
+      "Verify two-column layout (form left, summary right)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Checkout form is accessible",
+    "steps": [
+      "Navigate to /checkout",
+      "Verify all form fields have labels",
+      "Verify error messages are announced to screen readers",
+      "Verify form can be completed via keyboard only",
+      "Verify focus order is logical"
+    ],
+    "passes": false
+  },
+  {
+    "category": "security",
+    "description": "Payment information is secure",
+    "steps": [
+      "Verify checkout page uses HTTPS",
+      "Verify card input uses payment provider iframe/elements",
+      "Verify card details are not stored in plain text",
+      "Verify PCI compliance indicators"
+    ],
+    "passes": false
+  }
+]

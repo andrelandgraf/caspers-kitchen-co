@@ -1,0 +1,277 @@
+[
+  {
+    "category": "functional",
+    "description": "Admin orders page requires admin authentication",
+    "steps": [
+      "Sign out if logged in",
+      "Navigate to /admin/orders",
+      "Verify redirect to /sign-in",
+      "Sign in as admin",
+      "Verify admin orders page loads"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can view all orders",
+    "steps": [
+      "Sign in as admin",
+      "Navigate to /admin/orders",
+      "Verify list/table of all orders",
+      "Verify each order shows:",
+      "  - Order number",
+      "  - Customer name",
+      "  - Order date/time",
+      "  - Status",
+      "  - Total amount",
+      "  - Item count",
+      "  - Actions"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can view order details",
+    "steps": [
+      "Navigate to /admin/orders",
+      "Click on an order row",
+      "Verify order detail view shows:",
+      "  - Full customer info (name, email, phone)",
+      "  - Delivery address",
+      "  - All order items with quantities",
+      "  - Special instructions",
+      "  - Payment info",
+      "  - Order timeline/history"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can filter orders by status",
+    "steps": [
+      "Navigate to /admin/orders",
+      "Verify status filter options",
+      "Select 'Pending' status",
+      "Verify only pending orders shown",
+      "Select 'Preparing' status",
+      "Verify only preparing orders shown",
+      "Select 'All' to reset"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can filter orders by date range",
+    "steps": [
+      "Navigate to /admin/orders",
+      "Select date range picker",
+      "Set start and end date",
+      "Verify orders filtered to date range",
+      "Verify 'Today', 'This Week', 'This Month' presets work"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can search orders",
+    "steps": [
+      "Navigate to /admin/orders",
+      "Search by order number",
+      "Verify matching order found",
+      "Search by customer name",
+      "Verify matching orders found",
+      "Search by customer email",
+      "Verify matching orders found"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can update order status",
+    "steps": [
+      "Navigate to order with 'Received' status",
+      "Click status dropdown or 'Update Status' button",
+      "Select 'Preparing'",
+      "Verify status updates",
+      "Verify customer is notified (if enabled)",
+      "Verify order timeline updated"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can mark order as out for delivery",
+    "steps": [
+      "Navigate to order with 'Ready' status",
+      "Click 'Out for Delivery'",
+      "Optionally assign driver/enter tracking",
+      "Verify status updates",
+      "Verify customer notification sent"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can mark order as delivered",
+    "steps": [
+      "Navigate to order with 'Out for Delivery' status",
+      "Click 'Mark Delivered'",
+      "Verify confirmation",
+      "Verify status updates to 'Delivered'",
+      "Verify delivery timestamp recorded"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can cancel order",
+    "steps": [
+      "Navigate to pending order",
+      "Click 'Cancel Order'",
+      "Select cancellation reason",
+      "Confirm cancellation",
+      "Verify order status is 'Cancelled'",
+      "Verify refund is initiated",
+      "Verify customer notified"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can issue partial refund",
+    "steps": [
+      "Navigate to completed order",
+      "Click 'Issue Refund'",
+      "Select items or enter amount for partial refund",
+      "Enter refund reason",
+      "Confirm refund",
+      "Verify refund processed",
+      "Verify customer notified"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can add internal notes to order",
+    "steps": [
+      "Navigate to order detail",
+      "Find 'Internal Notes' section",
+      "Add a note",
+      "Save",
+      "Verify note appears in order timeline",
+      "Verify note includes admin name and timestamp"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can print order ticket",
+    "steps": [
+      "Navigate to order detail",
+      "Click 'Print Ticket'",
+      "Verify print-friendly view opens",
+      "Verify ticket shows items, quantities, special instructions",
+      "Verify kitchen-relevant info is prominent"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "New orders appear in real-time",
+    "steps": [
+      "Keep /admin/orders page open",
+      "Place new order from customer view",
+      "Verify new order appears without page refresh",
+      "Verify notification sound/visual alert"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin dashboard shows order statistics",
+    "steps": [
+      "Navigate to /admin or /admin/orders",
+      "Verify today's order count",
+      "Verify today's revenue",
+      "Verify pending orders count",
+      "Verify average order value",
+      "Verify busiest hours graph if available"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can export orders",
+    "steps": [
+      "Navigate to /admin/orders",
+      "Apply date filter",
+      "Click 'Export'",
+      "Select format (CSV, Excel)",
+      "Verify file downloads",
+      "Verify file contains order data"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Cannot change delivered order status backwards",
+    "steps": [
+      "Navigate to delivered order",
+      "Attempt to change status to 'Preparing'",
+      "Verify action is prevented or requires confirmation",
+      "Verify audit trail if status change forced"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Order status color coding",
+    "steps": [
+      "Navigate to /admin/orders",
+      "Verify different statuses have distinct colors:",
+      "  - Pending: Yellow/Warning",
+      "  - Preparing: Blue/Info",
+      "  - Ready: Green",
+      "  - Out for Delivery: Purple",
+      "  - Delivered: Gray/Complete",
+      "  - Cancelled: Red"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Order queue view for kitchen",
+    "steps": [
+      "Navigate to /admin/orders/kitchen (or toggle view)",
+      "Verify kanban-style board view",
+      "Verify columns for each status",
+      "Verify drag-and-drop between columns",
+      "Verify large, readable order cards"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Admin orders responsive layout",
+    "steps": [
+      "View /admin/orders on tablet",
+      "Verify essential columns visible",
+      "Verify horizontal scroll for additional columns",
+      "View on mobile",
+      "Verify card-based list view"
+    ],
+    "passes": false
+  },
+  {
+    "category": "performance",
+    "description": "Order list pagination",
+    "steps": [
+      "Navigate to /admin/orders with many orders",
+      "Verify pagination controls",
+      "Verify page loads quickly (under 2s)",
+      "Navigate to next page",
+      "Verify smooth transition"
+    ],
+    "passes": false
+  }
+]

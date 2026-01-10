@@ -1,0 +1,106 @@
+[
+  {
+    "category": "functional",
+    "description": "User creates account with email and password",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Enter first name, last name, email, and password",
+      "Confirm password",
+      "Submit the form",
+      "Verify success message about checking email",
+      "Verify verification email is sent"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User uploads profile photo during sign up",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Fill in required fields",
+      "Upload a profile image",
+      "Verify image preview is shown",
+      "Submit the form",
+      "Verify account is created with profile image"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can remove uploaded profile photo before submit",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Upload a profile image",
+      "Click X button to remove image",
+      "Verify image preview is removed"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Password mismatch shows error",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Enter password in password field",
+      "Enter different password in confirm field",
+      "Submit the form",
+      "Verify 'Passwords do not match' error"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Short password shows error",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Enter password shorter than 8 characters",
+      "Submit the form",
+      "Verify password length error message"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Duplicate email shows error",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Enter email that already exists",
+      "Fill other required fields",
+      "Submit the form",
+      "Verify error about email already in use"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Sign in link navigates to sign-in page",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Click 'Sign in' link",
+      "Verify navigation to /sign-in page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Authenticated users are redirected away from sign-up",
+    "steps": [
+      "Sign in as existing user",
+      "Navigate to /sign-up page",
+      "Verify redirect to /chats"
+    ],
+    "passes": true
+  },
+  {
+    "category": "ui",
+    "description": "Password visibility toggles work",
+    "steps": [
+      "Navigate to /sign-up page",
+      "Enter password in both password fields",
+      "Toggle visibility on password field",
+      "Toggle visibility on confirm password field",
+      "Verify both toggles work independently"
+    ],
+    "passes": true
+  }
+]

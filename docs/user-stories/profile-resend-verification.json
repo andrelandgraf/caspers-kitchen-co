@@ -1,0 +1,35 @@
+[
+  {
+    "category": "functional",
+    "description": "Unverified user sees verification prompt",
+    "steps": [
+      "Sign in as user with unverified email",
+      "Navigate to /profile page",
+      "Verify 'Verify Your Email' card is visible",
+      "Verify card has amber/warning styling"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can resend verification email",
+    "steps": [
+      "Sign in as user with unverified email",
+      "Navigate to /profile page",
+      "Click 'Resend Verification Email' button",
+      "Verify success message",
+      "Verify verification email is sent"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Verified user does not see verification prompt",
+    "steps": [
+      "Sign in as user with verified email",
+      "Navigate to /profile page",
+      "Verify 'Verify Your Email' card is NOT visible"
+    ],
+    "passes": true
+  }
+]

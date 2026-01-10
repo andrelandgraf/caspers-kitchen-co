@@ -1,0 +1,276 @@
+[
+  {
+    "category": "functional",
+    "description": "Admin menu page requires authentication and admin role",
+    "steps": [
+      "Sign out if logged in",
+      "Navigate to /admin/menu",
+      "Verify redirect to /sign-in",
+      "Sign in as regular user",
+      "Navigate to /admin/menu",
+      "Verify 403 forbidden or redirect",
+      "Sign in as admin user",
+      "Navigate to /admin/menu",
+      "Verify admin menu page loads"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can view all menu items",
+    "steps": [
+      "Sign in as admin",
+      "Navigate to /admin/menu",
+      "Verify list/table of all menu items",
+      "Verify each item shows:",
+      "  - Image thumbnail",
+      "  - Name",
+      "  - Category",
+      "  - Price",
+      "  - Status (active/inactive)",
+      "  - Edit/Delete actions"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can create new menu item",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Click 'Add New Item' button",
+      "Verify form appears with fields:",
+      "  - Name (required)",
+      "  - Description (required)",
+      "  - Category dropdown",
+      "  - Price (required)",
+      "  - Image upload",
+      "  - Dietary tags (checkboxes)",
+      "  - Availability toggle",
+      "Fill all required fields",
+      "Upload item image",
+      "Click 'Save'",
+      "Verify success message",
+      "Verify item appears in list"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can edit existing menu item",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Click 'Edit' on existing item",
+      "Verify form pre-filled with item data",
+      "Modify item name",
+      "Change price",
+      "Click 'Save'",
+      "Verify success message",
+      "Verify changes reflected in list"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can delete menu item",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Click 'Delete' on an item",
+      "Verify confirmation dialog",
+      "Confirm deletion",
+      "Verify success message",
+      "Verify item removed from list"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can toggle item availability",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Find an active item",
+      "Click availability toggle",
+      "Verify item status changes to inactive",
+      "Verify item no longer visible on public menu",
+      "Toggle again to make active",
+      "Verify item visible on public menu"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can set item as sold out",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Click 'Edit' on an item",
+      "Toggle 'Sold Out' switch",
+      "Save changes",
+      "Verify item shows as sold out on public menu",
+      "Verify item cannot be added to cart"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can manage item categories",
+    "steps": [
+      "Navigate to /admin/menu/categories",
+      "Verify list of existing categories",
+      "Click 'Add Category'",
+      "Enter category name (e.g., 'Seasonal Specials')",
+      "Save category",
+      "Verify category appears in list",
+      "Verify category available when creating items"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can reorder menu items",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Verify drag handles or reorder controls",
+      "Drag item to new position",
+      "Verify order updates",
+      "Verify public menu reflects new order"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can add item customization options",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Edit an item",
+      "Click 'Add Customization'",
+      "Enter option group name (e.g., 'Spice Level')",
+      "Add options (Mild, Medium, Hot)",
+      "Set if required or optional",
+      "Set price adjustments if applicable",
+      "Save item",
+      "Verify customization options on public item page"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can bulk update item availability",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Select multiple items via checkboxes",
+      "Click 'Bulk Actions'",
+      "Select 'Mark as Unavailable'",
+      "Verify all selected items updated"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can duplicate menu item",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Click 'Duplicate' on an item",
+      "Verify form opens with copied data",
+      "Verify name is modified (e.g., 'Item Name (Copy)')",
+      "Modify as needed",
+      "Save",
+      "Verify new item created"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Admin can set scheduled availability",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Edit an item",
+      "Enable 'Scheduled Availability'",
+      "Set available days (e.g., weekends only)",
+      "Set available times",
+      "Save",
+      "Verify item only shows on public menu during scheduled times"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Menu item creation validation",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Click 'Add New Item'",
+      "Leave name empty, submit",
+      "Verify 'Name required' error",
+      "Enter name, leave price empty",
+      "Verify 'Price required' error",
+      "Enter negative price",
+      "Verify 'Price must be positive' error",
+      "Enter price with too many decimals",
+      "Verify price format error"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Image upload validation",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Create new item",
+      "Attempt to upload non-image file",
+      "Verify file type error",
+      "Attempt to upload oversized image (>5MB)",
+      "Verify file size error"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Admin menu table supports search and filter",
+    "steps": [
+      "Navigate to /admin/menu",
+      "Verify search input field",
+      "Search for item by name",
+      "Verify filtered results",
+      "Verify category filter dropdown",
+      "Filter by category",
+      "Verify results match category"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Admin menu image preview",
+    "steps": [
+      "Create/edit menu item",
+      "Upload an image",
+      "Verify preview shows before saving",
+      "Verify option to remove/replace image",
+      "Verify image crop/resize if applicable"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Admin dashboard responsive design",
+    "steps": [
+      "View /admin/menu on tablet (768px)",
+      "Verify table scrolls horizontally or collapses to cards",
+      "Verify all actions accessible",
+      "View on mobile (375px)",
+      "Verify functional but suggest desktop for best experience"
+    ],
+    "passes": false
+  },
+  {
+    "category": "audit",
+    "description": "Menu changes are logged",
+    "steps": [
+      "Create a new menu item",
+      "Navigate to /admin/activity-log or audit log",
+      "Verify creation logged with admin name and timestamp",
+      "Edit the item",
+      "Verify edit logged",
+      "Delete the item",
+      "Verify deletion logged"
+    ],
+    "passes": false
+  }
+]

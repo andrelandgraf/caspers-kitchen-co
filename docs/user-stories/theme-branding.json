@@ -1,0 +1,200 @@
+[
+  {
+    "category": "design",
+    "description": "Brand identity for Casper's Kitchen ghost kitchen",
+    "guidelines": {
+      "name": "Casper's Kitchen",
+      "tagline": "Comfort food, delivered with warmth",
+      "tone": "Warm, friendly, magical, cozy - inspired by Studio Ghibli's inviting food scenes",
+      "personality": [
+        "Welcoming like a friend's kitchen",
+        "Magical moments in everyday meals",
+        "Handcrafted with care",
+        "Simple pleasures, extraordinary taste"
+      ]
+    }
+  },
+  {
+    "category": "design",
+    "description": "Color palette combining Databricks warmth with Ghibli coziness",
+    "guidelines": {
+      "primary": {
+        "name": "Ember Orange",
+        "value": "oklch(0.65 0.20 35)",
+        "usage": "CTAs, highlights, warmth accents - evokes glowing kitchen fire"
+      },
+      "secondary": {
+        "name": "Hearth Red",
+        "value": "oklch(0.55 0.22 25)",
+        "usage": "Logo accent, hover states, important links"
+      },
+      "background": {
+        "light": {
+          "name": "Warm Cream",
+          "value": "oklch(0.97 0.01 85)",
+          "usage": "Main background - like aged paper or warm kitchen walls"
+        },
+        "dark": {
+          "name": "Night Kitchen",
+          "value": "oklch(0.18 0.02 50)",
+          "usage": "Dark mode background - cozy evening atmosphere"
+        }
+      },
+      "accents": {
+        "forest": {
+          "name": "Garden Green",
+          "value": "oklch(0.55 0.12 145)",
+          "usage": "Fresh ingredients, nature elements, success states"
+        },
+        "steam": {
+          "name": "Soft Steam",
+          "value": "oklch(0.92 0.01 85)",
+          "usage": "Cards, overlays, steam effects"
+        },
+        "wood": {
+          "name": "Worn Wood",
+          "value": "oklch(0.45 0.08 60)",
+          "usage": "Borders, subtle accents, rustic elements"
+        }
+      },
+      "text": {
+        "primary": "oklch(0.25 0.03 50)",
+        "secondary": "oklch(0.45 0.02 50)",
+        "onDark": "oklch(0.95 0.01 85)"
+      }
+    }
+  },
+  {
+    "category": "design",
+    "description": "Typography system with warm, readable fonts",
+    "guidelines": {
+      "headings": {
+        "family": "Fraunces or similar serif with personality",
+        "weight": "500-700",
+        "style": "Slightly playful, hand-crafted feel without being childish"
+      },
+      "body": {
+        "family": "Inter or system sans-serif",
+        "weight": "400-500",
+        "style": "Clean and readable with generous line height"
+      },
+      "accent": {
+        "family": "Caveat or similar handwritten style",
+        "usage": "Labels, annotations, small decorative text"
+      },
+      "sizing": {
+        "scale": "Major third (1.25) for harmonious progression",
+        "baseSize": "16px-18px for comfortable reading"
+      }
+    }
+  },
+  {
+    "category": "design",
+    "description": "Visual elements and illustration style",
+    "guidelines": {
+      "illustrations": {
+        "style": "Soft, hand-drawn quality inspired by Ghibli backgrounds",
+        "elements": [
+          "Gentle steam wisps rising from dishes",
+          "Small floating food particles/sparkles",
+          "Soft gradient blurs for depth",
+          "Nature touches: leaves, small plants, vegetables"
+        ],
+        "colors": "Muted, warm palette with occasional bright food accents"
+      },
+      "icons": {
+        "style": "Rounded, friendly stroke icons with 2px weight",
+        "character": "Slightly imperfect, hand-drawn feeling"
+      },
+      "photography": {
+        "style": "Warm-toned, soft lighting, overhead and 45-degree angles",
+        "mood": "Inviting, steam visible, natural imperfections welcome",
+        "avoid": "Overly styled, cold lighting, stark white backgrounds"
+      },
+      "patterns": {
+        "texture": "Subtle paper grain or canvas texture on backgrounds",
+        "decorative": "Simple geometric patterns inspired by kitchen tiles"
+      }
+    }
+  },
+  {
+    "category": "design",
+    "description": "Motion and interaction design",
+    "guidelines": {
+      "principles": [
+        "Movements should feel organic and gentle, never jarring",
+        "Like steam rising or soup simmering - natural, soothing",
+        "Micro-interactions add delight without slowing the user"
+      ],
+      "animations": {
+        "pageLoads": "Gentle fade-up with staggered elements",
+        "hovers": "Soft scale (1.02-1.05) with warm shadow growth",
+        "buttons": "Subtle press effect, warm glow on active",
+        "transitions": "300-400ms easing with ease-out curves"
+      },
+      "specialEffects": {
+        "steam": "CSS animated wisps on hot food items",
+        "sparkle": "Occasional subtle sparkle on featured items",
+        "parallax": "Gentle parallax on hero background elements"
+      }
+    }
+  },
+  {
+    "category": "design",
+    "description": "Component styling guidelines",
+    "guidelines": {
+      "cards": {
+        "style": "Soft shadows, rounded corners (12-16px), warm background",
+        "hover": "Lift effect with warmer shadow, subtle border glow"
+      },
+      "buttons": {
+        "primary": "Ember orange gradient, rounded-full, warm shadow",
+        "secondary": "Outlined with wood brown, filled on hover",
+        "character": "Slightly playful proportions, generous padding"
+      },
+      "inputs": {
+        "style": "Soft borders, cream background, warm focus ring",
+        "labels": "Friendly, conversational tone"
+      },
+      "navigation": {
+        "style": "Clean with warm accents, logo prominently displayed",
+        "mobile": "Full-screen menu with illustrated background"
+      }
+    }
+  },
+  {
+    "category": "design",
+    "description": "Logo and brand mark specifications",
+    "guidelines": {
+      "logoMark": {
+        "concept": "Friendly ghost character holding/wearing a chef's hat",
+        "style": "Simple, rounded, approachable - think Ghibli's Totoro meets chef",
+        "variations": [
+          "Full logo with text",
+          "Icon only for small spaces",
+          "Animated version with floating motion"
+        ]
+      },
+      "logoType": {
+        "text": "Casper's Kitchen",
+        "font": "Custom or Fraunces-based with warmth",
+        "arrangement": "Stacked or horizontal options"
+      },
+      "clearSpace": "Minimum clear space equal to height of 'C' in Casper's",
+      "colors": {
+        "primary": "Ember orange on light, warm cream on dark",
+        "monochrome": "Available for special uses"
+      }
+    }
+  },
+  {
+    "category": "accessibility",
+    "description": "Inclusive design requirements",
+    "guidelines": {
+      "contrast": "Minimum 4.5:1 for body text, 3:1 for large text",
+      "motion": "Respect prefers-reduced-motion, provide static alternatives",
+      "focus": "Visible, warm-colored focus indicators on all interactive elements",
+      "alternatives": "Alt text for all illustrations describing mood and content"
+    }
+  }
+]

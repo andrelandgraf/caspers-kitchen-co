@@ -1,0 +1,81 @@
+[
+  {
+    "category": "functional",
+    "description": "User signs in with email and password",
+    "steps": [
+      "Navigate to /sign-in page",
+      "Enter valid email and password",
+      "Submit the form",
+      "Verify successful login",
+      "Verify redirect to /chats"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User sees error for invalid credentials",
+    "steps": [
+      "Navigate to /sign-in page",
+      "Enter invalid email or password",
+      "Submit the form",
+      "Verify error message is displayed",
+      "Verify user remains on sign-in page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Remember me extends session duration",
+    "steps": [
+      "Navigate to /sign-in page",
+      "Enter valid credentials",
+      "Check 'Remember me for 30 days' checkbox",
+      "Submit the form",
+      "Verify successful login"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Forgot password link navigates to reset page",
+    "steps": [
+      "Navigate to /sign-in page",
+      "Click 'Forgot password?' link",
+      "Verify navigation to /forgot-password page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Create account link navigates to sign up",
+    "steps": [
+      "Navigate to /sign-in page",
+      "Click 'Create account' link",
+      "Verify navigation to /sign-up page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Authenticated users are redirected away from sign-in",
+    "steps": [
+      "Sign in as existing user",
+      "Navigate to /sign-in page",
+      "Verify redirect to /chats"
+    ],
+    "passes": true
+  },
+  {
+    "category": "ui",
+    "description": "Password visibility toggle works",
+    "steps": [
+      "Navigate to /sign-in page",
+      "Enter password in password field",
+      "Click eye icon to show password",
+      "Verify password is visible as plain text",
+      "Click eye icon again to hide password",
+      "Verify password is masked"
+    ],
+    "passes": true
+  }
+]

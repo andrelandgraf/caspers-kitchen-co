@@ -1,0 +1,24 @@
+[
+  {
+    "category": "functional",
+    "description": "User can sign out other devices",
+    "steps": [
+      "Navigate to /profile page",
+      "Find 'Active Sessions' section",
+      "Click 'Sign out other devices' button",
+      "Verify success message",
+      "Verify other sessions are revoked"
+    ],
+    "passes": true
+  },
+  {
+    "category": "ui",
+    "description": "Sessions section shows description",
+    "steps": [
+      "Navigate to /profile page",
+      "Find 'Active Sessions' section",
+      "Verify description about managing sessions is shown"
+    ],
+    "passes": true
+  }
+]

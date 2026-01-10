@@ -1,0 +1,7 @@
+{
+  "enabledPlugins": {
+    "authentication@fullstackrecipes": true,
+    "base-app-setup@fullstackrecipes": true,
+    "env-management@fullstackrecipes": true
+  }
+}

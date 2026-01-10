@@ -1,0 +1,315 @@
+[
+  {
+    "category": "functional",
+    "description": "New user receives $100 Databricks welcome credit on first login",
+    "steps": [
+      "Create new account and verify email",
+      "Sign in for the first time",
+      "Verify $100 credit is automatically applied to account",
+      "Verify welcome toast 'You received $100 welcome credit from Databricks!'",
+      "Verify credit balance visible in header/user menu"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Credit balance displayed in header for authenticated users",
+    "steps": [
+      "Sign in as user with credit balance",
+      "Verify credit balance displayed near user menu (e.g., '$100 credit')",
+      "Verify balance updates after using credits",
+      "Verify balance shows $0 or hides when no credits remain"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Credit balance displayed on profile page",
+    "steps": [
+      "Navigate to /profile",
+      "Verify 'Gift Card Balance' or 'Credits' section exists",
+      "Verify current balance displayed prominently",
+      "Verify link to redeem gift card",
+      "Verify transaction history shows credit additions"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can redeem gift card code on profile page",
+    "steps": [
+      "Navigate to /profile",
+      "Find 'Redeem Gift Card' section",
+      "Enter gift card code 'databricks'",
+      "Click 'Redeem' button",
+      "Verify success message '$100 added to your balance!'",
+      "Verify balance updates immediately"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Databricks code can be redeemed multiple times (demo mode)",
+    "steps": [
+      "Sign in as user with existing balance",
+      "Redeem 'databricks' code",
+      "Verify $100 added to balance",
+      "Redeem 'databricks' code again",
+      "Verify another $100 added (demo allows unlimited redemptions)",
+      "Verify balance reflects cumulative total"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Gift card code is case-insensitive",
+    "steps": [
+      "Navigate to redeem gift card",
+      "Enter 'DATABRICKS' (uppercase)",
+      "Verify code is accepted",
+      "Enter 'Databricks' (mixed case)",
+      "Verify code is accepted",
+      "Enter 'databricks' (lowercase)",
+      "Verify code is accepted"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Invalid gift card code shows error",
+    "steps": [
+      "Navigate to redeem gift card",
+      "Enter invalid code 'INVALID123'",
+      "Click 'Redeem'",
+      "Verify error message 'Invalid gift card code'",
+      "Verify balance unchanged"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Credits automatically applied at checkout",
+    "steps": [
+      "Sign in as user with $100 credit",
+      "Add items totaling $50 to cart",
+      "Navigate to checkout",
+      "Verify credits are shown in payment section",
+      "Verify 'Apply $50.00 from gift card balance' option",
+      "Toggle to apply credits",
+      "Verify order total reduced by credit amount"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Partial credit usage at checkout",
+    "steps": [
+      "Sign in as user with $50 credit",
+      "Add items totaling $75 to cart",
+      "Navigate to checkout",
+      "Apply gift card balance",
+      "Verify $50 credit applied",
+      "Verify remaining $25 charged to payment method",
+      "Complete order",
+      "Verify credit balance is now $0"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Full order covered by credits (no payment needed)",
+    "steps": [
+      "Sign in as user with $100 credit",
+      "Add items totaling $30 to cart",
+      "Navigate to checkout",
+      "Apply gift card balance",
+      "Verify full order covered by credits",
+      "Verify payment method section shows 'Covered by gift card'",
+      "Complete order without entering payment",
+      "Verify credit balance reduced to $70"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can choose not to apply credits",
+    "steps": [
+      "Sign in as user with credit balance",
+      "Add items to cart",
+      "Navigate to checkout",
+      "Verify option to apply credits is shown",
+      "Leave credits toggle off",
+      "Complete order with payment method",
+      "Verify credit balance unchanged"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Redeem gift card from checkout page",
+    "steps": [
+      "Navigate to checkout",
+      "Find 'Have a gift card?' link",
+      "Click to expand gift card input",
+      "Enter 'databricks' code",
+      "Click 'Apply'",
+      "Verify $100 added to balance",
+      "Verify credits immediately available to apply to order"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Credit transaction history on profile",
+    "steps": [
+      "Navigate to /profile",
+      "Find credit/gift card section",
+      "Verify transaction history shows:",
+      "  - Welcome credit: +$100 (date)",
+      "  - Redeemed databricks: +$100 (date)",
+      "  - Order #123: -$45.00 (date)",
+      "Verify transactions sorted newest first"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order confirmation shows credit usage",
+    "steps": [
+      "Complete order using credits",
+      "Verify order confirmation shows:",
+      "  - Items total",
+      "  - Gift card applied: -$XX.XX",
+      "  - Remaining charged: $XX.XX",
+      "Verify confirmation email includes credit usage"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order history shows credit usage",
+    "steps": [
+      "Navigate to /orders",
+      "Find order that used credits",
+      "Verify order detail shows credit amount applied",
+      "Verify payment breakdown visible"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Empty gift card code shows validation error",
+    "steps": [
+      "Navigate to redeem gift card",
+      "Leave code field empty",
+      "Click 'Redeem'",
+      "Verify 'Please enter a gift card code' error"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Credits cannot go negative",
+    "steps": [
+      "Sign in as user with $0 credit",
+      "Navigate to checkout",
+      "Verify no option to apply credits shown",
+      "Or verify credits toggle disabled with $0 message"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Refund restores credits if originally used",
+    "steps": [
+      "Complete order using $50 in credits",
+      "Admin issues full refund",
+      "Verify $50 restored to credit balance",
+      "Verify transaction history shows refund credit"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Credit balance badge styling",
+    "steps": [
+      "Sign in as user with credits",
+      "Verify credit badge uses brand accent color",
+      "Verify badge is visible but not distracting",
+      "Verify badge shows currency formatted amount",
+      "Verify dark mode styling is appropriate"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Gift card redemption success animation",
+    "steps": [
+      "Redeem valid gift card code",
+      "Verify celebratory animation or confetti",
+      "Verify success toast with amount added",
+      "Verify balance counter animates to new value"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Checkout credit application is clear",
+    "steps": [
+      "Navigate to checkout with credits available",
+      "Verify credit section is clearly visible",
+      "Verify toggle or checkbox is intuitive",
+      "Verify savings amount is prominent",
+      "Verify remaining balance shown after applying"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Gift card features are accessible",
+    "steps": [
+      "Navigate gift card redemption via keyboard",
+      "Verify form labels are properly associated",
+      "Verify error messages announced to screen readers",
+      "Verify credit balance announced in header region",
+      "Verify success messages are announced"
+    ],
+    "passes": false
+  },
+  {
+    "category": "guest",
+    "description": "Guest users cannot redeem gift cards",
+    "steps": [
+      "Ensure not signed in",
+      "Navigate to checkout as guest",
+      "Verify gift card section prompts to sign in",
+      "Or verify gift card code can be entered and applied to order only"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ai-assistant",
+    "description": "AI assistant can check credit balance",
+    "steps": [
+      "Sign in as user with credits",
+      "Open AI assistant",
+      "Ask 'What is my credit balance?'",
+      "Verify assistant responds with current balance",
+      "Ask 'How do I use my credits?'",
+      "Verify assistant explains checkout process"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ai-assistant",
+    "description": "AI assistant can help redeem gift card",
+    "steps": [
+      "Open AI assistant",
+      "Say 'I have a gift card code'",
+      "Verify assistant asks for the code",
+      "Provide 'databricks' code",
+      "Verify assistant redeems and confirms $100 added"
+    ],
+    "passes": false
+  }
+]

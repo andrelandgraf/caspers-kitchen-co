@@ -1,0 +1,172 @@
+[
+  {
+    "category": "functional",
+    "description": "Menu page displays all available food items",
+    "steps": [
+      "Navigate to /menu page",
+      "Verify page heading 'Our Menu' or similar is displayed",
+      "Verify food items are displayed in a grid layout",
+      "Verify each item shows image, name, description, and price",
+      "Verify items are organized by category (Mains, Sides, Desserts, Drinks)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Food items can be filtered by category",
+    "steps": [
+      "Navigate to /menu page",
+      "Verify category filter tabs or buttons are displayed",
+      "Click on 'Mains' category",
+      "Verify only main dishes are shown",
+      "Click on 'Sides' category",
+      "Verify only side dishes are shown",
+      "Click 'All' to show all items again"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Food items can be searched by name",
+    "steps": [
+      "Navigate to /menu page",
+      "Verify search input is displayed",
+      "Type 'mac' into search field",
+      "Verify results filter to show matching items (e.g., Mac & Cheese)",
+      "Clear search field",
+      "Verify all items are shown again"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Individual food item page shows full details",
+    "steps": [
+      "Navigate to /menu page",
+      "Click on a food item card",
+      "Verify navigation to /menu/[item-slug] page",
+      "Verify large item image is displayed",
+      "Verify item name and full description",
+      "Verify price is prominently displayed",
+      "Verify nutritional information if available",
+      "Verify allergen warnings if applicable",
+      "Verify 'Add to Cart' button is present"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Food item shows availability status",
+    "steps": [
+      "Navigate to /menu page",
+      "Verify available items show 'Add to Cart' button",
+      "Verify sold out items show 'Sold Out' badge",
+      "Verify sold out items have disabled add button",
+      "Verify limited availability items show remaining count"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Quick add to cart from menu grid",
+    "steps": [
+      "Navigate to /menu page",
+      "Hover over a food item card",
+      "Verify quick-add button appears",
+      "Click quick-add button",
+      "Verify item is added to cart",
+      "Verify cart icon updates with item count",
+      "Verify success toast notification"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Food item customization options",
+    "steps": [
+      "Navigate to item detail page for customizable item",
+      "Verify customization options are displayed (e.g., spice level, size)",
+      "Select customization options",
+      "Verify price updates if options affect price",
+      "Add to cart with customizations",
+      "Verify cart shows item with selected options"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Dietary filter options",
+    "steps": [
+      "Navigate to /menu page",
+      "Verify dietary filter options (Vegetarian, Vegan, Gluten-Free)",
+      "Toggle 'Vegetarian' filter",
+      "Verify only vegetarian items are displayed",
+      "Verify filter state persists when navigating categories"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Menu page responsive layout",
+    "steps": [
+      "View /menu page on mobile viewport (375px)",
+      "Verify items display in single column or 2-column grid",
+      "Verify search and filters are accessible",
+      "View on tablet (768px)",
+      "Verify 2-3 column grid layout",
+      "View on desktop (1200px)",
+      "Verify 3-4 column grid layout"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Food item cards have appealing hover effects",
+    "steps": [
+      "Navigate to /menu page on desktop",
+      "Hover over food item card",
+      "Verify card lifts with subtle shadow",
+      "Verify image slightly scales up",
+      "Verify transition is smooth (200-300ms)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Menu supports dark mode",
+    "steps": [
+      "Navigate to /menu page",
+      "Toggle dark mode",
+      "Verify background adapts to warm dark tones",
+      "Verify food images remain vibrant",
+      "Verify text contrast is maintained",
+      "Verify price and category badges remain visible"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Menu page meets accessibility standards",
+    "steps": [
+      "Navigate to /menu page",
+      "Verify all food images have descriptive alt text",
+      "Verify filter buttons are keyboard accessible",
+      "Verify item cards can be navigated via keyboard",
+      "Verify screen reader announces item name, price, and availability",
+      "Verify focus indicators are visible"
+    ],
+    "passes": false
+  },
+  {
+    "category": "performance",
+    "description": "Menu images load efficiently",
+    "steps": [
+      "Navigate to /menu page",
+      "Verify images use next/image optimization",
+      "Verify images lazy load as user scrolls",
+      "Verify placeholder/blur shown while images load",
+      "Verify no layout shift when images load"
+    ],
+    "passes": false
+  }
+]

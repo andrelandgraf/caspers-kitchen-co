@@ -1,0 +1,75 @@
+[
+  {
+    "category": "functional",
+    "description": "User can initiate account deletion",
+    "steps": [
+      "Navigate to /profile page",
+      "Find 'Delete Account' section",
+      "Click 'Delete Account' button",
+      "Verify confirmation dialog opens"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Account deletion requires password and confirmation",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Delete Account' button",
+      "Enter password in dialog",
+      "Type 'DELETE' to confirm",
+      "Click 'Delete Account' in dialog",
+      "Verify confirmation email is sent"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Delete button is disabled without confirmation",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Delete Account' button",
+      "Enter password",
+      "Do not type 'DELETE'",
+      "Verify delete button is disabled"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Delete button is disabled without password",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Delete Account' button",
+      "Type 'DELETE' to confirm",
+      "Do not enter password",
+      "Verify delete button is disabled"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can cancel account deletion",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Delete Account' button",
+      "Click 'Cancel' button in dialog",
+      "Verify dialog closes",
+      "Verify account is not affected"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Wrong password shows error",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Delete Account' button",
+      "Enter incorrect password",
+      "Type 'DELETE' to confirm",
+      "Click delete button",
+      "Verify error about incorrect password"
+    ],
+    "passes": true
+  }
+]

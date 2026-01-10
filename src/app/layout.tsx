@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/themes/provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ChatTrigger } from "@/components/chat/chat-trigger";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <ChatTrigger />
           <Toaster richColors position="top-center" />
         </ThemeProvider>
       </body>

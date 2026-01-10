@@ -1,0 +1,196 @@
+[
+  {
+    "category": "functional",
+    "description": "Cart icon shows item count in header",
+    "steps": [
+      "Navigate to any page",
+      "Verify cart icon is visible in header",
+      "Add item to cart",
+      "Verify cart icon badge shows item count",
+      "Add another item",
+      "Verify badge updates to show total count"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart drawer opens from header icon",
+    "steps": [
+      "Click cart icon in header",
+      "Verify cart drawer slides in from right",
+      "Verify drawer shows cart contents",
+      "Verify close button is present",
+      "Click outside drawer or close button",
+      "Verify drawer closes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart displays all added items",
+    "steps": [
+      "Add multiple items to cart",
+      "Open cart drawer",
+      "Verify each item shows:",
+      "  - Item image thumbnail",
+      "  - Item name",
+      "  - Customizations if any",
+      "  - Unit price",
+      "  - Quantity selector",
+      "  - Item subtotal",
+      "  - Remove button"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart item quantity can be adjusted",
+    "steps": [
+      "Add item to cart",
+      "Open cart drawer",
+      "Click '+' button to increase quantity",
+      "Verify quantity updates",
+      "Verify item subtotal updates",
+      "Verify cart total updates",
+      "Click '-' button to decrease quantity",
+      "Verify updates reflect correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart item can be removed",
+    "steps": [
+      "Add item to cart",
+      "Open cart drawer",
+      "Click remove/trash button on item",
+      "Verify item is removed from cart",
+      "Verify cart total updates",
+      "Verify cart count in header updates"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart shows order summary",
+    "steps": [
+      "Add items to cart",
+      "Open cart drawer",
+      "Verify subtotal is displayed",
+      "Verify estimated delivery fee is shown",
+      "Verify estimated tax is shown",
+      "Verify total is calculated correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart persists across page navigation",
+    "steps": [
+      "Add items to cart on /menu page",
+      "Navigate to home page",
+      "Navigate back to /menu",
+      "Open cart drawer",
+      "Verify items are still in cart"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart persists for authenticated users",
+    "steps": [
+      "Sign in as user",
+      "Add items to cart",
+      "Sign out",
+      "Sign in again as same user",
+      "Verify cart items are restored"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Empty cart shows helpful message",
+    "steps": [
+      "Ensure cart is empty",
+      "Open cart drawer",
+      "Verify 'Your cart is empty' message",
+      "Verify illustration or icon for empty state",
+      "Verify 'Browse Menu' CTA button",
+      "Click 'Browse Menu'",
+      "Verify navigation to /menu"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Cart checkout button navigates to checkout",
+    "steps": [
+      "Add items to cart",
+      "Open cart drawer",
+      "Click 'Checkout' button",
+      "Verify navigation to /checkout page"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Reducing quantity to zero removes item",
+    "steps": [
+      "Add item with quantity 1 to cart",
+      "Open cart drawer",
+      "Click '-' button on item",
+      "Verify item is removed from cart",
+      "Verify confirmation if needed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Cart handles sold out items gracefully",
+    "steps": [
+      "Add item to cart",
+      "Item becomes sold out (admin marks unavailable)",
+      "Open cart drawer",
+      "Verify sold out item is flagged with warning",
+      "Verify user is prompted to remove item before checkout"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Cart drawer animation is smooth",
+    "steps": [
+      "Click cart icon",
+      "Verify drawer slides in smoothly from right",
+      "Verify background overlay fades in",
+      "Close drawer",
+      "Verify smooth slide out animation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Cart is scrollable with many items",
+    "steps": [
+      "Add 10+ items to cart",
+      "Open cart drawer",
+      "Verify item list is scrollable",
+      "Verify checkout button stays fixed at bottom",
+      "Verify header stays fixed at top"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Cart drawer is keyboard accessible",
+    "steps": [
+      "Focus on cart icon",
+      "Press Enter to open drawer",
+      "Verify focus moves to drawer",
+      "Tab through cart items and controls",
+      "Press Escape to close drawer",
+      "Verify focus returns to cart icon"
+    ],
+    "passes": false
+  }
+]

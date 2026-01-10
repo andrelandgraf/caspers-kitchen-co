@@ -1,0 +1,226 @@
+[
+  {
+    "category": "functional",
+    "description": "Order confirmation page shows tracking link",
+    "steps": [
+      "Complete successful checkout",
+      "Verify order confirmation page displays",
+      "Verify 'Track Your Order' button is present",
+      "Click button",
+      "Verify navigation to order tracking page"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order tracking page shows current status",
+    "steps": [
+      "Navigate to /orders/[order-id]",
+      "Verify order number is displayed",
+      "Verify current status is highlighted:",
+      "  - Order Received",
+      "  - Preparing",
+      "  - Ready for Delivery",
+      "  - Out for Delivery",
+      "  - Delivered",
+      "Verify status timeline visualization"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order tracking shows estimated time",
+    "steps": [
+      "Navigate to active order tracking page",
+      "Verify estimated delivery time is displayed",
+      "Verify countdown or time remaining",
+      "Verify updates when status changes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order tracking shows order details",
+    "steps": [
+      "Navigate to /orders/[order-id]",
+      "Verify order items are listed",
+      "Verify delivery address is shown",
+      "Verify payment summary is shown",
+      "Verify order date and time"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order tracking updates in real-time",
+    "steps": [
+      "Navigate to active order tracking page",
+      "Wait for status update (or simulate)",
+      "Verify page updates without refresh",
+      "Verify notification or animation on update"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Guest order lookup by email and order number",
+    "steps": [
+      "Complete guest checkout",
+      "Navigate to /orders/track",
+      "Enter order number from confirmation",
+      "Enter email used for order",
+      "Click 'Track Order'",
+      "Verify order details are displayed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order history page for authenticated users",
+    "steps": [
+      "Sign in as user with past orders",
+      "Navigate to /orders",
+      "Verify list of all past orders",
+      "Verify each order shows:",
+      "  - Order number",
+      "  - Order date",
+      "  - Status",
+      "  - Total amount",
+      "  - Number of items",
+      "Click on an order",
+      "Verify navigation to order detail page"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order history filtering and sorting",
+    "steps": [
+      "Navigate to /orders",
+      "Verify filter by status (All, Active, Completed)",
+      "Select 'Completed' filter",
+      "Verify only completed orders shown",
+      "Verify sort options (Recent, Oldest)",
+      "Change sort order",
+      "Verify orders reorder correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Reorder from past order",
+    "steps": [
+      "Navigate to completed order detail page",
+      "Verify 'Reorder' button is present",
+      "Click 'Reorder'",
+      "Verify items are added to cart",
+      "Verify navigation to cart or checkout"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order receipt download",
+    "steps": [
+      "Navigate to completed order detail page",
+      "Verify 'Download Receipt' option",
+      "Click download",
+      "Verify PDF receipt downloads",
+      "Verify receipt contains order details and payment info"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Delivery driver contact (when out for delivery)",
+    "steps": [
+      "Navigate to order that is 'Out for Delivery'",
+      "Verify driver info is displayed (first name)",
+      "Verify contact option is available",
+      "Verify option to text driver"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order cancellation before preparation",
+    "steps": [
+      "Navigate to newly placed order (status: Received)",
+      "Verify 'Cancel Order' option is available",
+      "Click 'Cancel Order'",
+      "Verify confirmation dialog",
+      "Confirm cancellation",
+      "Verify order status changes to Cancelled",
+      "Verify refund info is displayed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Cannot cancel order after preparation starts",
+    "steps": [
+      "Navigate to order with status 'Preparing'",
+      "Verify 'Cancel Order' is not available or disabled",
+      "Verify message explaining why cancellation not possible",
+      "Verify contact support option instead"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Order not found error handling",
+    "steps": [
+      "Navigate to /orders/invalid-order-id",
+      "Verify friendly 'Order not found' message",
+      "Verify option to search by order number",
+      "Verify link to contact support"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Order status email notifications",
+    "steps": [
+      "Place an order",
+      "Verify email when order is confirmed",
+      "Verify email when order is out for delivery",
+      "Verify email when order is delivered"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Order tracking visual progress indicator",
+    "steps": [
+      "Navigate to order tracking page",
+      "Verify visual timeline/stepper showing progress",
+      "Verify completed steps are filled/checked",
+      "Verify current step is highlighted",
+      "Verify pending steps are dimmed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Order history responsive design",
+    "steps": [
+      "View /orders on mobile (375px)",
+      "Verify orders display as cards",
+      "Verify key info is visible without scrolling",
+      "View on desktop",
+      "Verify table or expanded card layout"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Order tracking accessible status updates",
+    "steps": [
+      "Navigate to order tracking with screen reader",
+      "Verify status is announced",
+      "Verify progress indicator has proper ARIA labels",
+      "Verify real-time updates are announced"
+    ],
+    "passes": false
+  }
+]

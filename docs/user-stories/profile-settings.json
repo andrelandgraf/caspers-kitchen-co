@@ -1,0 +1,73 @@
+[
+  {
+    "category": "functional",
+    "description": "Profile page requires authentication",
+    "steps": [
+      "Sign out if logged in",
+      "Navigate to /profile page",
+      "Verify redirect to /sign-in page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Profile page shows user information",
+    "steps": [
+      "Sign in as user",
+      "Navigate to /profile page",
+      "Verify user name is displayed",
+      "Verify user email is displayed",
+      "Verify email verification status is shown"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can edit profile name",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Edit' button on profile section",
+      "Enter new name",
+      "Click 'Save' button",
+      "Verify name is updated",
+      "Verify success toast message"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can update profile image",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Edit' button on profile section",
+      "Upload new profile image",
+      "Verify image preview is shown",
+      "Click 'Save' button",
+      "Verify profile image is updated"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can cancel profile editing",
+    "steps": [
+      "Navigate to /profile page",
+      "Click 'Edit' button",
+      "Make changes to name or image",
+      "Click 'Cancel' button",
+      "Verify changes are discarded",
+      "Verify original values are shown"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Back button navigates to chats",
+    "steps": [
+      "Navigate to /profile page",
+      "Click back arrow button",
+      "Verify navigation to /chats page"
+    ],
+    "passes": true
+  }
+]

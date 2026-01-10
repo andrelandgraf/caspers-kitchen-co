@@ -1,0 +1,351 @@
+[
+  {
+    "category": "functional",
+    "description": "AI assistant is accessible from main navigation",
+    "steps": [
+      "Navigate to any page",
+      "Verify chat/assistant icon in header or floating button",
+      "Click to open assistant",
+      "Verify chat interface opens"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "AI assistant greeting for new conversation",
+    "steps": [
+      "Open AI assistant",
+      "Verify welcome message is displayed",
+      "Verify message includes assistant capabilities",
+      "Verify suggested prompts or quick actions"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask about current order status",
+    "steps": [
+      "Sign in as user with active order",
+      "Open AI assistant",
+      "Ask 'Where is my order?'",
+      "Verify assistant retrieves current order",
+      "Verify response includes order status",
+      "Verify response includes estimated delivery time"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask about past orders",
+    "steps": [
+      "Sign in as user with order history",
+      "Open AI assistant",
+      "Ask 'What did I order last time?'",
+      "Verify assistant retrieves last order",
+      "Verify response includes items ordered",
+      "Verify response includes order date"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask about specific past order",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'Show me order #12345'",
+      "Verify assistant retrieves specific order",
+      "Verify full order details displayed",
+      "Verify option to reorder"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can get menu recommendations",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'What should I order for dinner?'",
+      "Verify assistant suggests menu items",
+      "Verify suggestions include descriptions",
+      "Ask for vegetarian options",
+      "Verify filtered recommendations"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask about dietary options",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'Do you have gluten-free options?'",
+      "Verify assistant lists gluten-free items",
+      "Ask 'Is the mac and cheese vegetarian?'",
+      "Verify assistant provides accurate info"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask about ingredients and allergens",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'Does the soup contain nuts?'",
+      "Verify assistant checks item allergen info",
+      "Verify accurate allergen response",
+      "Ask 'What ingredients are in the burger?'",
+      "Verify ingredient list provided"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can modify or cancel order via assistant",
+    "steps": [
+      "Sign in with active order (status: Received)",
+      "Open AI assistant",
+      "Ask 'Can I cancel my order?'",
+      "Verify assistant checks order status",
+      "Verify assistant offers cancellation option",
+      "Confirm cancellation",
+      "Verify order is cancelled"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can add items to cart via assistant",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'Add a large fries to my cart'",
+      "Verify assistant confirms item",
+      "Verify item added to cart",
+      "Verify cart count updates"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can place order via assistant",
+    "steps": [
+      "Add items to cart",
+      "Open AI assistant",
+      "Say 'I want to checkout'",
+      "Verify assistant guides through checkout",
+      "Confirm delivery address",
+      "Confirm payment",
+      "Verify order is placed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask about delivery times",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'How long will delivery take?'",
+      "Verify assistant provides estimated time",
+      "Ask 'Do you deliver to [address]?'",
+      "Verify assistant checks delivery zone"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can ask about business hours",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'Are you open right now?'",
+      "Verify assistant provides current status",
+      "Ask 'What are your hours?'",
+      "Verify operating hours displayed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can report order issue",
+    "steps": [
+      "Open AI assistant",
+      "Say 'My order is missing an item'",
+      "Verify assistant asks for order details",
+      "Provide order number",
+      "Verify assistant logs issue",
+      "Verify option to get refund or replacement"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Assistant handles unknown questions gracefully",
+    "steps": [
+      "Open AI assistant",
+      "Ask unrelated question (e.g., 'What is the capital of France?')",
+      "Verify assistant politely redirects",
+      "Verify assistant offers relevant suggestions",
+      "Verify no error or crash"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Assistant maintains conversation context",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'What soups do you have?'",
+      "Receive soup list",
+      "Ask 'Is the first one spicy?'",
+      "Verify assistant understands 'first one' refers to soup",
+      "Verify accurate response about soup"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Guest user assistant functionality",
+    "steps": [
+      "Ensure not signed in",
+      "Open AI assistant",
+      "Ask about menu items",
+      "Verify assistant responds",
+      "Ask about order status",
+      "Verify assistant asks for order number and email"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Assistant provides quick action buttons",
+    "steps": [
+      "Open AI assistant",
+      "Receive response about an order",
+      "Verify quick action buttons (Track Order, Contact Support)",
+      "Click quick action",
+      "Verify appropriate action taken"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Conversation history persists for user",
+    "steps": [
+      "Sign in as user",
+      "Have conversation with assistant",
+      "Close assistant",
+      "Re-open assistant",
+      "Verify previous messages still visible",
+      "Navigate away and return",
+      "Verify conversation persisted"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can start new conversation",
+    "steps": [
+      "Open AI assistant with existing conversation",
+      "Click 'New Conversation' or similar",
+      "Verify conversation cleared",
+      "Verify fresh greeting displayed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Assistant chat interface is user-friendly",
+    "steps": [
+      "Open AI assistant",
+      "Verify clean chat bubble design",
+      "Verify user messages aligned right",
+      "Verify assistant messages aligned left",
+      "Verify timestamps on messages",
+      "Verify typing indicator when assistant is thinking"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Assistant typing experience",
+    "steps": [
+      "Open AI assistant",
+      "Verify text input is at bottom",
+      "Verify send button or Enter to send",
+      "Verify input clears after sending",
+      "Verify auto-focus on input"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Assistant responsive design",
+    "steps": [
+      "Open assistant on mobile (375px)",
+      "Verify full-screen or near-full-screen chat",
+      "Verify keyboard doesn't obscure input",
+      "View on desktop",
+      "Verify panel or overlay design"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Assistant supports dark mode",
+    "steps": [
+      "Toggle dark mode",
+      "Open AI assistant",
+      "Verify dark theme applied to chat",
+      "Verify readability maintained",
+      "Verify bubble colors appropriate"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Assistant handles rate limiting",
+    "steps": [
+      "Open AI assistant",
+      "Send many messages rapidly",
+      "Verify rate limit message if triggered",
+      "Verify message is friendly",
+      "Wait and verify can continue"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Assistant handles network errors",
+    "steps": [
+      "Open AI assistant",
+      "Disconnect network",
+      "Send message",
+      "Verify error message displayed",
+      "Reconnect network",
+      "Verify retry option or auto-retry"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Assistant is keyboard accessible",
+    "steps": [
+      "Open assistant via keyboard",
+      "Tab to input field",
+      "Type message and press Enter",
+      "Verify message sent",
+      "Tab through responses and actions",
+      "Close assistant via keyboard (Escape)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Assistant works with screen readers",
+    "steps": [
+      "Open assistant with screen reader",
+      "Verify new messages announced",
+      "Verify typing indicator announced",
+      "Verify quick actions accessible",
+      "Verify conversation flow readable"
+    ],
+    "passes": false
+  }
+]

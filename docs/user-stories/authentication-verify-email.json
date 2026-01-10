@@ -1,0 +1,64 @@
+[
+  {
+    "category": "functional",
+    "description": "Email verification succeeds with valid token",
+    "steps": [
+      "Navigate to /verify-email with valid token",
+      "Verify 'Email verified!' heading appears",
+      "Verify success message is shown",
+      "Verify 'Sign in' button is available"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can sign in after verification",
+    "steps": [
+      "Complete email verification",
+      "Click 'Sign in' button",
+      "Verify navigation to /sign-in page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Invalid token shows error",
+    "steps": [
+      "Navigate to /verify-email?error=INVALID_TOKEN",
+      "Verify 'Verification failed' heading appears",
+      "Verify message about invalid or expired link",
+      "Verify 'Sign in to resend' button is available"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Missing token shows error",
+    "steps": [
+      "Navigate to /verify-email without token",
+      "Verify error state with NO_TOKEN message",
+      "Verify 'Sign in to resend' button is available"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Verification failure shows error",
+    "steps": [
+      "Navigate to /verify-email with token that fails verification",
+      "Verify 'Verification failed' heading appears",
+      "Verify helpful error message is shown"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Back to home link works",
+    "steps": [
+      "Navigate to /verify-email with invalid token",
+      "Click 'Back to home' button",
+      "Verify navigation to home page"
+    ],
+    "passes": true
+  }
+]

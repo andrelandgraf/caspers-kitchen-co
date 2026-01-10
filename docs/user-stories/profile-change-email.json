@@ -1,0 +1,47 @@
+[
+  {
+    "category": "functional",
+    "description": "User can request email change",
+    "steps": [
+      "Navigate to /profile page",
+      "Find 'Change Email' section",
+      "Enter new email address",
+      "Submit the form",
+      "Verify confirmation email is sent to current email",
+      "Verify success message about checking email"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Current email is displayed as disabled",
+    "steps": [
+      "Navigate to /profile page",
+      "Find 'Change Email' section",
+      "Verify current email is shown in disabled input"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Same email shows error",
+    "steps": [
+      "Navigate to /profile page",
+      "Enter current email as new email",
+      "Submit the form",
+      "Verify error message about email being the same"
+    ],
+    "passes": true
+  },
+  {
+    "category": "edge-case",
+    "description": "Invalid email format shows error",
+    "steps": [
+      "Navigate to /profile page",
+      "Enter invalid email format",
+      "Submit the form",
+      "Verify validation error"
+    ],
+    "passes": true
+  }
+]

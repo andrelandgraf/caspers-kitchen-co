@@ -1,0 +1,235 @@
+[
+  {
+    "category": "functional",
+    "description": "Landing page hero section captures attention and communicates value",
+    "steps": [
+      "Navigate to / (home page)",
+      "Verify hero section is immediately visible above the fold",
+      "Verify headline 'Comfort food, delivered with warmth' or similar is displayed",
+      "Verify subheadline explains ghost kitchen concept briefly",
+      "Verify primary CTA 'Order Now' button is prominent",
+      "Verify secondary CTA 'See Our Menu' is available",
+      "Verify warm, inviting food imagery or illustration is displayed",
+      "Verify subtle animation (steam, floating elements) adds life"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "How It Works section explains the ghost kitchen process",
+    "steps": [
+      "Scroll to 'How It Works' section",
+      "Verify section has clear heading",
+      "Verify 3-4 step process is displayed with icons:",
+      "  - Step 1: Browse our menu of comfort classics",
+      "  - Step 2: Order online or through delivery apps",
+      "  - Step 3: Our chefs prepare your meal fresh",
+      "  - Step 4: Delivered hot to your door",
+      "Verify each step has a friendly icon and brief description",
+      "Verify visual flow connects the steps"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Values section communicates Casper's Kitchen philosophy",
+    "steps": [
+      "Scroll to values/about section",
+      "Verify section heading like 'Made with Love' or 'Our Kitchen, Your Home'",
+      "Verify core values are displayed:",
+      "  - Fresh ingredients, never frozen",
+      "  - Recipes inspired by home cooking",
+      "  - Sustainable packaging",
+      "  - Supporting local suppliers",
+      "Verify each value has an icon and short explanation",
+      "Verify warm, cozy imagery or illustrations accompany values"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Featured menu section showcases popular dishes",
+    "steps": [
+      "Scroll to featured menu section",
+      "Verify section heading 'Today's Favorites' or similar",
+      "Verify 3-6 featured dishes are displayed as cards",
+      "Verify each dish card shows:",
+      "  - Appetizing food image",
+      "  - Dish name",
+      "  - Brief description",
+      "  - Price",
+      "Verify 'View Full Menu' CTA button is present",
+      "Verify cards have hover effect with warm shadow lift"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Testimonials section builds trust with customer stories",
+    "steps": [
+      "Scroll to testimonials section",
+      "Verify section heading 'What Our Neighbors Say' or similar",
+      "Verify 2-4 customer testimonials are displayed",
+      "Verify each testimonial shows:",
+      "  - Quote text",
+      "  - Customer name",
+      "  - Optional: customer photo or avatar",
+      "Verify testimonials have cozy, card-style presentation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Delivery area section shows service coverage",
+    "steps": [
+      "Scroll to delivery area section",
+      "Verify section explains delivery zones",
+      "Verify option to check if address is in delivery range",
+      "Verify delivery time estimates are shown",
+      "Verify partner delivery app logos if applicable (DoorDash, UberEats, etc.)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Newsletter signup section captures leads",
+    "steps": [
+      "Scroll to newsletter section",
+      "Verify inviting headline like 'Join the Kitchen Family'",
+      "Verify email input field is present",
+      "Verify subscribe button is present",
+      "Verify privacy-friendly messaging",
+      "Verify incentive mention (e.g., '10% off your first order')"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Footer provides essential links and info",
+    "steps": [
+      "Scroll to footer",
+      "Verify Casper's Kitchen logo is displayed",
+      "Verify navigation links: Menu, About, Contact, FAQ",
+      "Verify delivery hours are listed",
+      "Verify contact information (email, phone)",
+      "Verify social media links",
+      "Verify copyright and legal links (Privacy, Terms)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Landing page responsive design works on mobile",
+    "steps": [
+      "View landing page on mobile viewport (375px)",
+      "Verify hero section stacks properly, CTA remains prominent",
+      "Verify How It Works steps stack vertically",
+      "Verify menu cards display in single column or 2-column grid",
+      "Verify all text is readable without horizontal scrolling",
+      "Verify touch targets are at least 44px",
+      "Verify navigation converts to mobile menu"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Landing page responsive design works on tablet",
+    "steps": [
+      "View landing page on tablet viewport (768px)",
+      "Verify layout adapts appropriately (2-column where suitable)",
+      "Verify images scale properly",
+      "Verify navigation is accessible"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Page load animation creates welcoming experience",
+    "steps": [
+      "Navigate to landing page fresh (clear cache)",
+      "Verify hero elements fade in with staggered timing",
+      "Verify animation is subtle and quick (under 800ms total)",
+      "Verify animation respects prefers-reduced-motion",
+      "Verify no layout shift during animation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Scroll animations reveal sections smoothly",
+    "steps": [
+      "Scroll down the landing page",
+      "Verify sections fade/slide in as they enter viewport",
+      "Verify animations are subtle and don't distract",
+      "Verify animations only play once",
+      "Verify animations respect prefers-reduced-motion"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Dark mode maintains cozy atmosphere",
+    "steps": [
+      "Toggle to dark mode",
+      "Verify background changes to warm dark tone (not pure black)",
+      "Verify text remains readable with warm tint",
+      "Verify primary orange colors remain vibrant",
+      "Verify images/illustrations adapt or remain cohesive",
+      "Verify overall 'cozy night kitchen' atmosphere"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Navigation header provides clear wayfinding",
+    "steps": [
+      "View landing page",
+      "Verify Casper's Kitchen logo is in header",
+      "Verify navigation links: Menu, How It Works, About",
+      "Verify 'Order Now' CTA button is prominent",
+      "Verify header becomes sticky on scroll",
+      "Verify header has subtle shadow when sticky"
+    ],
+    "passes": false
+  },
+  {
+    "category": "accessibility",
+    "description": "Landing page meets accessibility standards",
+    "steps": [
+      "Run accessibility audit on landing page",
+      "Verify all images have descriptive alt text",
+      "Verify heading hierarchy is correct (h1 -> h2 -> h3)",
+      "Verify color contrast meets WCAG AA standards",
+      "Verify all interactive elements are keyboard accessible",
+      "Verify focus indicators are visible",
+      "Verify no content is conveyed by color alone"
+    ],
+    "passes": false
+  },
+  {
+    "category": "performance",
+    "description": "Landing page loads quickly",
+    "steps": [
+      "Measure landing page load time",
+      "Verify Largest Contentful Paint under 2.5 seconds",
+      "Verify First Input Delay under 100ms",
+      "Verify Cumulative Layout Shift under 0.1",
+      "Verify images are optimized (WebP/AVIF, proper sizing)",
+      "Verify critical CSS is inlined or prioritized"
+    ],
+    "passes": false
+  },
+  {
+    "category": "seo",
+    "description": "Landing page is optimized for search engines",
+    "steps": [
+      "Inspect page meta tags",
+      "Verify title tag includes 'Casper's Kitchen' and key value prop",
+      "Verify meta description is compelling and under 160 chars",
+      "Verify Open Graph tags are set for social sharing",
+      "Verify semantic HTML structure (header, main, sections, footer)",
+      "Verify page has single h1 tag"
+    ],
+    "passes": false
+  }
+]

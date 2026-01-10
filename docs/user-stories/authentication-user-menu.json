@@ -1,0 +1,65 @@
+[
+  {
+    "category": "functional",
+    "description": "Unauthenticated user sees sign in/sign up buttons",
+    "steps": [
+      "Navigate to page with user menu while logged out",
+      "Verify 'Sign in' button is visible",
+      "Verify 'Get started' button is visible"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Authenticated user sees avatar dropdown",
+    "steps": [
+      "Sign in as user",
+      "Verify avatar button is visible",
+      "Click avatar button",
+      "Verify dropdown menu opens",
+      "Verify user name and email are shown"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "User can sign out from menu",
+    "steps": [
+      "Sign in as user",
+      "Click avatar to open menu",
+      "Click 'Sign out' option",
+      "Verify user is signed out",
+      "Verify redirect to home page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Settings link navigates to profile",
+    "steps": [
+      "Sign in as user",
+      "Click avatar to open menu",
+      "Click 'Settings' option",
+      "Verify navigation to /profile page"
+    ],
+    "passes": true
+  },
+  {
+    "category": "ui",
+    "description": "Avatar shows user initials as fallback",
+    "steps": [
+      "Sign in as user without profile image",
+      "Verify avatar shows user's initials"
+    ],
+    "passes": true
+  },
+  {
+    "category": "ui",
+    "description": "Avatar shows user image when available",
+    "steps": [
+      "Sign in as user with profile image",
+      "Verify avatar shows user's profile image"
+    ],
+    "passes": true
+  }
+]

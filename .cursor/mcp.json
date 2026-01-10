@@ -7,6 +7,10 @@
       "command": "npx",
       "args": ["-y", "next-devtools-mcp@latest"]
     },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
     "context7": {
       "url": "https://mcp.context7.com/mcp"
     },
@@ -14,7 +18,7 @@
       "url": "https://fullstackrecipes.com/api/mcp"
     },
     "resend": {
-      "url": "https://mcp.resend.com/sse"
+      "url": "https://resend.com/docs/mcp"
     },
     "better-auth": {
       "url": "https://mcp.chonkie.ai/better-auth/better-auth-builder/mcp"
