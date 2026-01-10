@@ -9,7 +9,7 @@
       "Verify each item shows image, name, description, and price",
       "Verify items are organized by category (Mains, Sides, Desserts, Drinks)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -23,7 +23,7 @@
       "Verify only side dishes are shown",
       "Click 'All' to show all items again"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -36,7 +36,7 @@
       "Clear search field",
       "Verify all items are shown again"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -52,7 +52,7 @@
       "Verify allergen warnings if applicable",
       "Verify 'Add to Cart' button is present"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -64,7 +64,7 @@
       "Verify sold out items have disabled add button",
       "Verify limited availability items show remaining count"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -78,7 +78,7 @@
       "Verify cart icon updates with item count",
       "Verify success toast notification"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -91,7 +91,7 @@
       "Add to cart with customizations",
       "Verify cart shows item with selected options"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -103,7 +103,7 @@
       "Verify only vegetarian items are displayed",
       "Verify filter state persists when navigating categories"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -117,7 +117,7 @@
       "View on desktop (1200px)",
       "Verify 3-4 column grid layout"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -129,7 +129,7 @@
       "Verify image slightly scales up",
       "Verify transition is smooth (200-300ms)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -142,7 +142,7 @@
       "Verify text contrast is maintained",
       "Verify price and category badges remain visible"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "accessibility",
@@ -155,7 +155,7 @@
       "Verify screen reader announces item name, price, and availability",
       "Verify focus indicators are visible"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "performance",
@@ -167,6 +167,6 @@
       "Verify placeholder/blur shown while images load",
       "Verify no layout shift when images load"
     ],
-    "passes": false
+    "passes": true
   }
 ]

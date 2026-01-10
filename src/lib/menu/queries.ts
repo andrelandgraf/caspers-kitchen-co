@@ -1,0 +1,221 @@
+import { db } from "@/lib/db/client";
+import { eq, and, or, ilike, inArray, sql } from "drizzle-orm";
+import {
+  menuItems,
+  menuItemDietaryTypes,
+  customizationOptions,
+  categoryEnum,
+  dietaryTypeEnum,
+} from "./schema";
+import { nanoid } from "nanoid";
+
+export type MenuItem = typeof menuItems.$inferSelect;
+export type MenuItemWithRelations = MenuItem & {
+  dietaryTypes: string[];
+  customizationOptions: (typeof customizationOptions.$inferSelect)[];
+};
+
+export type MenuItemInsert = typeof menuItems.$inferInsert;
+export type CategoryType = (typeof categoryEnum.enumValues)[number];
+export type DietaryType = (typeof dietaryTypeEnum.enumValues)[number];
+
+export interface MenuFilters {
+  category?: CategoryType;
+  dietaryTypes?: DietaryType[];
+  search?: string;
+  availableOnly?: boolean;
+}
+
+export async function getMenuItems(
+  filters?: MenuFilters,
+): Promise<MenuItemWithRelations[]> {
+  const conditions = [];
+
+  if (filters?.category) {
+    conditions.push(eq(menuItems.category, filters.category));
+  }
+
+  if (filters?.availableOnly) {
+    conditions.push(eq(menuItems.isAvailable, true));
+  }
+
+  if (filters?.search) {
+    conditions.push(
+      or(
+        ilike(menuItems.name, `%${filters.search}%`),
+        ilike(menuItems.description, `%${filters.search}%`),
+      ),
+    );
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const items = await db
+    .select()
+    .from(menuItems)
+    .where(whereClause)
+    .orderBy(menuItems.featured, menuItems.name);
+
+  const itemsWithRelations: MenuItemWithRelations[] = [];
+
+  for (const item of items) {
+    const dietary = await db
+      .select()
+      .from(menuItemDietaryTypes)
+      .where(eq(menuItemDietaryTypes.menuItemId, item.id));
+
+    const customizations = await db
+      .select()
+      .from(customizationOptions)
+      .where(eq(customizationOptions.menuItemId, item.id));
+
+    const dietaryTypeValues = dietary.map((d) => d.dietaryType);
+
+    if (
+      filters?.dietaryTypes &&
+      filters.dietaryTypes.length > 0 &&
+      !filters.dietaryTypes.every((type) => dietaryTypeValues.includes(type))
+    ) {
+      continue;
+    }
+
+    itemsWithRelations.push({
+      ...item,
+      dietaryTypes: dietaryTypeValues,
+      customizationOptions: customizations,
+    });
+  }
+
+  return itemsWithRelations;
+}
+
+export async function getMenuItemBySlug(
+  slug: string,
+): Promise<MenuItemWithRelations | null> {
+  const items = await db
+    .select()
+    .from(menuItems)
+    .where(eq(menuItems.slug, slug))
+    .limit(1);
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  const item = items[0];
+
+  const dietary = await db
+    .select()
+    .from(menuItemDietaryTypes)
+    .where(eq(menuItemDietaryTypes.menuItemId, item.id));
+
+  const customizations = await db
+    .select()
+    .from(customizationOptions)
+    .where(eq(customizationOptions.menuItemId, item.id));
+
+  return {
+    ...item,
+    dietaryTypes: dietary.map((d) => d.dietaryType),
+    customizationOptions: customizations,
+  };
+}
+
+export async function getFeaturedMenuItems(): Promise<MenuItemWithRelations[]> {
+  const items = await db
+    .select()
+    .from(menuItems)
+    .where(and(eq(menuItems.featured, true), eq(menuItems.isAvailable, true)))
+    .limit(6);
+
+  const itemsWithRelations: MenuItemWithRelations[] = [];
+
+  for (const item of items) {
+    const dietary = await db
+      .select()
+      .from(menuItemDietaryTypes)
+      .where(eq(menuItemDietaryTypes.menuItemId, item.id));
+
+    const customizations = await db
+      .select()
+      .from(customizationOptions)
+      .where(eq(customizationOptions.menuItemId, item.id));
+
+    itemsWithRelations.push({
+      ...item,
+      dietaryTypes: dietary.map((d) => d.dietaryType),
+      customizationOptions: customizations,
+    });
+  }
+
+  return itemsWithRelations;
+}
+
+export async function createMenuItem(
+  data: Omit<MenuItemInsert, "id" | "createdAt" | "updatedAt">,
+  dietaryTypes?: DietaryType[],
+): Promise<MenuItem> {
+  const id = nanoid();
+
+  const [item] = await db
+    .insert(menuItems)
+    .values({
+      ...data,
+      id,
+    })
+    .returning();
+
+  if (dietaryTypes && dietaryTypes.length > 0) {
+    await db.insert(menuItemDietaryTypes).values(
+      dietaryTypes.map((type) => ({
+        id: nanoid(),
+        menuItemId: id,
+        dietaryType: type,
+      })),
+    );
+  }
+
+  return item;
+}
+
+export async function updateMenuItemAvailability(
+  id: string,
+  isAvailable: boolean,
+): Promise<void> {
+  await db.update(menuItems).set({ isAvailable }).where(eq(menuItems.id, id));
+}
+
+export async function getMenuItemsByIds(
+  ids: string[],
+): Promise<MenuItemWithRelations[]> {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  const items = await db
+    .select()
+    .from(menuItems)
+    .where(inArray(menuItems.id, ids));
+
+  const itemsWithRelations: MenuItemWithRelations[] = [];
+
+  for (const item of items) {
+    const dietary = await db
+      .select()
+      .from(menuItemDietaryTypes)
+      .where(eq(menuItemDietaryTypes.menuItemId, item.id));
+
+    const customizations = await db
+      .select()
+      .from(customizationOptions)
+      .where(eq(customizationOptions.menuItemId, item.id));
+
+    itemsWithRelations.push({
+      ...item,
+      dietaryTypes: dietary.map((d) => d.dietaryType),
+      customizationOptions: customizations,
+    });
+  }
+
+  return itemsWithRelations;
+}
