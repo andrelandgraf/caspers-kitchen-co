@@ -1,50 +1,47 @@
-# Ralph Agent Instructions
+# Ralph Agent Task
 
-**CRITICAL: You must implement EXACTLY ONE feature per session. Never attempt to implement multiple features. After completing one feature, stop and let the next agent session handle the next feature.**
+Implement features from user stories until all are complete.
 
-**IMPORTANT: All permissions are bypassed for this session. You have full write access to all files. DO NOT wait for or ask for permissions - proceed directly with all file operations. You are running in an autonomous mode with pre-approved permissions.**
+## Workflow Per Iteration
 
-1. The dev server should be running on `http://localhost:3000`. If not, start it with `bun run dev`.
+1. Read `scripts/ralph/log.md` to understand what previous iterations completed.
 
-2. Read `scripts/ralph/log.md` file to understand what previous agents have completed.
+2. Search `docs/user-stories/` for features with `"passes": false`.
 
-3. Research `docs/user-stories/` directory for features that have not been implemented yet by searching for `"passes": false`.
+3. If no features remain with `"passes": false`:
+   - Output: <promise>FINISHED</promise>
 
-4. Pick ONE feature - the highest priority non-passing feature based on your own judgement of what should be implemented next logically. Order is determined by dependencies and your judgement - it does not need to be top to bottom.
+4. Pick ONE feature - the highest priority non-passing feature based on dependencies and logical order.
 
-5. Implement that single feature until all acceptance criteria pass.
+5. Implement the feature following TDD:
+   - Write/update tests for the feature
+   - Implement until all acceptance criteria pass
+   - Generate and migrate DB schema if needed: `bun run db:generate && bun run db:migrate`
+   - Format code: `bun run fmt`
 
-Make sure to generate and migrate the db schema if needed:
+6. Verify the feature:
+   - Run typecheck: `bun run typecheck`
+   - Run build: `bun run build`
+   - Run tests: `bun run test`
+   - Use Playwright MCP to interact with the app at `http://localhost:3000`
 
-```bash
-bun run db:generate
-bun run db:migrate
-```
+7. If verification fails, debug and fix. Repeat until passing.
 
-You're connected to a test database, so make use of the migrate command. Avoid interacting with the database directly.
+8. Once verified:
+   - Update the user story's `passes` property to `true`
+   - Append to `scripts/ralph/log.md` (keep it short but helpful)
+   - Commit with a descriptive message
 
-6. Write tests for the feature. Follow the current test file structure and write tests for the feature.
+9. The iteration ends here. The next iteration will pick up the next feature.
 
-7. Format the code: `bun run fmt`
+## Notes
 
-8. Verify the feature by doing the following steps:
+- Dev server should be running on `http://localhost:3000`. Start with `bun run dev` if needed.
+- Connected to test database - use migrate commands freely.
+- Avoid interacting with database directly.
 
-- Run typecheck: `bun run typecheck`
-- Run build: `bun run build`
-- Run tests: `bun run test`
+## Completion
 
-9. Use the Playwright MCP server to interact with the application and verify the feature.
+When ALL user stories have `"passes": true`, output:
 
-10. Once it passes, update the user story file's `passes` property to `true`.
-
-11. Append to `scripts/ralph/log.md` with your changes to inform the next agent what you did - keep it short but helpful.
-
-12. Commit your changes with a descriptive commit message summarizing the feature you implemented.
-
-13. **STOP HERE.** Do not continue to implement more features. Go through all user stories. If there are no more files with `"passes": false`, respond with exactly:
-
-```
-FINISHED ALL FEATURE WORK
-```
-
-Otherwise, stop and let the next agent session pick up the next feature.
+<promise>FINISHED</promise>

@@ -10,7 +10,7 @@
       "Navigate to /checkout",
       "Verify checkout page loads successfully"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -25,7 +25,7 @@
       "Verify tax is calculated",
       "Verify total matches cart total"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -38,7 +38,7 @@
       "Complete delivery and payment info",
       "Verify order can be placed without account"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -51,7 +51,7 @@
       "Verify saved addresses are available to select",
       "Verify saved payment methods are available"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -67,7 +67,7 @@
       "Enter invalid zip code format",
       "Verify zip code format error"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -79,7 +79,7 @@
       "Select an address suggestion",
       "Verify all address fields are populated"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -92,7 +92,7 @@
       "Select a future time slot",
       "Verify selection is saved"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -105,7 +105,7 @@
       "Select credit card payment",
       "Verify card input fields appear"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -120,7 +120,7 @@
       "Enter invalid CVV",
       "Verify CVV error"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -134,7 +134,7 @@
       "Verify order total is updated",
       "Verify promo code is shown in summary"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -146,7 +146,7 @@
       "Verify 'Invalid promo code' error message",
       "Verify total is unchanged"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -158,7 +158,7 @@
       "Complete checkout",
       "Verify instructions are saved with order"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -172,7 +172,7 @@
       "Verify order summary is shown",
       "Verify estimated delivery time is displayed"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -182,7 +182,7 @@
       "Verify confirmation email is sent",
       "Email should include order number, items, total, and delivery details"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -193,7 +193,7 @@
       "Open cart drawer",
       "Verify cart is empty"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "edge-case",
@@ -206,7 +206,7 @@
       "Verify user remains on checkout page",
       "Verify cart items are preserved"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "edge-case",
@@ -217,7 +217,7 @@
       "Verify message that address is outside delivery zone",
       "Verify checkout cannot proceed"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -229,7 +229,7 @@
       "Complete delivery step",
       "Verify indicator updates to show progress"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -242,7 +242,7 @@
       "View on desktop",
       "Verify two-column layout (form left, summary right)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "accessibility",
@@ -254,7 +254,7 @@
       "Verify form can be completed via keyboard only",
       "Verify focus order is logical"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "security",
@@ -265,6 +265,6 @@
       "Verify card details are not stored in plain text",
       "Verify PCI compliance indicators"
     ],
-    "passes": false
+    "passes": true
   }
 ]

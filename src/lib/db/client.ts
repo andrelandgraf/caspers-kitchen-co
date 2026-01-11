@@ -6,6 +6,7 @@ import * as authSchema from "@/lib/auth/schema";
 import * as menuSchema from "@/lib/menu/schema";
 import * as cartSchema from "@/lib/cart/schema";
 import * as chatSchema from "@/lib/chat/schema";
+import * as ordersSchema from "@/lib/orders/schema";
 
 const pool = new Pool({
   connectionString: databaseConfig.server.url,
@@ -19,6 +20,7 @@ const db = drizzle({
     ...menuSchema,
     ...cartSchema,
     ...chatSchema,
+    ...ordersSchema,
   },
 });
 
