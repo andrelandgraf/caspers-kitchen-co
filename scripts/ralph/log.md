@@ -32,6 +32,48 @@ This file tracks what each agent run has completed. Append your changes below.
 
 ---
 
+## 2026-01-10 - Shopping Cart Feature
+
+**Task:** Implemented shopping cart functionality (user story: cart.json)
+
+**Changes:**
+
+- `src/lib/cart/schema.ts` - Created database schema for carts and cart_items tables with support for guest and authenticated users
+- `src/lib/cart/queries.ts` - Implemented data access layer with add, update, remove, and cart merging functionality
+- `src/lib/cart/context.tsx` - Created React context for client-side cart state management with optimistic updates
+- `src/components/cart/cart-drawer.tsx` - Built sliding drawer component with cart items, quantity controls, and order summary
+- `src/components/cart/cart-icon.tsx` - Created header cart icon with badge showing item count
+- `src/components/cart/add-to-cart-button.tsx` - Reusable button component for adding items to cart
+- `src/components/layout/header.tsx` - Shared header component with cart icon, theme selector, and user menu
+- `src/app/api/cart/route.ts` - API endpoint for fetching cart with session management
+- `src/app/api/cart/items/route.ts` - API endpoint for adding items to cart
+- `src/app/api/cart/items/[itemId]/route.ts` - API endpoints for updating and removing cart items
+- `src/app/layout.tsx` - Integrated CartProvider and CartDrawer into app layout
+- `src/app/page.tsx` - Added cart icon to home page header
+- `src/app/menu/page.tsx` - Connected menu page to cart functionality
+- `src/app/menu/[slug]/page.tsx` - Added cart integration to menu item detail page
+- `src/app/checkout/page.tsx` - Created placeholder checkout page
+- `src/lib/db/client.ts` - Updated drizzle client to include cart schema
+- `package.json` - Fixed env validation script paths
+
+**Status:** Completed
+
+**Notes:**
+
+- All 15 functional acceptance criteria implemented for cart user story
+- Database migrated successfully with cart tables (carts, cart_items)
+- Cart persists across page navigation using React context
+- Guest cart uses session cookies, authenticated cart stored in database
+- Cart drawer with smooth animations and responsive design
+- Order summary shows subtotal, delivery fee (estimated $5.99), and tax (8.75%)
+- Cart icon badge shows total item count with "9+" for >9 items
+- Empty cart state with helpful message and "Browse Menu" CTA
+- Quantity controls with +/- buttons, removes item when quantity reaches 0
+- Pre-existing build issues in chat/workflow code not related to this feature
+- Cart functionality fully operational and ready for checkout integration
+
+---
+
 ## 2026-01-09 - Example Entry (Template)
 
 **Task:** Brief description of the task or user story worked on

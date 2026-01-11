@@ -6,6 +6,13 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 
 const FINISH_SIGNAL = "FINISHED ALL FEATURE WORK";
+const PERMISSION_WAIT_SIGNALS = [
+  "waiting for permission",
+  "need your permission",
+  "waiting for file write permission",
+  "Would you like me to proceed",
+];
+const MAX_PERMISSION_RETRIES = 2;
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const promptPath = join(scriptDir, "prompt.md");
@@ -17,7 +24,12 @@ const { values } = parseArgs({
   },
 });
 
-async function runClaude(): Promise<boolean> {
+type RunResult = {
+  finished: boolean;
+  waitingForPermission: boolean;
+};
+
+async function runClaude(): Promise<RunResult> {
   const baselinePrompt = await Bun.file(promptPath).text();
 
   const prompt = values.prompt
@@ -30,7 +42,7 @@ async function runClaude(): Promise<boolean> {
     cmd: [
       "sh",
       "-c",
-      `llm --print '${escapedPrompt}' --dangerously-skip-permissions --verbose --output-format stream-json | jq`,
+      `dbexec repo run llm agent claude -- --print --dangerously-skip-permissions --verbose '${escapedPrompt}'`,
     ],
     stdout: "pipe",
     stderr: "inherit",
@@ -52,7 +64,7 @@ async function runClaude(): Promise<boolean> {
     if (output.includes(FINISH_SIGNAL)) {
       console.log("\n\n[runner] Detected finish signal. Exiting...");
       proc.kill();
-      return true;
+      return { finished: true, waitingForPermission: false };
     }
   }
 
@@ -60,23 +72,55 @@ async function runClaude(): Promise<boolean> {
 
   if (output.includes(FINISH_SIGNAL)) {
     console.log("\n\n[runner] Detected finish signal. Exiting...");
-    return true;
+    return { finished: true, waitingForPermission: false };
   }
 
-  return false;
+  // Check if Claude is stuck waiting for permissions
+  const isWaitingForPermission = PERMISSION_WAIT_SIGNALS.some((signal) =>
+    output.toLowerCase().includes(signal.toLowerCase()),
+  );
+
+  return { finished: false, waitingForPermission: isWaitingForPermission };
 }
 
 async function main() {
   console.log("[runner] Starting Ralph agent loop...\n");
 
   let iteration = 1;
+  let permissionRetries = 0;
+
   while (true) {
     console.log(`\n[runner] === Iteration ${iteration} ===\n`);
 
-    const finished = await runClaude();
-    if (finished) {
+    const result = await runClaude();
+
+    if (result.finished) {
       console.log("[runner] All feature work completed!");
       process.exit(0);
+    }
+
+    if (result.waitingForPermission) {
+      permissionRetries++;
+      console.log(
+        `\n[runner] ⚠️  Detected permission wait (${permissionRetries}/${MAX_PERMISSION_RETRIES})`,
+      );
+
+      if (permissionRetries >= MAX_PERMISSION_RETRIES) {
+        console.error(
+          "\n[runner] ❌ Ralph is stuck waiting for permissions despite --dangerously-skip-permissions flag.",
+        );
+        console.error(
+          "[runner] This suggests a configuration issue. Please investigate.",
+        );
+        process.exit(1);
+      }
+
+      console.log(
+        "[runner] Retrying with explicit permission bypass instructions...\n",
+      );
+    } else {
+      // Reset retry counter if not a permission issue
+      permissionRetries = 0;
     }
 
     iteration++;

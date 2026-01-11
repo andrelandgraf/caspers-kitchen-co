@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { MenuItemCard } from "@/components/menu/menu-item-card";
 import { MenuFilters } from "@/components/menu/menu-filters";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Header } from "@/components/layout/header";
+import { useCart } from "@/lib/cart/context";
 import type {
   MenuItemWithRelations,
   CategoryType,
@@ -22,6 +23,7 @@ export default function MenuPage() {
     DietaryType[]
   >([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { addItem } = useCart();
 
   useEffect(() => {
     async function fetchMenuItems() {
@@ -59,7 +61,6 @@ export default function MenuPage() {
         setItems(data.items);
       } catch (error) {
         console.error("Error fetching menu items:", error);
-        toast.error("Failed to load menu items. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -82,12 +83,18 @@ export default function MenuPage() {
     setSearchQuery(query);
   };
 
-  const handleQuickAdd = (item: MenuItemWithRelations) => {
-    toast.success(`${item.name} has been added to your cart.`);
+  const handleQuickAdd = async (item: MenuItemWithRelations) => {
+    await addItem({
+      menuItemId: item.id,
+      quantity: 1,
+      unitPrice: item.price,
+      menuItemName: item.name,
+    });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold tracking-tight mb-2">Our Menu</h1>

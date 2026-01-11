@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeSelector } from "@/components/themes/selector";
 import { UserMenu } from "@/components/auth/user-menu";
+import { CartIcon } from "@/components/cart/cart-icon";
 import { ChefHat, Sparkles, Clock, MapPin, Star } from "lucide-react";
 
 export default function Page() {
@@ -22,6 +23,7 @@ export default function Page() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <CartIcon />
             <ThemeSelector />
             <UserMenu />
           </div>

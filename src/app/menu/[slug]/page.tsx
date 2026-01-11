@@ -5,6 +5,8 @@ import { getMenuItemBySlug } from "@/lib/menu/queries";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Header } from "@/components/layout/header";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { ArrowLeft, Leaf, Wheat, AlertCircle } from "lucide-react";
 
 interface MenuItemPageProps {
@@ -48,6 +50,7 @@ export default async function MenuItemPage({ params }: MenuItemPageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <Header />
       <div className="container mx-auto px-4 py-8">
         <Button variant="ghost" asChild className="mb-6">
           <Link href="/menu">
@@ -180,15 +183,12 @@ export default async function MenuItemPage({ params }: MenuItemPageProps) {
                 </Badge>
               )}
 
-            {item.isAvailable ? (
-              <Button size="lg" className="w-full md:w-auto">
-                Add to Cart
-              </Button>
-            ) : (
-              <Button size="lg" disabled className="w-full md:w-auto">
-                Sold Out
-              </Button>
-            )}
+            <AddToCartButton
+              menuItemId={item.id}
+              menuItemName={item.name}
+              price={item.price}
+              isAvailable={item.isAvailable}
+            />
           </div>
         </div>
       </div>

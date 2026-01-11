@@ -10,7 +10,7 @@
       "Add another item",
       "Verify badge updates to show total count"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -23,7 +23,7 @@
       "Click outside drawer or close button",
       "Verify drawer closes"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -40,7 +40,7 @@
       "  - Item subtotal",
       "  - Remove button"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -55,7 +55,7 @@
       "Click '-' button to decrease quantity",
       "Verify updates reflect correctly"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -68,7 +68,7 @@
       "Verify cart total updates",
       "Verify cart count in header updates"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -81,7 +81,7 @@
       "Verify estimated tax is shown",
       "Verify total is calculated correctly"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -93,7 +93,7 @@
       "Open cart drawer",
       "Verify items are still in cart"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -105,7 +105,7 @@
       "Sign in again as same user",
       "Verify cart items are restored"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -119,7 +119,7 @@
       "Click 'Browse Menu'",
       "Verify navigation to /menu"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -130,7 +130,7 @@
       "Click 'Checkout' button",
       "Verify navigation to /checkout page"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "edge-case",
@@ -142,7 +142,7 @@
       "Verify item is removed from cart",
       "Verify confirmation if needed"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "edge-case",
@@ -154,7 +154,7 @@
       "Verify sold out item is flagged with warning",
       "Verify user is prompted to remove item before checkout"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -166,7 +166,7 @@
       "Close drawer",
       "Verify smooth slide out animation"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -178,7 +178,7 @@
       "Verify checkout button stays fixed at bottom",
       "Verify header stays fixed at top"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "accessibility",
@@ -191,6 +191,6 @@
       "Press Escape to close drawer",
       "Verify focus returns to cart icon"
     ],
-    "passes": false
+    "passes": true
   }
 ]

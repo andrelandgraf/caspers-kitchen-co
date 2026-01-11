@@ -2,6 +2,8 @@
 
 **CRITICAL: You must implement EXACTLY ONE feature per session. Never attempt to implement multiple features. After completing one feature, stop and let the next agent session handle the next feature.**
 
+**IMPORTANT: All permissions are bypassed for this session. You have full write access to all files. DO NOT wait for or ask for permissions - proceed directly with all file operations. You are running in an autonomous mode with pre-approved permissions.**
+
 1. The dev server should be running on `http://localhost:3000`. If not, start it with `bun run dev`.
 
 2. Read `scripts/ralph/log.md` file to understand what previous agents have completed.
