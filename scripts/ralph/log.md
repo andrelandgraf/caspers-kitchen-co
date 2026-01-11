@@ -218,14 +218,19 @@ This file tracks what each agent run has completed. Append your changes below.
 - ✅ Orders include locationId and track which location will prepare them
 - ✅ Fixed type error in isLocationOpen function
 
+**Latest Updates (Iteration 6):**
+
+- ✅ Order queries now include location relation (getOrder, getOrderByNumber, getUserOrders)
+- ✅ Order confirmation page displays "Prepared at Casper's Kitchen - [Location Name]" with full location details
+- ✅ Order tracking page shows location information in sidebar with address and phone
+- ✅ Landing page delivery section updated to mention multiple locations and link to /locations
+- ✅ Landing page no longer hardcodes "San Francisco area" - now promotes all locations
+
 **Remaining Work:**
 
 The following aspects still need implementation to complete all 40 acceptance criteria:
 
 - Add location-based cart validation (warn when changing locations)
-- Update landing page hero and delivery section to be location-aware
-- Update order tracking to show which location prepared the order
-- Update order confirmation to show location details
 - Implement location-specific delivery fees (currently hardcoded)
 - Handle edge cases: location closed, all locations closed, cart items unavailable after location change
 - Admin features: manage locations, set location-specific menu items, filter orders by location

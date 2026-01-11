@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { OrderStatusTimeline } from "@/components/orders/order-status-timeline";
 import { getOrder } from "@/lib/orders/queries";
-import { MapPin, Clock, Phone, Mail } from "lucide-react";
+import { MapPin, Clock, Phone, Mail, Store } from "lucide-react";
 
 export default async function OrderTrackingPage({
   params,
@@ -164,6 +164,38 @@ export default async function OrderTrackingPage({
                 )}
               </CardContent>
             </Card>
+
+            {/* Location Information */}
+            {order.location && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Store className="h-4 w-4" />
+                    Prepared at
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm font-medium">
+                    Casper's Kitchen - {order.location.name}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {order.location.address}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {order.location.city}, {order.location.state}{" "}
+                    {order.location.zipCode}
+                  </p>
+                  {order.location.phone && (
+                    <a
+                      href={`tel:${order.location.phone}`}
+                      className="text-sm text-primary hover:underline mt-2 inline-block"
+                    >
+                      {order.location.phone}
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             {/* Contact */}
             {order.status === "out_for_delivery" && (

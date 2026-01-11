@@ -314,12 +314,17 @@ export default function LandingPage() {
               Delivering Fresh Food Daily
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              We currently serve the greater San Francisco area with plans to
-              expand soon. Typical delivery time is 45-60 minutes.
+              We serve multiple locations across the country. Choose your nearest
+              kitchen for fresh, fast delivery. Typical delivery time is 45-60
+              minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Input placeholder="Enter your address" className="max-w-sm" />
-              <Button>Check Availability</Button>
+              <Button size="lg" asChild>
+                <Link href="/locations">View All Locations</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/menu">Browse Menu</Link>
+              </Button>
             </div>
             <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">

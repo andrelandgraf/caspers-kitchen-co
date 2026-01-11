@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getOrder } from "@/lib/orders/queries";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Store } from "lucide-react";
 
 export default async function OrderConfirmationPage({
   params,
@@ -77,6 +77,33 @@ export default async function OrderConfirmationPage({
                 </span>
               </div>
             </div>
+
+            {/* Location Information */}
+            {order.location && (
+              <div>
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Store className="h-4 w-4" />
+                  Prepared at
+                </h3>
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <p className="font-medium">
+                    Casper's Kitchen - {order.location.name}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {order.location.address}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {order.location.city}, {order.location.state}{" "}
+                    {order.location.zipCode}
+                  </p>
+                  {order.location.phone && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {order.location.phone}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Delivery Address */}
             <div>

@@ -233,6 +233,7 @@ export async function getOrder(orderId: string) {
           menuItem: true,
         },
       },
+      location: true,
     },
   });
 
@@ -258,6 +259,7 @@ export async function getOrderByNumber(orderNumber: string, email?: string) {
           menuItem: true,
         },
       },
+      location: true,
     },
   });
 
@@ -274,6 +276,7 @@ export async function getUserOrders(userId: string) {
           menuItem: true,
         },
       },
+      location: true,
     },
   });
 }
