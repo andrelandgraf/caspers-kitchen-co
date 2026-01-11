@@ -176,6 +176,60 @@ This file tracks what each agent run has completed. Append your changes below.
 
 ---
 
+## 2026-01-10 - Multi-Location Functionality (Partial)
+
+**Task:** Implemented multi-location system foundation (user story: locations.json - partial)
+
+**Changes:**
+
+- `src/lib/locations/schema.ts` - Created database schema for locations, menu_item_locations, and user_locations tables
+- `src/lib/locations/queries.ts` - Implemented location queries with distance calculations, open hours checking, and menu item availability
+- `src/lib/locations/context.tsx` - Created React context for client-side location state with localStorage and user preferences
+- `src/components/locations/location-selector-modal.tsx` - Built modal with geolocation support and distance sorting
+- `src/components/locations/location-indicator.tsx` - Created header indicator showing current location
+- `src/app/locations/page.tsx` - Comprehensive locations page with hours, delivery zones, and contact info
+- `src/app/api/locations/route.ts` - API endpoint for listing locations with optional distance calculation
+- `src/app/api/locations/[slug]/route.ts` - API endpoint for getting location details by slug
+- `src/app/api/locations/user/route.ts` - API endpoints for getting/setting user's preferred location
+- `src/app/layout.tsx` - Integrated LocationProvider and LocationSelectorModal
+- `src/components/layout/header.tsx` - Added location indicator to header
+- `src/lib/orders/schema.ts` - Added locationId foreign key to orders table
+- `scripts/db/seed-locations.ts` - Seeded 4 locations (SF, NYC, LA, Seattle) with all menu items available at each
+- `package.json` - Added @paralleldrive/cuid2 dependency
+
+**Status:** In Progress (foundational work completed, ~15-20 of 40 criteria implemented)
+
+**Notes:**
+
+- Core infrastructure complete: database schema, queries, context, API routes
+- Location selector modal with geolocation, distance sorting, and open/closed status
+- Location indicator in header with modal trigger
+- Comprehensive /locations page showing all kitchens with full details
+- Orders table updated to track which location prepared each order
+- User location preferences saved to database for authenticated users and localStorage for guests
+- 4 locations seeded with operating hours, delivery zones, phone, email, addresses
+
+**Remaining Work:**
+
+The following aspects still need implementation to complete all 40 acceptance criteria:
+
+- Update menu page to filter items by selected location
+- Add location-based cart validation (warn when changing locations)
+- Add location field to checkout flow and validate delivery addresses against location zones
+- Update landing page hero and delivery section to be location-aware
+- Update order tracking to show which location prepared the order
+- Update order confirmation to show location details
+- Implement location-specific delivery fees
+- Handle edge cases: location closed, all locations closed, cart items unavailable after location change
+- Admin features: manage locations, set location-specific menu items, filter orders by location
+- AI assistant location integration
+- SEO-friendly location pages (/locations/san-francisco)
+- Accessibility improvements for location changes
+
+Pre-existing build issues in chat/workflow code unrelated to this feature
+
+---
+
 ## 2026-01-09 - Example Entry (Template)
 
 **Task:** Brief description of the task or user story worked on

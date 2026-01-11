@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart/context";
+import { useLocation } from "@/lib/locations/context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
+import { MapPin, AlertCircle } from "lucide-react";
 
 interface CheckoutFormProps {
   userEmail?: string;
@@ -25,6 +27,7 @@ interface CheckoutFormProps {
 export function CheckoutForm({ userEmail, userName }: CheckoutFormProps) {
   const router = useRouter();
   const { items, refreshCart } = useCart();
+  const { currentLocation, openLocationModal } = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cartId, setCartId] = useState<string | null>(null);
 
@@ -133,6 +136,12 @@ export function CheckoutForm({ userEmail, userName }: CheckoutFormProps) {
       return;
     }
 
+    if (!currentLocation) {
+      toast.error("Please select a location");
+      openLocationModal();
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -141,6 +150,7 @@ export function CheckoutForm({ userEmail, userName }: CheckoutFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cartId,
+          locationId: currentLocation.id,
           guestEmail: !userEmail ? formData.email : undefined,
           guestName: !userName ? formData.name : undefined,
           guestPhone: formData.phone,
@@ -180,8 +190,55 @@ export function CheckoutForm({ userEmail, userName }: CheckoutFormProps) {
   const taxAmount = subtotalAfterDiscount * taxRate;
   const total = subtotalAfterDiscount + deliveryFee + taxAmount;
 
+  // No location selected
+  if (!currentLocation) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 px-4">
+        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg p-6 max-w-md text-center">
+          <AlertCircle className="h-12 w-12 text-amber-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Select a Location</h3>
+          <p className="text-muted-foreground mb-4">
+            Please select a location before proceeding to checkout.
+          </p>
+          <Button onClick={openLocationModal}>Choose Location</Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Location Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Ordering From
+          </CardTitle>
+          <CardDescription>
+            Your order will be prepared at this location
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-semibold">{currentLocation.name}</p>
+              <p className="text-sm text-muted-foreground">
+                {currentLocation.city}, {currentLocation.state}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={openLocationModal}
+            >
+              Change
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Contact Information */}
       <Card>
         <CardHeader>

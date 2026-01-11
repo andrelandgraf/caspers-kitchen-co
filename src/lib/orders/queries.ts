@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 
 export interface CreateOrderInput {
   userId?: string;
+  locationId: string;
   guestEmail?: string;
   guestName?: string;
   guestPhone?: string;
@@ -166,6 +167,7 @@ export async function createOrder(input: CreateOrderInput) {
       id: orderId,
       orderNumber,
       userId: input.userId,
+      locationId: input.locationId,
       guestEmail: input.guestEmail,
       guestName: input.guestName,
       guestPhone: input.guestPhone,

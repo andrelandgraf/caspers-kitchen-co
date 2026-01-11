@@ -7,6 +7,7 @@ import {
   categoryEnum,
   dietaryTypeEnum,
 } from "./schema";
+import { menuItemLocations } from "@/lib/locations/schema";
 import { nanoid } from "nanoid";
 
 export type MenuItem = typeof menuItems.$inferSelect;
@@ -24,6 +25,7 @@ export interface MenuFilters {
   dietaryTypes?: DietaryType[];
   search?: string;
   availableOnly?: boolean;
+  locationId?: string;
 }
 
 export async function getMenuItems(
@@ -50,11 +52,32 @@ export async function getMenuItems(
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-  const items = await db
-    .select()
-    .from(menuItems)
-    .where(whereClause)
-    .orderBy(menuItems.featured, menuItems.name);
+  let items;
+
+  // If filtering by location, join with menu_item_locations
+  if (filters?.locationId) {
+    const itemsQuery = await db
+      .select({ menuItem: menuItems })
+      .from(menuItems)
+      .innerJoin(
+        menuItemLocations,
+        and(
+          eq(menuItemLocations.menuItemId, menuItems.id),
+          eq(menuItemLocations.locationId, filters.locationId),
+          eq(menuItemLocations.isAvailable, true),
+        ),
+      )
+      .where(whereClause)
+      .orderBy(menuItems.featured, menuItems.name);
+
+    items = itemsQuery.map((row) => row.menuItem);
+  } else {
+    items = await db
+      .select()
+      .from(menuItems)
+      .where(whereClause)
+      .orderBy(menuItems.featured, menuItems.name);
+  }
 
   const itemsWithRelations: MenuItemWithRelations[] = [];
 

@@ -30,6 +30,11 @@ export async function GET(request: NextRequest) {
       filters.availableOnly = true;
     }
 
+    const locationId = searchParams.get("locationId");
+    if (locationId) {
+      filters.locationId = locationId;
+    }
+
     const items = await getMenuItems(filters);
 
     return NextResponse.json({ items });

@@ -6,6 +6,8 @@ import { MenuFilters } from "@/components/menu/menu-filters";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/header";
 import { useCart } from "@/lib/cart/context";
+import { useLocation } from "@/lib/locations/context";
+import { AlertCircle } from "lucide-react";
 import type {
   MenuItemWithRelations,
   CategoryType,
@@ -24,13 +26,21 @@ export default function MenuPage() {
   >([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { addItem } = useCart();
+  const { currentLocation } = useLocation();
 
   useEffect(() => {
     async function fetchMenuItems() {
+      // Don't fetch if no location selected
+      if (!currentLocation) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       try {
         const filters: MenuFiltersType = {
           availableOnly: false,
+          locationId: currentLocation.id,
         };
 
         if (selectedCategory !== "all") {
@@ -50,6 +60,8 @@ export default function MenuPage() {
         if (filters.dietaryTypes)
           queryParams.set("dietaryTypes", filters.dietaryTypes.join(","));
         if (filters.search) queryParams.set("search", filters.search);
+        if (filters.locationId)
+          queryParams.set("locationId", filters.locationId);
         queryParams.set("availableOnly", "false");
 
         const response = await fetch(`/api/menu?${queryParams.toString()}`);
@@ -67,7 +79,7 @@ export default function MenuPage() {
     }
 
     fetchMenuItems();
-  }, [selectedCategory, selectedDietaryTypes, searchQuery]);
+  }, [selectedCategory, selectedDietaryTypes, searchQuery, currentLocation]);
 
   const handleCategoryChange = (category: CategoryType | "all") => {
     setSelectedCategory(category);
@@ -112,7 +124,20 @@ export default function MenuPage() {
           onSearchChange={handleSearchChange}
         />
 
-        {loading ? (
+        {!currentLocation ? (
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg p-6 max-w-md text-center">
+              <AlertCircle className="h-12 w-12 text-amber-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Select a Location</h3>
+              <p className="text-muted-foreground mb-4">
+                Please select a location to view available menu items.
+              </p>
+              <Button onClick={() => (window.location.href = "/locations")}>
+                Choose Location
+              </Button>
+            </div>
+          </div>
+        ) : loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="animate-pulse bg-muted rounded-lg h-96" />

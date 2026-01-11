@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
 
     const orderInput: CreateOrderInput = {
       userId: session?.user?.id,
+      locationId: body.locationId,
       guestEmail: body.guestEmail,
       guestName: body.guestName,
       guestPhone: body.guestPhone,

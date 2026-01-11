@@ -50,9 +50,11 @@ export function isLocationOpen(
   }
 
   const now = new Date();
-  const dayName = now.toLocaleDateString("en-US", {
-    weekday: "lowercase",
-  }) as keyof typeof location.operatingHours;
+  const dayName = now
+    .toLocaleDateString("en-US", {
+      weekday: "long",
+    })
+    .toLowerCase() as keyof typeof location.operatingHours;
   const hours = location.operatingHours[dayName];
 
   if (!hours || hours.closed) {
