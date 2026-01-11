@@ -1,0 +1,124 @@
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { toast } from "sonner";
+
+type Location = {
+  id: string;
+  name: string;
+  slug: string;
+  city: string;
+  state: string;
+  isOpen?: boolean;
+  nextOpeningTime?: string | null;
+};
+
+type LocationContextType = {
+  currentLocation: Location | null;
+  setLocation: (location: Location) => void;
+  isLocationModalOpen: boolean;
+  openLocationModal: () => void;
+  closeLocationModal: () => void;
+  isLoading: boolean;
+};
+
+const LocationContext = createContext<LocationContextType | undefined>(
+  undefined,
+);
+
+const LOCATION_STORAGE_KEY = "caspers-kitchen-location";
+
+export function LocationProvider({ children }: { children: ReactNode }) {
+  const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load location from localStorage or user preferences on mount
+  useEffect(() => {
+    const loadLocation = async () => {
+      try {
+        // Try to load from localStorage first (for guest users)
+        const stored = localStorage.getItem(LOCATION_STORAGE_KEY);
+        if (stored) {
+          const location = JSON.parse(stored);
+          setCurrentLocation(location);
+          setIsLoading(false);
+          return;
+        }
+
+        // Try to fetch user's saved location
+        const response = await fetch("/api/locations/user");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.location) {
+            setCurrentLocation(data.location);
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        // No location saved - show modal
+        setIsLoading(false);
+        setIsLocationModalOpen(true);
+      } catch (error) {
+        console.error("Error loading location:", error);
+        setIsLoading(false);
+        setIsLocationModalOpen(true);
+      }
+    };
+
+    loadLocation();
+  }, []);
+
+  const setLocation = async (location: Location) => {
+    setCurrentLocation(location);
+
+    // Save to localStorage
+    localStorage.setItem(LOCATION_STORAGE_KEY, JSON.stringify(location));
+
+    // Try to save to user preferences if authenticated
+    try {
+      await fetch("/api/locations/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locationId: location.id }),
+      });
+    } catch (error) {
+      console.error("Error saving location to user preferences:", error);
+    }
+
+    toast.success(`Location changed to ${location.name}`);
+  };
+
+  const openLocationModal = () => setIsLocationModalOpen(true);
+  const closeLocationModal = () => setIsLocationModalOpen(false);
+
+  return (
+    <LocationContext.Provider
+      value={{
+        currentLocation,
+        setLocation,
+        isLocationModalOpen,
+        openLocationModal,
+        closeLocationModal,
+        isLoading,
+      }}
+    >
+      {children}
+    </LocationContext.Provider>
+  );
+}
+
+export function useLocation() {
+  const context = useContext(LocationContext);
+  if (context === undefined) {
+    throw new Error("useLocation must be used within a LocationProvider");
+  }
+  return context;
+}

@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { ChatTrigger } from "@/components/chat/chat-trigger";
 import { CartProvider } from "@/lib/cart/context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { LocationProvider } from "@/lib/locations/context";
+import { LocationSelectorModal } from "@/components/locations/location-selector-modal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,12 +40,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <CartProvider>
-            {children}
-            <CartDrawer />
-            <ChatTrigger />
-            <Toaster richColors position="top-center" />
-          </CartProvider>
+          <LocationProvider>
+            <CartProvider>
+              {children}
+              <CartDrawer />
+              <LocationSelectorModal />
+              <ChatTrigger />
+              <Toaster richColors position="top-center" />
+            </CartProvider>
+          </LocationProvider>
         </ThemeProvider>
       </body>
     </html>

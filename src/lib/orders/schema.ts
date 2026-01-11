@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { menuItems } from "@/lib/menu/schema";
 import { users } from "@/lib/auth/schema";
+import { locations } from "@/lib/locations/schema";
 
 export const orderStatus = pgEnum("order_status", [
   "pending",
@@ -45,6 +46,9 @@ export const orders = pgTable(
     userId: text("user_id").references(() => users.id, {
       onDelete: "set null",
     }),
+    locationId: text("location_id")
+      .notNull()
+      .references(() => locations.id, { onDelete: "restrict" }),
 
     // Guest user info
     guestEmail: text("guest_email"),
@@ -97,6 +101,7 @@ export const orders = pgTable(
   },
   (table) => [
     index("orders_userId_idx").on(table.userId),
+    index("orders_locationId_idx").on(table.locationId),
     index("orders_status_idx").on(table.status),
     index("orders_createdAt_idx").on(table.createdAt),
     index("orders_guestEmail_idx").on(table.guestEmail),
@@ -180,6 +185,10 @@ export const ordersRelations = relations(orders, ({ many, one }) => ({
   user: one(users, {
     fields: [orders.userId],
     references: [users.id],
+  }),
+  location: one(locations, {
+    fields: [orders.locationId],
+    references: [locations.id],
   }),
 }));
 

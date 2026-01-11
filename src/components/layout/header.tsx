@@ -1,6 +1,7 @@
 import { ThemeSelector } from "@/components/themes/selector";
 import { UserMenu } from "@/components/auth/user-menu";
 import { CartIcon } from "@/components/cart/cart-icon";
+import { LocationIndicator } from "@/components/locations/location-indicator";
 import { ChefHat } from "lucide-react";
 import Link from "next/link";
 
@@ -23,6 +24,7 @@ export function Header() {
           </div>
         </Link>
         <div className="flex items-center gap-2">
+          <LocationIndicator />
           <CartIcon />
           <ThemeSelector />
           <UserMenu />
