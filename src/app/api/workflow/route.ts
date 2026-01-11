@@ -9,8 +9,8 @@ export async function POST(req: Request) {
     const run = await start(workflows.kitchenAssistantWorkflow, [messages]);
 
     return Response.json({
-      runId: run.id,
-      status: run.status,
+      runId: run.runId,
+      status: await run.status,
     });
   } catch (err) {
     console.error("Failed to start workflow:", err);
@@ -30,16 +30,16 @@ export async function GET(req: Request) {
   }
 
   try {
-    const run = await getRun(runId);
+    const run = getRun(runId);
 
     if (!run) {
       return Response.json({ error: "Run not found" }, { status: 404 });
     }
 
     return Response.json({
-      runId: run.id,
-      status: run.status,
-      output: run.output,
+      runId: run.runId,
+      status: await run.status,
+      output: await run.returnValue,
     });
   } catch (err) {
     console.error("Failed to get workflow run:", err);

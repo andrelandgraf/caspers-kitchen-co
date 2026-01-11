@@ -8,6 +8,7 @@ import {
   createMessages,
   getConversationWithMessages,
 } from "@/lib/chat/queries";
+import type { MessagePart } from "@/lib/chat/schema";
 
 export const maxDuration = 30;
 
@@ -29,6 +30,38 @@ Guidelines:
 - If a customer has dietary restrictions or allergies, always use the tools to verify ingredients
 
 Remember: You're representing Caspers Kitchen, so maintain a friendly, professional tone that makes customers feel welcome.`;
+
+// Helper to extract text content from UIMessage parts
+function getTextFromMessage(msg: UIMessage): string {
+  if (!msg.parts || msg.parts.length === 0) return "";
+  const textParts = msg.parts.filter(
+    (p): p is { type: "text"; text: string } =>
+      p.type === "text" && "text" in p && typeof p.text === "string",
+  );
+  return textParts.map((p) => p.text).join("");
+}
+
+// Helper to convert UIMessage parts to database MessagePart format
+function convertToDbParts(parts: UIMessage["parts"]): MessagePart[] {
+  if (!parts) return [];
+  return parts
+    .map((p): MessagePart | null => {
+      if (p.type === "text" && "text" in p) {
+        return { type: "text", text: p.text };
+      }
+      if (p.type.startsWith("tool-") && "toolCallId" in p) {
+        return {
+          type: "tool-invocation",
+          toolInvocationId: p.toolCallId,
+          toolName: "toolName" in p ? String(p.toolName) : "unknown",
+          args: "input" in p ? p.input : undefined,
+          result: "output" in p ? p.output : undefined,
+        };
+      }
+      return null;
+    })
+    .filter((p): p is MessagePart => p !== null);
+}
 
 export async function POST(req: Request) {
   const {
@@ -52,8 +85,22 @@ export async function POST(req: Request) {
       existingMessages = conversation.messages.map((msg) => ({
         id: msg.id,
         role: msg.role as "user" | "assistant",
-        content: msg.content,
-        parts: msg.parts ?? [{ type: "text" as const, text: msg.content }],
+        parts: msg.parts?.map((p) => {
+          if (p.type === "text") {
+            return { type: "text" as const, text: p.text };
+          }
+          if (p.type === "tool-invocation") {
+            return {
+              type: "tool-result" as const,
+              toolCallId: p.toolInvocationId,
+              toolName: p.toolName,
+              state: "output-available" as const,
+              input: p.args,
+              output: p.result,
+            };
+          }
+          return { type: "text" as const, text: "" };
+        }) ?? [{ type: "text" as const, text: msg.content }],
         createdAt: msg.createdAt,
       }));
     }
@@ -61,9 +108,7 @@ export async function POST(req: Request) {
     // Create new conversation with the first message
     const firstUserMessage = messages.find((m) => m.role === "user");
     const title = firstUserMessage
-      ? typeof firstUserMessage.content === "string"
-        ? firstUserMessage.content.slice(0, 100)
-        : "New conversation"
+      ? getTextFromMessage(firstUserMessage).slice(0, 100) || "New conversation"
       : "New conversation";
 
     const conversation = await createConversation({
@@ -88,26 +133,18 @@ export async function POST(req: Request) {
   if (newUserMessages.length > 0 && activeConversationId) {
     await createMessages(
       newUserMessages.map((m) => {
-        // Extract text content from parts or content
-        let textContent = "";
-        if (typeof m.content === "string") {
-          textContent = m.content;
-        } else if (m.parts) {
-          textContent = m.parts
-            .filter(
-              (p): p is { type: "text"; text: string } =>
-                p.type === "text" && typeof p.text === "string",
-            )
-            .map((p) => p.text)
-            .join("");
-        }
+        const textContent = getTextFromMessage(m);
+        const dbParts = convertToDbParts(m.parts);
 
         return {
           id: m.id,
           conversationId: activeConversationId!,
           role: "user" as const,
           content: textContent || "...",
-          parts: m.parts ?? [{ type: "text" as const, text: textContent }],
+          parts:
+            dbParts.length > 0
+              ? dbParts
+              : [{ type: "text" as const, text: textContent }],
         };
       }),
     );
@@ -131,12 +168,37 @@ export async function POST(req: Request) {
         );
 
         for (const msg of assistantMessages) {
-          const textContent = msg.content
-            .filter(
-              (c): c is { type: "text"; text: string } => c.type === "text",
-            )
-            .map((c) => c.text)
-            .join("");
+          // Handle both string and array content
+          const content = msg.content;
+          let textContent = "";
+          let dbParts: MessagePart[] = [];
+
+          if (typeof content === "string") {
+            textContent = content;
+            dbParts = [{ type: "text", text: content }];
+          } else if (Array.isArray(content)) {
+            textContent = content
+              .filter(
+                (c): c is { type: "text"; text: string } => c.type === "text",
+              )
+              .map((c) => c.text)
+              .join("");
+
+            dbParts = content.map((c): MessagePart => {
+              if (c.type === "text") {
+                return { type: "text", text: c.text };
+              }
+              if (c.type === "tool-call") {
+                return {
+                  type: "tool-invocation",
+                  toolInvocationId: c.toolCallId,
+                  toolName: c.toolName,
+                  args: c.input,
+                };
+              }
+              return { type: "text", text: "" };
+            });
+          }
 
           if (textContent) {
             await createMessages([
@@ -145,20 +207,7 @@ export async function POST(req: Request) {
                 conversationId: activeConversationId,
                 role: "assistant" as const,
                 content: textContent,
-                parts: msg.content.map((c) => {
-                  if (c.type === "text") {
-                    return { type: "text" as const, text: c.text };
-                  }
-                  if (c.type === "tool-call") {
-                    return {
-                      type: "tool-invocation" as const,
-                      toolInvocationId: c.toolCallId,
-                      toolName: c.toolName,
-                      args: c.args,
-                    };
-                  }
-                  return { type: "text" as const, text: "" };
-                }),
+                parts: dbParts,
               },
             ]);
           }

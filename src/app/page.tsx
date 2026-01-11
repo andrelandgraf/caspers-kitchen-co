@@ -314,9 +314,9 @@ export default function LandingPage() {
               Delivering Fresh Food Daily
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              We serve multiple locations across the country. Choose your nearest
-              kitchen for fresh, fast delivery. Typical delivery time is 45-60
-              minutes.
+              We serve multiple locations across the country. Choose your
+              nearest kitchen for fresh, fast delivery. Typical delivery time is
+              45-60 minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Button size="lg" asChild>

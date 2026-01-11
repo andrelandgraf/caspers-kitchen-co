@@ -16,8 +16,8 @@ export async function POST(req: Request) {
       const run = await start(processOrderWorkflow, [order]);
 
       return Response.json({
-        runId: run.id,
-        status: run.status,
+        runId: run.runId,
+        status: await run.status,
         message: "Order processing started",
       });
     }
@@ -33,8 +33,8 @@ export async function POST(req: Request) {
       ]);
 
       return Response.json({
-        runId: run.id,
-        status: run.status,
+        runId: run.runId,
+        status: await run.status,
         message: "Order cancellation started",
       });
     }
@@ -61,7 +61,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const run = await getRun(runId);
+    const run = getRun(runId);
 
     if (!run) {
       return Response.json(
@@ -71,9 +71,9 @@ export async function GET(req: Request) {
     }
 
     return Response.json({
-      runId: run.id,
-      status: run.status,
-      output: run.output,
+      runId: run.runId,
+      status: await run.status,
+      output: await run.returnValue,
     });
   } catch (err) {
     console.error("Failed to get workflow run:", err);

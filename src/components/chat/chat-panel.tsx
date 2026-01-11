@@ -1,8 +1,8 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
-import { useState, useRef, useEffect } from "react";
+import { DefaultChatTransport, UIMessage, UIMessageChunk } from "ai";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -28,23 +28,63 @@ type ChatPanelProps = {
   onOpenChange: (open: boolean) => void;
 };
 
+// Custom transport that captures conversation ID from response headers
+class ConversationChatTransport extends DefaultChatTransport<UIMessage> {
+  private onConversationId: (id: string) => void;
+  private conversationId: string | null;
+
+  constructor(options: {
+    conversationId: string | null;
+    onConversationId: (id: string) => void;
+  }) {
+    super({
+      api: "/api/chat",
+      body: { conversationId: options.conversationId },
+    });
+    this.conversationId = options.conversationId;
+    this.onConversationId = options.onConversationId;
+  }
+
+  override async sendMessages(
+    options: Parameters<DefaultChatTransport<UIMessage>["sendMessages"]>[0],
+  ): Promise<ReadableStream<UIMessageChunk>> {
+    // Override to intercept response and extract conversation ID
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: options.messages,
+        conversationId: this.conversationId,
+      }),
+      signal: options.abortSignal,
+    });
+
+    const newConversationId = response.headers.get("X-Conversation-Id");
+    if (newConversationId && !this.conversationId) {
+      this.onConversationId(newConversationId);
+    }
+
+    // Process the response stream using the parent class method
+    return this["processResponseStream"](response.body!);
+  }
+}
+
 export function ChatPanel({ open, onOpenChange }: ChatPanelProps) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const chatTransport = useMemo(
+    () =>
+      new ConversationChatTransport({
+        conversationId,
+        onConversationId: setConversationId,
+      }),
+    [conversationId],
+  );
+
   const { messages, sendMessage, status, setMessages } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-      body: { conversationId },
-      headers: {},
-    }),
-    onResponse: (response) => {
-      const newConversationId = response.headers.get("X-Conversation-Id");
-      if (newConversationId && !conversationId) {
-        setConversationId(newConversationId);
-      }
-    },
+    transport: chatTransport,
   });
 
   const [input, setInput] = useState("");
