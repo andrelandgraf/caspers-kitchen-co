@@ -12,7 +12,7 @@
       "Verify warm, inviting food imagery or illustration is displayed",
       "Verify subtle animation (steam, floating elements) adds life"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -28,7 +28,7 @@
       "Verify each step has a friendly icon and brief description",
       "Verify visual flow connects the steps"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -44,7 +44,7 @@
       "Verify each value has an icon and short explanation",
       "Verify warm, cozy imagery or illustrations accompany values"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -61,7 +61,7 @@
       "Verify 'View Full Menu' CTA button is present",
       "Verify cards have hover effect with warm shadow lift"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -76,7 +76,7 @@
       "  - Optional: customer photo or avatar",
       "Verify testimonials have cozy, card-style presentation"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -88,7 +88,7 @@
       "Verify delivery time estimates are shown",
       "Verify partner delivery app logos if applicable (DoorDash, UberEats, etc.)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -101,7 +101,7 @@
       "Verify privacy-friendly messaging",
       "Verify incentive mention (e.g., '10% off your first order')"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -115,7 +115,7 @@
       "Verify social media links",
       "Verify copyright and legal links (Privacy, Terms)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -129,7 +129,7 @@
       "Verify touch targets are at least 44px",
       "Verify navigation converts to mobile menu"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -140,7 +140,7 @@
       "Verify images scale properly",
       "Verify navigation is accessible"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -152,7 +152,7 @@
       "Verify animation respects prefers-reduced-motion",
       "Verify no layout shift during animation"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -164,7 +164,7 @@
       "Verify animations only play once",
       "Verify animations respect prefers-reduced-motion"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -177,7 +177,7 @@
       "Verify images/illustrations adapt or remain cohesive",
       "Verify overall 'cozy night kitchen' atmosphere"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",
@@ -190,7 +190,7 @@
       "Verify header becomes sticky on scroll",
       "Verify header has subtle shadow when sticky"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "accessibility",
@@ -204,7 +204,7 @@
       "Verify focus indicators are visible",
       "Verify no content is conveyed by color alone"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "performance",
@@ -217,7 +217,7 @@
       "Verify images are optimized (WebP/AVIF, proper sizing)",
       "Verify critical CSS is inlined or prioritized"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "seo",
@@ -230,6 +230,6 @@
       "Verify semantic HTML structure (header, main, sections, footer)",
       "Verify page has single h1 tag"
     ],
-    "passes": false
+    "passes": true
   }
 ]
