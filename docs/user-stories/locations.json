@@ -14,7 +14,7 @@
       "Select a location",
       "Verify modal closes and location is saved"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
