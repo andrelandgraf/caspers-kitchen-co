@@ -26,7 +26,7 @@
       "Click on location indicator",
       "Verify location selector opens to change location"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -38,7 +38,7 @@
       "Verify location updates in header",
       "Verify page content updates for new location"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -50,7 +50,7 @@
       "Verify San Francisco is still selected",
       "Verify no location modal appears"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -62,7 +62,7 @@
       "Sign in again",
       "Verify Los Angeles is still selected (saved to account)"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -88,7 +88,7 @@
       "Verify estimated delivery times for that city",
       "Verify 'Change location' link available"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -113,7 +113,7 @@
       "Change location to Los Angeles",
       "Verify menu updates to show LA-available items"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -153,7 +153,7 @@
       "Verify delivery address must be within location's delivery zone",
       "Verify option to change location before completing order"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -179,7 +179,7 @@
       "View order in order history",
       "Verify location displayed on order details"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -190,7 +190,7 @@
       "Verify 'Your order is being prepared at our Los Angeles kitchen'",
       "Verify location-specific contact info if applicable"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -226,7 +226,7 @@
       "Verify nearest location is pre-selected or suggested",
       "User can confirm or change suggested location"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -239,7 +239,7 @@
       "  - Los Angeles - 382 miles",
       "Verify locations sorted by proximity"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -271,7 +271,7 @@
       "  - Delivery zone info",
       "  - 'Order from here' button"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -282,7 +282,7 @@
       "Verify Seattle set as active location",
       "Verify redirect to menu or home page"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "edge-case",
