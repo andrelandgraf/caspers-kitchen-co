@@ -39,11 +39,17 @@ export function LocationSelectorModal() {
     lon: number;
   } | null>(null);
 
-  // Fetch locations
+  // Fetch locations with optional geolocation
   useEffect(() => {
-    const fetchLocations = async () => {
+    if (!isLocationModalOpen) return;
+
+    const fetchLocations = async (lat?: number, lon?: number) => {
       try {
-        const response = await fetch("/api/locations");
+        const url =
+          lat && lon
+            ? `/api/locations?lat=${lat}&lon=${lon}`
+            : "/api/locations";
+        const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
           setLocations(data.locations);
@@ -55,23 +61,22 @@ export function LocationSelectorModal() {
       }
     };
 
-    if (isLocationModalOpen) {
+    // Try to get user's geolocation first
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserCoords({ lat: latitude, lon: longitude });
+          fetchLocations(latitude, longitude);
+        },
+        () => {
+          // Geolocation denied or unavailable - fetch without coords
+          fetchLocations();
+        },
+      );
+    } else {
+      // No geolocation support - fetch without coords
       fetchLocations();
-
-      // Try to get user's geolocation
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setUserCoords({
-              lat: position.coords.latitude,
-              lon: position.coords.longitude,
-            });
-          },
-          (error) => {
-            console.log("Geolocation not available:", error);
-          },
-        );
-      }
     }
   }, [isLocationModalOpen]);
 
