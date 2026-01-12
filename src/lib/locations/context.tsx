@@ -23,7 +23,7 @@ type LocationContextType = {
   currentLocation: Location | null;
   setLocation: (location: Location) => void;
   isLocationModalOpen: boolean;
-  openLocationModal: () => void;
+  openLocationModal: (onSelect?: () => void) => void;
   closeLocationModal: () => void;
   isLoading: boolean;
 };
@@ -38,6 +38,9 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [onSelectCallback, setOnSelectCallback] = useState<(() => void) | null>(
+    null,
+  );
 
   // Load location from localStorage or user preferences on mount
   useEffect(() => {
@@ -63,13 +66,12 @@ export function LocationProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        // No location saved - show modal
+        // No location saved - just finish loading, don't auto-open modal
+        // Modal will be triggered when user tries to order
         setIsLoading(false);
-        setIsLocationModalOpen(true);
       } catch (error) {
         console.error("Error loading location:", error);
         setIsLoading(false);
-        setIsLocationModalOpen(true);
       }
     };
 
@@ -94,10 +96,25 @@ export function LocationProvider({ children }: { children: ReactNode }) {
     }
 
     toast.success(`Location changed to ${location.name}`);
+
+    // Call the callback if one was set (e.g., navigate to menu)
+    if (onSelectCallback) {
+      onSelectCallback();
+      setOnSelectCallback(null);
+    }
   };
 
-  const openLocationModal = () => setIsLocationModalOpen(true);
-  const closeLocationModal = () => setIsLocationModalOpen(false);
+  const openLocationModal = (onSelect?: () => void) => {
+    if (onSelect) {
+      setOnSelectCallback(() => onSelect);
+    }
+    setIsLocationModalOpen(true);
+  };
+
+  const closeLocationModal = () => {
+    setIsLocationModalOpen(false);
+    setOnSelectCallback(null);
+  };
 
   return (
     <LocationContext.Provider

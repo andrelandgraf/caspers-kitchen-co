@@ -26,7 +26,18 @@ export default function MenuPage() {
   >([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { addItem } = useCart();
-  const { currentLocation } = useLocation();
+  const {
+    currentLocation,
+    openLocationModal,
+    isLoading: locationLoading,
+  } = useLocation();
+
+  // Open location modal if no location is selected
+  useEffect(() => {
+    if (!locationLoading && !currentLocation) {
+      openLocationModal();
+    }
+  }, [locationLoading, currentLocation, openLocationModal]);
 
   useEffect(() => {
     async function fetchMenuItems() {

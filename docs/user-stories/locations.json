@@ -1,10 +1,10 @@
 [
   {
     "category": "functional",
-    "description": "Location selector modal on first visit",
+    "description": "Location selector modal appears on menu page without location",
     "steps": [
-      "Visit site for the first time (no location saved)",
-      "Verify location selector modal appears",
+      "Visit /menu with no location saved (first visit or cleared storage)",
+      "Verify location selector modal appears automatically",
       "Verify modal shows all 4 locations:",
       "  - San Francisco",
       "  - New York",
@@ -12,7 +12,19 @@
       "  - Seattle",
       "Verify each location shows city name and optional details",
       "Select a location",
-      "Verify modal closes and location is saved"
+      "Verify modal closes and location is saved",
+      "Verify menu items load for selected location"
+    ],
+    "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Order Now navigates directly when location already selected",
+    "steps": [
+      "Have a location already selected (from previous session or selection)",
+      "Click 'Order Now' button on landing page",
+      "Verify no location modal appears",
+      "Verify direct navigation to /menu page"
     ],
     "passes": true
   },
