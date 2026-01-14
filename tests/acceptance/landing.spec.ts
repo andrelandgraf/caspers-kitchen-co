@@ -13,12 +13,12 @@ test.describe("Landing Page", () => {
       });
       await expect(heading).toBeVisible();
 
-      // CTAs
+      // CTAs - use first() to avoid strict mode violation (Sign In appears in both hero and header)
       await expect(
         page.getByRole("link", { name: /Order Now/i }),
       ).toBeVisible();
       await expect(
-        page.getByRole("link", { name: /See Our Menu/i }),
+        page.getByRole("link", { name: /Sign In/i }).first(),
       ).toBeVisible();
     });
 
@@ -28,10 +28,13 @@ test.describe("Landing Page", () => {
       await expect(page).toHaveURL("/menu");
     });
 
-    test("See Our Menu navigates to menu page", async ({ page }) => {
+    test("Sign In navigates to sign-in page", async ({ page }) => {
       await page.goto("/");
-      await page.getByRole("link", { name: /See Our Menu/i }).click();
-      await expect(page).toHaveURL("/menu");
+      await page
+        .getByRole("link", { name: /Sign In/i })
+        .first()
+        .click();
+      await expect(page).toHaveURL("/sign-in");
     });
   });
 
@@ -67,24 +70,25 @@ test.describe("Landing Page", () => {
       await expect(
         page.getByRole("heading", { name: /Today's Favorites/i }),
       ).toBeVisible();
-      await expect(page.getByText("Classic Mac & Cheese")).toBeVisible();
+
+      // Check for any featured menu item (with price) or the fallback message
+      const featuredCard = page.locator("text=/\\$\\d+/").first();
+      const fallbackMessage = page.getByText(/Check out our full menu/i);
+
+      const hasFeaturedItems = await featuredCard
+        .isVisible({ timeout: 1000 })
+        .catch(() => false);
+      const hasFallback = await fallbackMessage
+        .isVisible({ timeout: 1000 })
+        .catch(() => false);
+
+      expect(hasFeaturedItems || hasFallback).toBe(true);
     });
 
     test("View Full Menu navigates to menu page", async ({ page }) => {
       await page.goto("/");
       await page.getByRole("link", { name: /View Full Menu/i }).click();
       await expect(page).toHaveURL("/menu");
-    });
-  });
-
-  test.describe("Testimonials Section", () => {
-    test("displays customer testimonials", async ({ page }) => {
-      await page.goto("/");
-
-      await expect(
-        page.getByRole("heading", { name: /What Our Neighbors Say/i }),
-      ).toBeVisible();
-      await expect(page.getByText(/Sarah M\./)).toBeVisible();
     });
   });
 
@@ -101,20 +105,6 @@ test.describe("Landing Page", () => {
       await page.goto("/");
       await page.getByRole("link", { name: /View All Locations/i }).click();
       await expect(page).toHaveURL("/locations");
-    });
-  });
-
-  test.describe("Newsletter Section", () => {
-    test("displays newsletter signup form", async ({ page }) => {
-      await page.goto("/");
-
-      await expect(
-        page.getByRole("heading", { name: /Join the Kitchen Family/i }),
-      ).toBeVisible();
-      await expect(page.getByPlaceholder(/email/i)).toBeVisible();
-      await expect(
-        page.getByRole("button", { name: /Subscribe/i }),
-      ).toBeVisible();
     });
   });
 

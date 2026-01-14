@@ -200,7 +200,7 @@ export function CheckoutForm({ userEmail, userName }: CheckoutFormProps) {
           <p className="text-muted-foreground mb-4">
             Please select a location before proceeding to checkout.
           </p>
-          <Button onClick={openLocationModal}>Choose Location</Button>
+          <Button onClick={() => openLocationModal()}>Choose Location</Button>
         </div>
       </div>
     );
@@ -231,7 +231,7 @@ export function CheckoutForm({ userEmail, userName }: CheckoutFormProps) {
               type="button"
               variant="outline"
               size="sm"
-              onClick={openLocationModal}
+              onClick={() => openLocationModal()}
             >
               Change
             </Button>

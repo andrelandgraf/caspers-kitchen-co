@@ -2,9 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { getFeaturedMenuItems } from "@/lib/menu/queries";
 import {
   ChefHat,
   Clock,
@@ -13,8 +14,8 @@ import {
   Package,
   Users,
   ArrowRight,
-  Star,
   CheckCircle2,
+  UtensilsCrossed,
 } from "lucide-react";
 
 export const metadata = {
@@ -29,7 +30,9 @@ export const metadata = {
   },
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const featuredItems = await getFeaturedMenuItems();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <Header />
@@ -60,7 +63,7 @@ export default function LandingPage() {
                   asChild
                   className="text-base"
                 >
-                  <Link href="/menu">See Our Menu</Link>
+                  <Link href="/sign-in">Sign In</Link>
                 </Button>
               </div>
             </div>
@@ -197,112 +200,65 @@ export default function LandingPage() {
                 Customer favorites made fresh daily
               </p>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {[
-                {
-                  name: "Classic Mac & Cheese",
-                  description: "Creamy, cheesy comfort in a bowl",
-                  price: "12.99",
-                  emoji: "🧀",
-                },
-                {
-                  name: "Grilled Chicken Bowl",
-                  description: "Fresh veggies, tender chicken, signature sauce",
-                  price: "14.99",
-                  emoji: "🍗",
-                },
-                {
-                  name: "Homestyle Meatloaf",
-                  description: "Just like mom used to make",
-                  price: "13.99",
-                  emoji: "🍖",
-                },
-              ].map((dish, index) => (
-                <Card
-                  key={index}
-                  className="group cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
-                >
-                  <div className="aspect-[4/3] bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-7xl">
-                    {dish.emoji}
-                  </div>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-1">{dish.name}</h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {dish.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-primary">
-                        ${dish.price}
-                      </span>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="group-hover:bg-primary/10"
-                      >
-                        Add to Cart
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {featuredItems.length > 0 ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {featuredItems.map((item) => (
+                  <Card
+                    key={item.id}
+                    className="group hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+                  >
+                    <Link href={`/menu/${item.slug}`}>
+                      <div className="aspect-[4/3] bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-muted-foreground">
+                            <UtensilsCrossed className="h-12 w-12 opacity-30" />
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                    <CardContent className="p-6">
+                      <Link href={`/menu/${item.slug}`}>
+                        <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
+                          {item.name}
+                        </h3>
+                      </Link>
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                        {item.shortDescription || item.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-primary">
+                          ${parseFloat(item.price).toFixed(2)}
+                        </span>
+                        <AddToCartButton
+                          menuItemId={item.id}
+                          menuItemName={item.name}
+                          price={item.price}
+                          isAvailable={item.isAvailable}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  Check out our full menu to see what's available!
+                </p>
+              </div>
+            )}
             <div className="text-center mt-10">
               <Button size="lg" asChild>
                 <Link href="/menu">View Full Menu</Link>
               </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials */}
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                What Our Neighbors Say
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Real reviews from real customers
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {[
-                {
-                  quote:
-                    "Best comfort food I've had in years! Tastes just like home cooking. The mac and cheese is to die for!",
-                  author: "Sarah M.",
-                  rating: 5,
-                },
-                {
-                  quote:
-                    "Fast delivery, hot food, and amazing quality. My family's new go-to for busy weeknights.",
-                  author: "Mike T.",
-                  rating: 5,
-                },
-                {
-                  quote:
-                    "Love supporting a local ghost kitchen that cares about sustainability and fresh ingredients!",
-                  author: "Emma L.",
-                  rating: 5,
-                },
-              ].map((testimonial, index) => (
-                <Card key={index} className="bg-muted/50">
-                  <CardContent className="pt-6">
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-4 w-4 fill-primary text-primary"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-sm mb-4 italic">"{testimonial.quote}"</p>
-                    <p className="text-sm font-medium">
-                      — {testimonial.author}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
             </div>
           </div>
         </section>
@@ -336,34 +292,6 @@ export default function LandingPage() {
                 <span>45-60 min delivery</span>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Newsletter */}
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <Card className="max-w-2xl mx-auto bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-              <CardContent className="pt-8 pb-8 text-center">
-                <h2 className="text-2xl md:text-3xl font-bold mb-3">
-                  Join the Kitchen Family
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                  Get 10% off your first order plus weekly menu updates and
-                  exclusive deals
-                </p>
-                <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="flex-1"
-                  />
-                  <Button type="submit">Subscribe</Button>
-                </form>
-                <p className="text-xs text-muted-foreground mt-4">
-                  We respect your privacy. Unsubscribe anytime.
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </section>
       </main>

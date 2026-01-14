@@ -8,7 +8,7 @@ import {
   dietaryTypeEnum,
 } from "./schema";
 import { menuItemLocations } from "@/lib/locations/schema";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 
 export type MenuItem = typeof menuItems.$inferSelect;
 export type MenuItemWithRelations = MenuItem & {
@@ -52,7 +52,7 @@ export async function getMenuItems(
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-  let items;
+  let items: MenuItem[];
 
   // If filtering by location, join with menu_item_locations
   if (filters?.locationId) {
@@ -79,20 +79,47 @@ export async function getMenuItems(
       .orderBy(menuItems.featured, menuItems.name);
   }
 
+  if (items.length === 0) {
+    return [];
+  }
+
+  const itemIds = items.map((item) => item.id);
+
+  // Batch fetch all dietary types and customizations in 2 queries instead of N*2
+  const [allDietary, allCustomizations] = await Promise.all([
+    db
+      .select()
+      .from(menuItemDietaryTypes)
+      .where(inArray(menuItemDietaryTypes.menuItemId, itemIds)),
+    db
+      .select()
+      .from(customizationOptions)
+      .where(inArray(customizationOptions.menuItemId, itemIds)),
+  ]);
+
+  // Group by menuItemId for fast lookup
+  const dietaryByItemId = new Map<string, string[]>();
+  for (const d of allDietary) {
+    const existing = dietaryByItemId.get(d.menuItemId) ?? [];
+    existing.push(d.dietaryType);
+    dietaryByItemId.set(d.menuItemId, existing);
+  }
+
+  const customizationsByItemId = new Map<
+    string,
+    (typeof customizationOptions.$inferSelect)[]
+  >();
+  for (const c of allCustomizations) {
+    const existing = customizationsByItemId.get(c.menuItemId) ?? [];
+    existing.push(c);
+    customizationsByItemId.set(c.menuItemId, existing);
+  }
+
+  // Build result with dietary type filtering
   const itemsWithRelations: MenuItemWithRelations[] = [];
 
   for (const item of items) {
-    const dietary = await db
-      .select()
-      .from(menuItemDietaryTypes)
-      .where(eq(menuItemDietaryTypes.menuItemId, item.id));
-
-    const customizations = await db
-      .select()
-      .from(customizationOptions)
-      .where(eq(customizationOptions.menuItemId, item.id));
-
-    const dietaryTypeValues = dietary.map((d) => d.dietaryType);
+    const dietaryTypeValues = dietaryByItemId.get(item.id) ?? [];
 
     if (
       filters?.dietaryTypes &&
@@ -105,7 +132,7 @@ export async function getMenuItems(
     itemsWithRelations.push({
       ...item,
       dietaryTypes: dietaryTypeValues,
-      customizationOptions: customizations,
+      customizationOptions: customizationsByItemId.get(item.id) ?? [],
     });
   }
 
@@ -151,34 +178,52 @@ export async function getFeaturedMenuItems(): Promise<MenuItemWithRelations[]> {
     .where(and(eq(menuItems.featured, true), eq(menuItems.isAvailable, true)))
     .limit(6);
 
-  const itemsWithRelations: MenuItemWithRelations[] = [];
-
-  for (const item of items) {
-    const dietary = await db
-      .select()
-      .from(menuItemDietaryTypes)
-      .where(eq(menuItemDietaryTypes.menuItemId, item.id));
-
-    const customizations = await db
-      .select()
-      .from(customizationOptions)
-      .where(eq(customizationOptions.menuItemId, item.id));
-
-    itemsWithRelations.push({
-      ...item,
-      dietaryTypes: dietary.map((d) => d.dietaryType),
-      customizationOptions: customizations,
-    });
+  if (items.length === 0) {
+    return [];
   }
 
-  return itemsWithRelations;
+  const itemIds = items.map((item) => item.id);
+
+  const [allDietary, allCustomizations] = await Promise.all([
+    db
+      .select()
+      .from(menuItemDietaryTypes)
+      .where(inArray(menuItemDietaryTypes.menuItemId, itemIds)),
+    db
+      .select()
+      .from(customizationOptions)
+      .where(inArray(customizationOptions.menuItemId, itemIds)),
+  ]);
+
+  const dietaryByItemId = new Map<string, string[]>();
+  for (const d of allDietary) {
+    const existing = dietaryByItemId.get(d.menuItemId) ?? [];
+    existing.push(d.dietaryType);
+    dietaryByItemId.set(d.menuItemId, existing);
+  }
+
+  const customizationsByItemId = new Map<
+    string,
+    (typeof customizationOptions.$inferSelect)[]
+  >();
+  for (const c of allCustomizations) {
+    const existing = customizationsByItemId.get(c.menuItemId) ?? [];
+    existing.push(c);
+    customizationsByItemId.set(c.menuItemId, existing);
+  }
+
+  return items.map((item) => ({
+    ...item,
+    dietaryTypes: dietaryByItemId.get(item.id) ?? [],
+    customizationOptions: customizationsByItemId.get(item.id) ?? [],
+  }));
 }
 
 export async function createMenuItem(
   data: Omit<MenuItemInsert, "id" | "createdAt" | "updatedAt">,
   dietaryTypes?: DietaryType[],
 ): Promise<MenuItem> {
-  const id = nanoid();
+  const id = uuidv7();
 
   const [item] = await db
     .insert(menuItems)
@@ -191,7 +236,7 @@ export async function createMenuItem(
   if (dietaryTypes && dietaryTypes.length > 0) {
     await db.insert(menuItemDietaryTypes).values(
       dietaryTypes.map((type) => ({
-        id: nanoid(),
+        id: uuidv7(),
         menuItemId: id,
         dietaryType: type,
       })),
@@ -220,25 +265,43 @@ export async function getMenuItemsByIds(
     .from(menuItems)
     .where(inArray(menuItems.id, ids));
 
-  const itemsWithRelations: MenuItemWithRelations[] = [];
-
-  for (const item of items) {
-    const dietary = await db
-      .select()
-      .from(menuItemDietaryTypes)
-      .where(eq(menuItemDietaryTypes.menuItemId, item.id));
-
-    const customizations = await db
-      .select()
-      .from(customizationOptions)
-      .where(eq(customizationOptions.menuItemId, item.id));
-
-    itemsWithRelations.push({
-      ...item,
-      dietaryTypes: dietary.map((d) => d.dietaryType),
-      customizationOptions: customizations,
-    });
+  if (items.length === 0) {
+    return [];
   }
 
-  return itemsWithRelations;
+  const itemIds = items.map((item) => item.id);
+
+  const [allDietary, allCustomizations] = await Promise.all([
+    db
+      .select()
+      .from(menuItemDietaryTypes)
+      .where(inArray(menuItemDietaryTypes.menuItemId, itemIds)),
+    db
+      .select()
+      .from(customizationOptions)
+      .where(inArray(customizationOptions.menuItemId, itemIds)),
+  ]);
+
+  const dietaryByItemId = new Map<string, string[]>();
+  for (const d of allDietary) {
+    const existing = dietaryByItemId.get(d.menuItemId) ?? [];
+    existing.push(d.dietaryType);
+    dietaryByItemId.set(d.menuItemId, existing);
+  }
+
+  const customizationsByItemId = new Map<
+    string,
+    (typeof customizationOptions.$inferSelect)[]
+  >();
+  for (const c of allCustomizations) {
+    const existing = customizationsByItemId.get(c.menuItemId) ?? [];
+    existing.push(c);
+    customizationsByItemId.set(c.menuItemId, existing);
+  }
+
+  return items.map((item) => ({
+    ...item,
+    dietaryTypes: dietaryByItemId.get(item.id) ?? [],
+    customizationOptions: customizationsByItemId.get(item.id) ?? [],
+  }));
 }

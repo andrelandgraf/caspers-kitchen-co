@@ -3,3 +3,4 @@
 
 export { kitchenAssistantWorkflow } from "./kitchen-assistant";
 export { processOrderWorkflow, cancelOrderWorkflow } from "./order-processing";
+export { chatWorkflow } from "./chat";

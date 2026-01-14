@@ -1,10 +1,10 @@
 import { pgTable, text, boolean, json, timestamp } from "drizzle-orm/pg-core";
-import { createId } from "@paralleldrive/cuid2";
+import { v7 as uuidv7 } from "uuid";
 
 export const locations = pgTable("locations", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => createId()),
+    .$defaultFn(() => uuidv7()),
   name: text("name").notNull(), // e.g., "San Francisco"
   slug: text("slug").notNull().unique(), // e.g., "san-francisco"
   address: text("address").notNull(),
@@ -48,7 +48,7 @@ export const locations = pgTable("locations", {
 export const menuItemLocations = pgTable("menu_item_locations", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => createId()),
+    .$defaultFn(() => uuidv7()),
   menuItemId: text("menu_item_id").notNull(),
   locationId: text("location_id")
     .notNull()
@@ -61,7 +61,7 @@ export const menuItemLocations = pgTable("menu_item_locations", {
 export const userLocations = pgTable("user_locations", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => createId()),
+    .$defaultFn(() => uuidv7()),
   userId: text("user_id").notNull().unique(),
   locationId: text("location_id")
     .notNull()

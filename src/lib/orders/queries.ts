@@ -3,7 +3,7 @@ import { orders, orderItems, promoCodes } from "./schema";
 import { eq, and, desc, gte, lte, or, sql } from "drizzle-orm";
 import { carts, cartItems } from "@/lib/cart/schema";
 import { menuItems } from "@/lib/menu/schema";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 
 export interface CreateOrderInput {
   userId?: string;
@@ -134,7 +134,7 @@ export async function validatePromoCode(code: string, orderSubtotal: number) {
 }
 
 export async function createOrder(input: CreateOrderInput) {
-  const orderId = nanoid();
+  const orderId = uuidv7();
   const orderNumber = generateOrderNumber();
 
   // Calculate totals
@@ -195,7 +195,7 @@ export async function createOrder(input: CreateOrderInput) {
     // Insert order items
     for (const item of cart.items) {
       await tx.insert(orderItems).values({
-        id: nanoid(),
+        id: uuidv7(),
         orderId,
         menuItemId: item.menuItemId,
         itemName: item.menuItem.name,

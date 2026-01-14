@@ -26,7 +26,7 @@ interface CartContextType {
   items: CartItemWithMenu[];
   itemCount: number;
   isOpen: boolean;
-  loading: boolean;
+  loadingItemId: string | null;
   openCart: () => void;
   closeCart: () => void;
   addItem: (params: {
@@ -46,7 +46,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItemWithMenu[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loadingItemId, setLoadingItemId] = useState<string | null>(null);
 
   const refreshCart = async () => {
     try {
@@ -75,7 +75,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     customizations?: string;
     menuItemName: string;
   }) => {
-    setLoading(true);
+    setLoadingItemId(params.menuItemId);
     try {
       const response = await fetch("/api/cart/items", {
         method: "POST",
@@ -98,7 +98,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       console.error("Error adding item to cart:", error);
       toast.error("Failed to add item to cart. Please try again.");
     } finally {
-      setLoading(false);
+      setLoadingItemId(null);
     }
   };
 
@@ -108,7 +108,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    setLoading(true);
     try {
       const response = await fetch(`/api/cart/items/${itemId}`, {
         method: "PATCH",
@@ -124,13 +123,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Error updating quantity:", error);
       toast.error("Failed to update quantity. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
   const removeItem = async (itemId: string) => {
-    setLoading(true);
     try {
       const response = await fetch(`/api/cart/items/${itemId}`, {
         method: "DELETE",
@@ -145,8 +141,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Error removing item:", error);
       toast.error("Failed to remove item. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -158,7 +152,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         items,
         itemCount,
         isOpen,
-        loading,
+        loadingItemId,
         openCart,
         closeCart,
         addItem,

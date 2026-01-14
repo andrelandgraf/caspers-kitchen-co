@@ -55,8 +55,8 @@ async function getMenu({
   category,
   dietary,
 }: {
-  category: string;
-  dietary: string;
+  category?: string;
+  dietary?: string;
 }) {
   "use step";
 
@@ -81,7 +81,7 @@ async function getMenu({
   };
 }
 
-async function getBusinessHours({ day }: { day: string }) {
+async function getBusinessHours({ day }: { day?: string }) {
   "use step";
 
   const days = [
@@ -98,9 +98,9 @@ async function getBusinessHours({ day }: { day: string }) {
   const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
 
   const dayToCheck =
-    day === "today" ? currentDay : (day as keyof typeof businessHours);
+    !day || day === "today" ? currentDay : (day as keyof typeof businessHours);
 
-  if (day === "today" || day === currentDay) {
+  if (!day || day === "today" || day === currentDay) {
     const hours = businessHours[currentDay];
     const isOpen = currentTime >= hours.open && currentTime < hours.close;
 
@@ -127,12 +127,13 @@ async function getBusinessHours({ day }: { day: string }) {
   };
 }
 
-async function getRecommendations({ preference }: { preference: string }) {
+async function getRecommendations({ preference }: { preference?: string }) {
   "use step";
 
   let items = [...menuItems];
+  const pref = preference || "popular";
 
-  switch (preference) {
+  switch (pref) {
     case "popular":
       items = items.slice(0, 4);
       break;
@@ -154,7 +155,7 @@ async function getRecommendations({ preference }: { preference: string }) {
       name: item.name,
       price: `$${item.price.toFixed(2)}`,
     })),
-    message: `Here are my top recommendations for ${preference}:`,
+    message: `Here are my top recommendations for ${pref}:`,
   };
 }
 
@@ -179,7 +180,7 @@ export async function kitchenAssistantWorkflow(messages: ModelMessage[]) {
   const writable = getWritable<UIMessageChunk>();
 
   const agent = new DurableAgent({
-    model: "anthropic/claude-sonnet-4.5",
+    model: "anthropic/claude-sonnet-4-20250514",
     system: KITCHEN_ASSISTANT_PROMPT,
     temperature: 0.7,
     tools: {
@@ -189,9 +190,11 @@ export async function kitchenAssistantWorkflow(messages: ModelMessage[]) {
         inputSchema: z.object({
           category: z
             .string()
+            .optional()
             .describe("Category to filter by: mains, sides, desserts, or all"),
           dietary: z
             .string()
+            .optional()
             .describe(
               "Dietary preference: vegetarian, vegan, gluten-free, or none",
             ),
@@ -203,6 +206,7 @@ export async function kitchenAssistantWorkflow(messages: ModelMessage[]) {
         inputSchema: z.object({
           day: z
             .string()
+            .optional()
             .describe("Specific day to check: monday-sunday, or today"),
         }),
         execute: getBusinessHours,
@@ -213,6 +217,7 @@ export async function kitchenAssistantWorkflow(messages: ModelMessage[]) {
         inputSchema: z.object({
           preference: z
             .string()
+            .optional()
             .describe(
               "Type of recommendation: popular, vegetarian, or healthy",
             ),

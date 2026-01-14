@@ -1,533 +1,865 @@
 import { tool } from "ai";
 import { z } from "zod";
+import {
+  getMenuItems,
+  getMenuItemBySlug,
+  getMenuItemsByIds,
+} from "@/lib/menu/queries";
+import {
+  getCart,
+  addItemToCart,
+  updateCartItemQuantity,
+  removeCartItem,
+  clearCart,
+} from "@/lib/cart/queries";
+import {
+  getOrder,
+  getOrderByNumber,
+  getUserOrders,
+  createOrder,
+  cancelOrder,
+} from "@/lib/orders/queries";
+import {
+  getAllLocations,
+  getLocationById,
+  getUserLocation,
+  setUserLocation,
+  isLocationOpen,
+} from "@/lib/locations/queries";
 
-// Menu data (in a real app, this would come from a database)
-const menuItems = [
-  {
-    id: "1",
-    name: "Classic Burger",
-    description:
-      "Juicy beef patty with lettuce, tomato, onion, and our special sauce",
-    price: 12.99,
-    category: "mains",
-    dietary: ["contains-gluten"],
-    allergens: ["gluten", "dairy"],
-    ingredients: [
-      "beef patty",
-      "lettuce",
-      "tomato",
-      "onion",
-      "pickles",
-      "special sauce",
-      "brioche bun",
-    ],
-    spicy: false,
-    popular: true,
-  },
-  {
-    id: "2",
-    name: "Veggie Delight Burger",
-    description: "Plant-based patty with avocado, sprouts, and chipotle mayo",
-    price: 13.99,
-    category: "mains",
-    dietary: ["vegetarian", "vegan-option"],
-    allergens: ["gluten", "soy"],
-    ingredients: [
-      "plant-based patty",
-      "avocado",
-      "sprouts",
-      "chipotle mayo",
-      "lettuce",
-      "whole wheat bun",
-    ],
-    spicy: true,
-    popular: true,
-  },
-  {
-    id: "3",
-    name: "Loaded Fries",
-    description:
-      "Crispy fries topped with cheese, bacon bits, and green onions",
-    price: 8.99,
-    category: "sides",
-    dietary: [],
-    allergens: ["dairy"],
-    ingredients: ["potatoes", "cheese", "bacon", "green onions", "sour cream"],
-    spicy: false,
-    popular: true,
-  },
-  {
-    id: "4",
-    name: "Garden Salad",
-    description:
-      "Fresh mixed greens with cherry tomatoes, cucumber, and balsamic dressing",
-    price: 9.99,
-    category: "sides",
-    dietary: ["vegetarian", "vegan", "gluten-free"],
-    allergens: [],
-    ingredients: [
-      "mixed greens",
-      "cherry tomatoes",
-      "cucumber",
-      "red onion",
-      "balsamic dressing",
-    ],
-    spicy: false,
-    popular: false,
-  },
-  {
-    id: "5",
-    name: "Mac & Cheese",
-    description: "Creamy three-cheese pasta with breadcrumb topping",
-    price: 10.99,
-    category: "sides",
-    dietary: ["vegetarian"],
-    allergens: ["gluten", "dairy"],
-    ingredients: [
-      "macaroni",
-      "cheddar",
-      "gruyere",
-      "parmesan",
-      "breadcrumbs",
-      "butter",
-    ],
-    spicy: false,
-    popular: true,
-  },
-  {
-    id: "6",
-    name: "Spicy Thai Soup",
-    description:
-      "Coconut milk based soup with lemongrass, ginger, and vegetables",
-    price: 11.99,
-    category: "soups",
-    dietary: ["vegetarian", "vegan", "gluten-free"],
-    allergens: [],
-    ingredients: [
-      "coconut milk",
-      "lemongrass",
-      "ginger",
-      "mushrooms",
-      "tofu",
-      "bok choy",
-      "thai basil",
-    ],
-    spicy: true,
-    popular: false,
-  },
-  {
-    id: "7",
-    name: "Tomato Basil Soup",
-    description: "Classic creamy tomato soup with fresh basil",
-    price: 8.99,
-    category: "soups",
-    dietary: ["vegetarian", "gluten-free"],
-    allergens: ["dairy"],
-    ingredients: ["tomatoes", "cream", "basil", "garlic", "onion"],
-    spicy: false,
-    popular: true,
-  },
-  {
-    id: "8",
-    name: "Grilled Chicken Bowl",
-    description: "Tender grilled chicken over rice with roasted vegetables",
-    price: 14.99,
-    category: "mains",
-    dietary: ["gluten-free"],
-    allergens: [],
-    ingredients: [
-      "chicken breast",
-      "jasmine rice",
-      "zucchini",
-      "bell peppers",
-      "onion",
-      "herb sauce",
-    ],
-    spicy: false,
-    popular: true,
-  },
-  {
-    id: "9",
-    name: "Fish Tacos",
-    description: "Crispy beer-battered fish with slaw and lime crema",
-    price: 15.99,
-    category: "mains",
-    dietary: [],
-    allergens: ["gluten", "fish", "dairy"],
-    ingredients: [
-      "cod",
-      "cabbage slaw",
-      "lime crema",
-      "corn tortillas",
-      "cilantro",
-    ],
-    spicy: false,
-    popular: true,
-  },
-  {
-    id: "10",
-    name: "Chocolate Lava Cake",
-    description:
-      "Warm chocolate cake with molten center, served with vanilla ice cream",
-    price: 7.99,
-    category: "desserts",
-    dietary: ["vegetarian"],
-    allergens: ["gluten", "dairy", "eggs"],
-    ingredients: [
-      "dark chocolate",
-      "butter",
-      "eggs",
-      "flour",
-      "sugar",
-      "vanilla ice cream",
-    ],
-    spicy: false,
-    popular: true,
-  },
-];
+// Context passed from API route - userId and sessionId for cart/order operations
+export interface ToolContext {
+  userId?: string;
+  sessionId?: string;
+}
 
-// Business hours
-const businessHours = {
-  monday: { open: "11:00", close: "21:00" },
-  tuesday: { open: "11:00", close: "21:00" },
-  wednesday: { open: "11:00", close: "21:00" },
-  thursday: { open: "11:00", close: "22:00" },
-  friday: { open: "11:00", close: "23:00" },
-  saturday: { open: "10:00", close: "23:00" },
-  sunday: { open: "10:00", close: "20:00" },
-};
+// Schema definitions
+const getMenuSchema = z.object({
+  category: z
+    .enum(["mains", "sides", "desserts", "drinks", "all"])
+    .optional()
+    .describe("Category to filter by: mains, sides, desserts, drinks, or all"),
+  dietary: z
+    .enum(["vegetarian", "vegan", "gluten-free", "none"])
+    .optional()
+    .describe("Dietary preference: vegetarian, vegan, gluten-free, or none"),
+  search: z.string().optional().describe("Search term for menu items"),
+  limit: z.number().optional().describe("Maximum number of items to return"),
+});
 
-// Simulated orders (in a real app, this would come from a database)
-const sampleOrders = [
-  {
-    id: "ORD-12345",
-    status: "preparing",
-    items: [
-      { name: "Classic Burger", quantity: 2, price: 12.99 },
-      { name: "Loaded Fries", quantity: 1, price: 8.99 },
-    ],
-    total: 34.97,
-    estimatedDelivery: "25-35 minutes",
-    placedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "ORD-12344",
-    status: "delivered",
-    items: [
-      { name: "Fish Tacos", quantity: 1, price: 15.99 },
-      { name: "Garden Salad", quantity: 1, price: 9.99 },
-    ],
-    total: 25.98,
-    placedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    deliveredAt: new Date(
-      Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000,
-    ).toISOString(),
-  },
-];
+const getMenuItemDetailsSchema = z.object({
+  itemSlug: z.string().describe("The slug of the menu item to look up"),
+});
 
-export const kitchenTools = {
-  getMenu: tool({
-    description:
-      "Get the menu items, optionally filtered by category or dietary preferences",
-    inputSchema: z.object({
-      category: z
-        .string()
-        .describe(
-          "Category to filter by: mains, sides, soups, desserts, or all",
-        ),
-      dietary: z
-        .string()
-        .describe(
-          "Dietary preference: vegetarian, vegan, gluten-free, or none",
-        ),
-      limit: z.number().describe("Maximum number of items to return"),
-    }),
-    execute: async ({ category, dietary, limit }) => {
-      let items = [...menuItems];
+const checkAllergensSchema = z.object({
+  itemSlug: z.string().describe("The menu item slug to check"),
+  allergen: z
+    .string()
+    .describe(
+      "The allergen to check for: gluten, dairy, nuts, eggs, soy, fish, or shellfish",
+    ),
+});
 
-      if (category && category !== "all") {
-        items = items.filter((item) => item.category === category);
-      }
+const getBusinessHoursSchema = z.object({
+  locationId: z.string().optional().describe("Location ID to check hours for"),
+  day: z
+    .enum([
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+      "today",
+    ])
+    .optional()
+    .describe("Specific day to check"),
+});
 
-      if (dietary && dietary !== "none") {
-        items = items.filter((item) => item.dietary.includes(dietary));
-      }
+const getOrderStatusSchema = z.object({
+  orderId: z.string().optional().describe("The order ID to look up"),
+  orderNumber: z
+    .string()
+    .optional()
+    .describe("The order number to look up (e.g., CK-20240110-1234)"),
+});
 
-      if (limit && limit > 0) {
-        items = items.slice(0, limit);
-      }
+const getEstimatedDeliveryTimeSchema = z.object({
+  locationId: z.string().describe("Location ID to estimate delivery from"),
+});
 
-      return {
-        items: items.map((item) => ({
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          price: `$${item.price.toFixed(2)}`,
-          category: item.category,
-          dietary: item.dietary,
-          popular: item.popular,
-          spicy: item.spicy,
-        })),
-        totalItems: items.length,
-      };
-    },
-  }),
+const getRecommendationsSchema = z.object({
+  preference: z
+    .enum(["popular", "vegetarian", "healthy", "quick"])
+    .optional()
+    .describe("Type of recommendation"),
+  limit: z
+    .number()
+    .optional()
+    .describe("Maximum number of recommendations to return"),
+});
 
-  getMenuItemDetails: tool({
-    description:
-      "Get detailed information about a specific menu item including ingredients and allergens",
-    inputSchema: z.object({
-      itemName: z.string().describe("The name of the menu item to look up"),
-    }),
-    execute: async ({ itemName }) => {
-      const item = menuItems.find((i) =>
-        i.name.toLowerCase().includes(itemName.toLowerCase()),
-      );
+// Cart schemas
+const addToCartSchema = z.object({
+  menuItemId: z.string().describe("The ID of the menu item to add"),
+  quantity: z.number().min(1).describe("Quantity to add"),
+  customizations: z
+    .string()
+    .optional()
+    .describe("JSON string of customization options"),
+});
 
-      if (!item) {
-        return {
-          found: false,
-          message: `Could not find menu item matching "${itemName}"`,
-        };
-      }
+const updateCartItemSchema = z.object({
+  cartItemId: z.string().describe("The ID of the cart item to update"),
+  quantity: z.number().min(1).describe("New quantity"),
+});
 
-      return {
-        found: true,
-        item: {
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          price: `$${item.price.toFixed(2)}`,
-          category: item.category,
-          dietary: item.dietary,
-          allergens: item.allergens,
-          ingredients: item.ingredients,
-          spicy: item.spicy,
-          popular: item.popular,
-        },
-      };
-    },
-  }),
+const removeFromCartSchema = z.object({
+  cartItemId: z.string().describe("The ID of the cart item to remove"),
+});
 
-  checkAllergens: tool({
-    description: "Check if a menu item contains specific allergens",
-    inputSchema: z.object({
-      itemName: z.string().describe("The menu item to check"),
-      allergen: z
-        .string()
-        .describe(
-          "The allergen to check for: gluten, dairy, nuts, eggs, soy, fish, or shellfish",
-        ),
-    }),
-    execute: async ({ itemName, allergen }) => {
-      const item = menuItems.find((i) =>
-        i.name.toLowerCase().includes(itemName.toLowerCase()),
-      );
+// Order schemas
+const getUserOrdersSchema = z.object({
+  limit: z.number().optional().describe("Maximum number of orders to return"),
+});
 
-      if (!item) {
-        return {
-          found: false,
-          message: `Could not find menu item matching "${itemName}"`,
-        };
-      }
+const placeOrderSchema = z.object({
+  deliveryAddress: z.string().describe("Street address for delivery"),
+  deliveryCity: z.string().describe("City for delivery"),
+  deliveryState: z.string().describe("State for delivery"),
+  deliveryZip: z.string().describe("ZIP code for delivery"),
+  deliveryInstructions: z
+    .string()
+    .optional()
+    .describe("Special delivery instructions"),
+  paymentMethod: z
+    .enum(["card", "cash"])
+    .describe("Payment method: card or cash"),
+  promoCode: z.string().optional().describe("Promo code to apply"),
+});
 
-      const containsAllergen = item.allergens.includes(allergen);
+const cancelOrderSchema = z.object({
+  orderId: z.string().describe("The ID of the order to cancel"),
+});
 
-      return {
-        found: true,
-        itemName: item.name,
-        allergen,
-        containsAllergen,
-        allAllergens: item.allergens,
-        message: containsAllergen
-          ? `Yes, ${item.name} contains ${allergen}.`
-          : `No, ${item.name} does not contain ${allergen}.`,
-      };
-    },
-  }),
+// Location schemas
+const setLocationSchema = z.object({
+  locationId: z.string().describe("The ID of the location to set as preferred"),
+});
 
-  getBusinessHours: tool({
-    description: "Get the business hours for Caspers Kitchen",
-    inputSchema: z.object({
-      day: z
-        .string()
-        .describe(
-          "Specific day to check: monday, tuesday, wednesday, thursday, friday, saturday, sunday, or today",
-        ),
-    }),
-    execute: async ({ day }) => {
-      const days = [
-        "sunday",
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-      ] as const;
-      const now = new Date();
-      const currentDay = days[now.getDay()];
-      const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+const getLocationsSchema = z.object({
+  nearCoordinates: z
+    .object({
+      latitude: z.number(),
+      longitude: z.number(),
+    })
+    .optional()
+    .describe("Coordinates to find nearest locations"),
+});
 
-      const dayToCheck =
-        day === "today" ? currentDay : (day as keyof typeof businessHours);
+// Factory function to create tools with user context
+export function createKitchenTools(context: ToolContext) {
+  return {
+    // ===== MENU TOOLS =====
+    getMenu: tool({
+      description:
+        "Get the menu items, optionally filtered by category or dietary preferences. Returns up to 10 items by default.",
+      inputSchema: getMenuSchema,
+      execute: async (params) => {
+        const { category, dietary, search, limit = 10 } = params;
 
-      if (day === "today" || day === currentDay) {
-        const hours = businessHours[currentDay];
-        const isOpen = currentTime >= hours.open && currentTime < hours.close;
+        const items = await getMenuItems({
+          category: category === "all" ? undefined : category,
+          dietaryTypes:
+            dietary && dietary !== "none" ? [dietary as never] : undefined,
+          search,
+          availableOnly: true,
+        });
+
+        const limitedItems = items.slice(0, limit);
+        const hasMore = items.length > limit;
 
         return {
-          day: currentDay,
-          hours,
-          currentTime,
-          isOpen,
-          message: isOpen
-            ? `We're currently open! Today's hours: ${hours.open} - ${hours.close}`
-            : `We're currently closed. Today's hours: ${hours.open} - ${hours.close}`,
+          items: limitedItems.map((item) => ({
+            id: item.id,
+            name: item.name,
+            slug: item.slug,
+            description:
+              item.shortDescription || item.description?.slice(0, 100),
+            price: `$${Number(item.price).toFixed(2)}`,
+            category: item.category,
+            dietary: item.dietaryTypes,
+            featured: item.featured,
+          })),
+          totalItems: items.length,
+          showing: limitedItems.length,
+          hasMore,
+          message: hasMore
+            ? `Showing ${limitedItems.length} of ${items.length} items. Ask for more or filter by category for additional items.`
+            : undefined,
         };
-      }
-
-      const hours = businessHours[dayToCheck];
-      if (!hours) {
-        return {
-          message: `Invalid day: ${day}. Please specify a day of the week or 'today'.`,
-        };
-      }
-
-      return {
-        day: dayToCheck,
-        hours,
-        message: `${dayToCheck.charAt(0).toUpperCase() + dayToCheck.slice(1)} hours: ${hours.open} - ${hours.close}`,
-      };
-    },
-  }),
-
-  getOrderStatus: tool({
-    description:
-      "Get the status of an order by order ID or get the current/latest order",
-    inputSchema: z.object({
-      orderId: z
-        .string()
-        .describe(
-          "The order ID to look up (e.g., ORD-12345) or 'latest' for most recent",
-        ),
+      },
     }),
-    execute: async ({ orderId }) => {
-      if (orderId === "latest") {
-        const latestOrder = sampleOrders[0];
+
+    getMenuItemDetails: tool({
+      description:
+        "Get detailed information about a specific menu item including ingredients and allergens",
+      inputSchema: getMenuItemDetailsSchema,
+      execute: async (params) => {
+        const { itemSlug } = params;
+        const item = await getMenuItemBySlug(itemSlug);
+
+        if (!item) {
+          return {
+            found: false,
+            message: `Could not find menu item with slug "${itemSlug}"`,
+          };
+        }
+
         return {
           found: true,
-          order: latestOrder,
-          message: `Your latest order (${latestOrder.id}) is ${latestOrder.status}. ${
-            latestOrder.status === "preparing"
-              ? `Estimated delivery: ${latestOrder.estimatedDelivery}`
-              : ""
-          }`,
+          item: {
+            id: item.id,
+            name: item.name,
+            slug: item.slug,
+            description: item.description,
+            price: `$${Number(item.price).toFixed(2)}`,
+            category: item.category,
+            dietary: item.dietaryTypes,
+            allergens: item.allergens,
+            nutritionalInfo: item.nutritionalInfo,
+            image: item.image,
+            featured: item.featured,
+            customizationOptions: item.customizationOptions.map((opt) => ({
+              name: opt.name,
+              type: opt.type,
+              required: opt.required,
+              options: opt.options ? JSON.parse(opt.options) : null,
+              priceModifier: opt.priceModifier,
+            })),
+          },
         };
-      }
+      },
+    }),
 
-      const order = sampleOrders.find(
-        (o) => o.id.toLowerCase() === orderId.toLowerCase(),
-      );
+    checkAllergens: tool({
+      description: "Check if a menu item contains specific allergens",
+      inputSchema: checkAllergensSchema,
+      execute: async (params) => {
+        const { itemSlug, allergen } = params;
+        const item = await getMenuItemBySlug(itemSlug);
 
-      if (!order) {
+        if (!item) {
+          return {
+            found: false,
+            message: `Could not find menu item with slug "${itemSlug}"`,
+          };
+        }
+
+        const allergensText = item.allergens?.toLowerCase() || "";
+        const containsAllergen = allergensText.includes(allergen.toLowerCase());
+
         return {
-          found: false,
-          message: `Could not find order with ID "${orderId}". Please check the order ID and try again.`,
+          found: true,
+          itemName: item.name,
+          allergen,
+          containsAllergen,
+          allAllergens: item.allergens,
+          message: containsAllergen
+            ? `Yes, ${item.name} contains ${allergen}.`
+            : `No, ${item.name} does not contain ${allergen}.`,
         };
-      }
-
-      return {
-        found: true,
-        order,
-        message: `Order ${order.id} is ${order.status}. ${
-          order.status === "preparing"
-            ? `Estimated delivery: ${order.estimatedDelivery}`
-            : ""
-        }`,
-      };
-    },
-  }),
-
-  getEstimatedDeliveryTime: tool({
-    description: "Get estimated delivery time for a new order",
-    inputSchema: z.object({
-      address: z.string().describe("Delivery address to check"),
+      },
     }),
-    execute: async ({ address }) => {
-      // Simulated delivery time calculation
-      const baseTime = 30;
-      const variance = Math.floor(Math.random() * 15);
-      const estimatedMinutes = baseTime + variance;
 
-      return {
-        estimatedMinutes,
-        range: `${estimatedMinutes - 5}-${estimatedMinutes + 10} minutes`,
-        message: `Delivery to ${address} is estimated at ${estimatedMinutes - 5}-${estimatedMinutes + 10} minutes.`,
-        deliveryAvailable: true,
-      };
-    },
-  }),
+    getRecommendations: tool({
+      description:
+        "Get personalized menu recommendations based on preferences or popular items",
+      inputSchema: getRecommendationsSchema,
+      execute: async (params) => {
+        const { preference, limit = 4 } = params;
 
-  getRecommendations: tool({
-    description:
-      "Get personalized menu recommendations based on preferences or popular items",
-    inputSchema: z.object({
-      preference: z
-        .string()
-        .describe(
-          "Type of recommendation: popular, vegetarian, healthy, comfort-food, or quick",
-        ),
+        let items = await getMenuItems({ availableOnly: true });
+
+        switch (preference) {
+          case "popular":
+            items = items.filter((item) => item.featured);
+            break;
+          case "vegetarian":
+            items = items.filter(
+              (item) =>
+                item.dietaryTypes.includes("vegetarian") ||
+                item.dietaryTypes.includes("vegan"),
+            );
+            break;
+          case "healthy":
+            items = items.filter(
+              (item) =>
+                item.dietaryTypes.includes("gluten-free") ||
+                item.category === "sides",
+            );
+            break;
+          case "quick":
+            items = items.filter(
+              (item) => item.category === "sides" || item.category === "drinks",
+            );
+            break;
+          default:
+            items = items.filter((item) => item.featured);
+        }
+
+        return {
+          recommendations: items.slice(0, limit).map((item) => ({
+            id: item.id,
+            slug: item.slug,
+            name: item.name,
+            description: item.shortDescription || item.description,
+            price: `$${Number(item.price).toFixed(2)}`,
+            reason: item.featured ? "Customer favorite" : "Chef's pick",
+          })),
+          message: `Here are my top recommendations for ${preference || "you"}:`,
+        };
+      },
     }),
-    execute: async ({ preference }) => {
-      let items = [...menuItems];
 
-      // Apply preference filter
-      switch (preference) {
-        case "popular":
-          items = items.filter((item) => item.popular);
-          break;
-        case "vegetarian":
-          items = items.filter(
-            (item) =>
-              item.dietary.includes("vegetarian") ||
-              item.dietary.includes("vegan"),
-          );
-          break;
-        case "healthy":
-          items = items.filter(
-            (item) =>
-              item.dietary.includes("gluten-free") || item.category === "sides",
-          );
-          break;
-        case "comfort-food":
-          items = items.filter((item) =>
-            [
-              "Mac & Cheese",
-              "Classic Burger",
-              "Loaded Fries",
-              "Tomato Basil Soup",
-            ].includes(item.name),
-          );
-          break;
-        case "quick":
-          items = items.filter(
-            (item) => item.category === "sides" || item.category === "soups",
-          );
-          break;
-        default:
-          items = items.filter((item) => item.popular).slice(0, 3);
-      }
+    // ===== LOCATION TOOLS =====
+    getLocations: tool({
+      description: "Get all available Caspers Kitchen locations",
+      inputSchema: getLocationsSchema,
+      execute: async () => {
+        const locations = await getAllLocations();
 
-      return {
-        recommendations: items.slice(0, 4).map((item) => ({
-          name: item.name,
-          description: item.description,
-          price: `$${item.price.toFixed(2)}`,
-          reason: item.popular ? "Customer favorite" : "Chef's pick",
-        })),
-        message: `Here are my top recommendations for ${preference}:`,
-      };
-    },
-  }),
-};
+        return {
+          locations: locations.map((loc) => ({
+            id: loc.id,
+            name: loc.name,
+            slug: loc.slug,
+            address: loc.address,
+            city: loc.city,
+            state: loc.state,
+            neighborhood: loc.neighborhood,
+            phone: loc.phone,
+            isOpen: isLocationOpen(loc),
+            deliveryFee: `$${loc.deliveryFee}`,
+          })),
+          totalLocations: locations.length,
+        };
+      },
+    }),
+
+    getUserLocation: tool({
+      description: "Get the user's currently selected Caspers Kitchen location",
+      inputSchema: z.object({}),
+      execute: async () => {
+        if (!context.userId) {
+          return {
+            found: false,
+            message:
+              "No location set. Please select a location to see menu availability and delivery options.",
+          };
+        }
+
+        const location = await getUserLocation(context.userId);
+
+        if (!location) {
+          return {
+            found: false,
+            message:
+              "No location set. Please select a location to see menu availability and delivery options.",
+          };
+        }
+
+        return {
+          found: true,
+          location: {
+            id: location.id,
+            name: location.name,
+            slug: location.slug,
+            address: location.address,
+            city: location.city,
+            state: location.state,
+            phone: location.phone,
+            isOpen: isLocationOpen(location),
+            deliveryFee: `$${location.deliveryFee}`,
+          },
+        };
+      },
+    }),
+
+    setUserLocation: tool({
+      description: "Set the user's preferred Caspers Kitchen location",
+      inputSchema: setLocationSchema,
+      execute: async (params) => {
+        if (!context.userId) {
+          return {
+            success: false,
+            message: "You must be signed in to set a preferred location.",
+          };
+        }
+
+        const { locationId } = params;
+        const location = await setUserLocation(context.userId, locationId);
+
+        if (!location) {
+          return {
+            success: false,
+            message: "Could not find location with that ID.",
+          };
+        }
+
+        return {
+          success: true,
+          location: {
+            id: location.id,
+            name: location.name,
+            address: location.address,
+            city: location.city,
+          },
+          message: `Your preferred location is now set to ${location.name}.`,
+        };
+      },
+    }),
+
+    getBusinessHours: tool({
+      description: "Get the business hours for a Caspers Kitchen location",
+      inputSchema: getBusinessHoursSchema,
+      execute: async (params) => {
+        const { locationId, day = "today" } = params;
+
+        let location;
+        if (locationId) {
+          location = await getLocationById(locationId);
+        } else if (context.userId) {
+          location = await getUserLocation(context.userId);
+        }
+
+        if (!location) {
+          // Return default hours if no location
+          const locations = await getAllLocations();
+          if (locations.length === 0) {
+            return {
+              message: "No locations available.",
+            };
+          }
+          location = locations[0];
+        }
+
+        const days = [
+          "sunday",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+        ] as const;
+        const now = new Date();
+        const currentDay = days[now.getDay()];
+        const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+
+        const dayToCheck = day === "today" ? currentDay : day;
+        const hours = location.operatingHours[dayToCheck];
+
+        if (!hours || hours.closed) {
+          return {
+            location: location.name,
+            day: dayToCheck,
+            closed: true,
+            message: `${location.name} is closed on ${dayToCheck}.`,
+          };
+        }
+
+        const isOpen =
+          dayToCheck === currentDay &&
+          currentTime >= hours.open &&
+          currentTime < hours.close;
+
+        return {
+          location: location.name,
+          day: dayToCheck,
+          hours: {
+            open: hours.open,
+            close: hours.close,
+          },
+          isOpen,
+          currentTime: dayToCheck === currentDay ? currentTime : undefined,
+          message: isOpen
+            ? `${location.name} is currently open! Hours: ${hours.open} - ${hours.close}`
+            : `${location.name} hours for ${dayToCheck}: ${hours.open} - ${hours.close}`,
+        };
+      },
+    }),
+
+    getEstimatedDeliveryTime: tool({
+      description: "Get estimated delivery time for a new order",
+      inputSchema: getEstimatedDeliveryTimeSchema,
+      execute: async (params) => {
+        const { locationId } = params;
+        const location = await getLocationById(locationId);
+
+        if (!location) {
+          return {
+            available: false,
+            message: "Location not found.",
+          };
+        }
+
+        // Estimate based on current time and typical preparation
+        const baseTime = 30;
+        const variance = Math.floor(Math.random() * 15);
+        const estimatedMinutes = baseTime + variance;
+
+        return {
+          available: true,
+          locationName: location.name,
+          estimatedMinutes,
+          range: `${estimatedMinutes - 5}-${estimatedMinutes + 10} minutes`,
+          deliveryFee: `$${location.deliveryFee}`,
+          message: `Delivery from ${location.name} is estimated at ${estimatedMinutes - 5}-${estimatedMinutes + 10} minutes.`,
+        };
+      },
+    }),
+
+    // ===== CART TOOLS =====
+    getCart: tool({
+      description: "Get the current contents of the user's shopping cart",
+      inputSchema: z.object({}),
+      execute: async () => {
+        const cart = await getCart(context.userId, context.sessionId);
+
+        if (!cart || cart.items.length === 0) {
+          return {
+            empty: true,
+            items: [],
+            message: "Your cart is empty. Would you like some recommendations?",
+          };
+        }
+
+        const subtotal = cart.items.reduce(
+          (sum, item) => sum + Number(item.unitPrice) * item.quantity,
+          0,
+        );
+
+        return {
+          empty: false,
+          cartId: cart.id,
+          items: cart.items.map((item) => ({
+            id: item.id,
+            menuItemId: item.menuItemId,
+            name: item.menuItem.name,
+            quantity: item.quantity,
+            unitPrice: `$${Number(item.unitPrice).toFixed(2)}`,
+            totalPrice: `$${(Number(item.unitPrice) * item.quantity).toFixed(2)}`,
+            customizations: item.customizations,
+          })),
+          itemCount: cart.items.reduce((sum, item) => sum + item.quantity, 0),
+          subtotal: `$${subtotal.toFixed(2)}`,
+          message: `You have ${cart.items.length} item(s) in your cart totaling $${subtotal.toFixed(2)}.`,
+        };
+      },
+    }),
+
+    addToCart: tool({
+      description: "Add a menu item to the user's shopping cart",
+      inputSchema: addToCartSchema,
+      execute: async (params) => {
+        const { menuItemId, quantity, customizations } = params;
+
+        // Get menu item to verify it exists and get price
+        const [menuItem] = await getMenuItemsByIds([menuItemId]);
+
+        if (!menuItem) {
+          return {
+            success: false,
+            message:
+              "Menu item not found. Please check the item and try again.",
+          };
+        }
+
+        if (!menuItem.isAvailable) {
+          return {
+            success: false,
+            message: `Sorry, ${menuItem.name} is currently unavailable.`,
+          };
+        }
+
+        const cartItem = await addItemToCart({
+          userId: context.userId,
+          sessionId: context.sessionId,
+          menuItemId,
+          quantity,
+          unitPrice: menuItem.price,
+          customizations,
+        });
+
+        return {
+          success: true,
+          cartItem: {
+            id: cartItem.id,
+            name: cartItem.menuItem.name,
+            quantity: cartItem.quantity,
+            unitPrice: `$${Number(cartItem.unitPrice).toFixed(2)}`,
+          },
+          message: `Added ${quantity}x ${menuItem.name} to your cart.`,
+        };
+      },
+    }),
+
+    updateCartItem: tool({
+      description: "Update the quantity of an item in the cart",
+      inputSchema: updateCartItemSchema,
+      execute: async (params) => {
+        const { cartItemId, quantity } = params;
+
+        const updatedItem = await updateCartItemQuantity(cartItemId, quantity);
+
+        return {
+          success: true,
+          cartItem: {
+            id: updatedItem.id,
+            name: updatedItem.menuItem.name,
+            quantity: updatedItem.quantity,
+          },
+          message: `Updated ${updatedItem.menuItem.name} quantity to ${quantity}.`,
+        };
+      },
+    }),
+
+    removeFromCart: tool({
+      description: "Remove an item from the cart",
+      inputSchema: removeFromCartSchema,
+      execute: async (params) => {
+        const { cartItemId } = params;
+
+        await removeCartItem(cartItemId);
+
+        return {
+          success: true,
+          message: "Item removed from cart.",
+        };
+      },
+    }),
+
+    clearCart: tool({
+      description: "Remove all items from the cart",
+      inputSchema: z.object({}),
+      execute: async () => {
+        const cart = await getCart(context.userId, context.sessionId);
+
+        if (!cart) {
+          return {
+            success: true,
+            message: "Cart is already empty.",
+          };
+        }
+
+        await clearCart(cart.id);
+
+        return {
+          success: true,
+          message: "Cart cleared successfully.",
+        };
+      },
+    }),
+
+    // ===== ORDER TOOLS =====
+    getOrderStatus: tool({
+      description: "Get the status of an order by order ID or order number",
+      inputSchema: getOrderStatusSchema,
+      execute: async (params) => {
+        const { orderId, orderNumber } = params;
+
+        let order;
+
+        if (orderId) {
+          order = await getOrder(orderId);
+        } else if (orderNumber) {
+          order = await getOrderByNumber(orderNumber);
+        } else if (context.userId) {
+          // Get latest order for user
+          const orders = await getUserOrders(context.userId);
+          order = orders[0];
+        }
+
+        if (!order) {
+          return {
+            found: false,
+            message:
+              "Could not find order. Please check the order ID or number.",
+          };
+        }
+
+        const statusMessages: Record<string, string> = {
+          pending: "Your order has been received and is being processed.",
+          confirmed: "Your order has been confirmed and will be prepared soon.",
+          preparing: "Your order is being prepared in the kitchen.",
+          ready: "Your order is ready for pickup/delivery.",
+          out_for_delivery: "Your order is on its way!",
+          delivered: "Your order has been delivered.",
+          cancelled: "This order has been cancelled.",
+        };
+
+        return {
+          found: true,
+          order: {
+            id: order.id,
+            orderNumber: order.orderNumber,
+            status: order.status,
+            total: `$${Number(order.total).toFixed(2)}`,
+            itemCount: order.items.length,
+            items: order.items.map((item) => ({
+              name: item.itemName,
+              quantity: item.quantity,
+              price: `$${Number(item.totalPrice).toFixed(2)}`,
+            })),
+            estimatedDelivery:
+              order.estimatedDeliveryTime?.toLocaleTimeString(),
+            createdAt: order.createdAt.toLocaleString(),
+          },
+          message:
+            statusMessages[order.status] || `Order status: ${order.status}`,
+        };
+      },
+    }),
+
+    getUserOrders: tool({
+      description: "Get the user's order history",
+      inputSchema: getUserOrdersSchema,
+      execute: async (params) => {
+        if (!context.userId) {
+          return {
+            success: false,
+            orders: [],
+            message: "You must be signed in to view your order history.",
+          };
+        }
+
+        const { limit = 10 } = params;
+        const orders = await getUserOrders(context.userId);
+        const limitedOrders = orders.slice(0, limit);
+
+        if (limitedOrders.length === 0) {
+          return {
+            success: true,
+            orders: [],
+            message: "You haven't placed any orders yet.",
+          };
+        }
+
+        return {
+          success: true,
+          orders: limitedOrders.map((order) => ({
+            id: order.id,
+            orderNumber: order.orderNumber,
+            status: order.status,
+            total: `$${Number(order.total).toFixed(2)}`,
+            itemCount: order.items.length,
+            createdAt: order.createdAt.toLocaleString(),
+          })),
+          totalOrders: orders.length,
+          message: `Found ${orders.length} order(s) in your history.`,
+        };
+      },
+    }),
+
+    placeOrder: tool({
+      description: "Place an order with items currently in the cart",
+      inputSchema: placeOrderSchema,
+      execute: async (params) => {
+        const cart = await getCart(context.userId, context.sessionId);
+
+        if (!cart || cart.items.length === 0) {
+          return {
+            success: false,
+            message:
+              "Your cart is empty. Add some items before placing an order.",
+          };
+        }
+
+        // Get user's location
+        let locationId: string | null = null;
+        if (context.userId) {
+          const userLoc = await getUserLocation(context.userId);
+          locationId = userLoc?.id ?? null;
+        }
+
+        if (!locationId) {
+          const locations = await getAllLocations();
+          locationId = locations[0]?.id ?? null;
+        }
+
+        if (!locationId) {
+          return {
+            success: false,
+            message: "Please select a location before placing an order.",
+          };
+        }
+
+        const {
+          deliveryAddress,
+          deliveryCity,
+          deliveryState,
+          deliveryZip,
+          deliveryInstructions,
+          paymentMethod,
+          promoCode,
+        } = params;
+
+        const result = await createOrder({
+          userId: context.userId,
+          locationId,
+          cartId: cart.id,
+          deliveryAddress,
+          deliveryCity,
+          deliveryState,
+          deliveryZip,
+          deliveryInstructions,
+          paymentMethod,
+          promoCode,
+        });
+
+        return {
+          success: true,
+          orderId: result.orderId,
+          orderNumber: result.orderNumber,
+          message: `Order ${result.orderNumber} placed successfully! You can track your order status anytime.`,
+        };
+      },
+    }),
+
+    cancelOrder: tool({
+      description: "Cancel an order (only if it hasn't started preparation)",
+      inputSchema: cancelOrderSchema,
+      execute: async (params) => {
+        const { orderId } = params;
+
+        try {
+          await cancelOrder(orderId);
+          return {
+            success: true,
+            message:
+              "Order cancelled successfully. Any payment will be refunded.",
+          };
+        } catch (error) {
+          return {
+            success: false,
+            message:
+              error instanceof Error
+                ? error.message
+                : "Could not cancel order. It may already be in preparation.",
+          };
+        }
+      },
+    }),
+  };
+}
+
+// Re-export tool types from separate file (to avoid circular deps)
+export { TOOL_TYPES, type ToolType } from "./tool-types";
+
+// Default export for API route (creates tools with empty context - context injected at runtime)
+export const kitchenTools = createKitchenTools({});
+
+// Export all tools (alias for backwards compatibility)
+export const allTools = kitchenTools;

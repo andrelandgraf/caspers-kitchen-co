@@ -3,8 +3,8 @@
     "category": "functional",
     "description": "New user receives $100 Databricks welcome credit on first login",
     "steps": [
-      "Create new account and verify email",
-      "Sign in for the first time",
+      "Create new account",
+      "Verify redirect to menu after sign-up",
       "Verify $100 credit is automatically applied to account",
       "Verify welcome toast 'You received $100 welcome credit from Databricks!'",
       "Verify credit balance visible in header/user menu"

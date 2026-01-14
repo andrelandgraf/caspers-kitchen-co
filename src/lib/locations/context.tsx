@@ -33,6 +33,18 @@ const LocationContext = createContext<LocationContextType | undefined>(
 );
 
 const LOCATION_STORAGE_KEY = "caspers-kitchen-location";
+const LOCATION_COOKIE_KEY = "location-id";
+
+function setLocationCookie(locationId: string) {
+  document.cookie = `${LOCATION_COOKIE_KEY}=${locationId}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+}
+
+function getLocationCookie(): string | null {
+  const match = document.cookie.match(
+    new RegExp(`${LOCATION_COOKIE_KEY}=([^;]+)`),
+  );
+  return match ? match[1] : null;
+}
 
 export function LocationProvider({ children }: { children: ReactNode }) {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
@@ -51,6 +63,8 @@ export function LocationProvider({ children }: { children: ReactNode }) {
         if (stored) {
           const location = JSON.parse(stored);
           setCurrentLocation(location);
+          // Sync cookie for SSR
+          setLocationCookie(location.id);
           setIsLoading(false);
           return;
         }
@@ -61,6 +75,8 @@ export function LocationProvider({ children }: { children: ReactNode }) {
           const data = await response.json();
           if (data.location) {
             setCurrentLocation(data.location);
+            // Sync cookie for SSR
+            setLocationCookie(data.location.id);
             setIsLoading(false);
             return;
           }
@@ -83,6 +99,9 @@ export function LocationProvider({ children }: { children: ReactNode }) {
 
     // Save to localStorage
     localStorage.setItem(LOCATION_STORAGE_KEY, JSON.stringify(location));
+
+    // Sync cookie for SSR
+    setLocationCookie(location.id);
 
     // Try to save to user preferences if authenticated
     try {

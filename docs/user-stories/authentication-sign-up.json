@@ -7,8 +7,8 @@
       "Enter first name, last name, email, and password",
       "Confirm password",
       "Submit the form",
-      "Verify success message about checking email",
-      "Verify verification email is sent"
+      "Verify success toast message",
+      "Verify redirect to /menu page"
     ],
     "passes": true
   },
@@ -87,7 +87,7 @@
     "steps": [
       "Sign in as existing user",
       "Navigate to /sign-up page",
-      "Verify redirect to /chats"
+      "Verify redirect to home page"
     ],
     "passes": true
   },

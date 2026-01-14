@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Leaf, Wheat } from "lucide-react";
+import { Leaf, Wheat, UtensilsCrossed } from "lucide-react";
 import type { MenuItemWithRelations } from "@/lib/menu/queries";
 
 interface MenuItemCardProps {
@@ -42,18 +42,18 @@ export function MenuItemCard({ item, onQuickAdd }: MenuItemCardProps) {
   return (
     <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all hover:shadow-lg">
       <Link href={`/menu/${item.slug}`}>
-        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
           {item.image ? (
             <Image
               src={item.image}
               alt={item.name}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-muted-foreground">
-              <span className="text-sm">No image available</span>
+              <UtensilsCrossed className="h-12 w-12 opacity-30" />
             </div>
           )}
           {!item.isAvailable && (

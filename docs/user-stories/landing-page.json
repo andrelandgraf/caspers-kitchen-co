@@ -8,7 +8,7 @@
       "Verify headline 'Comfort food, delivered with warmth' or similar is displayed",
       "Verify subheadline explains ghost kitchen concept briefly",
       "Verify primary CTA 'Order Now' button is prominent",
-      "Verify secondary CTA 'See Our Menu' is available",
+      "Verify secondary CTA 'Sign In' button is available for returning users",
       "Verify warm, inviting food imagery or illustration is displayed",
       "Verify subtle animation (steam, floating elements) adds life"
     ],
@@ -65,21 +65,6 @@
   },
   {
     "category": "functional",
-    "description": "Testimonials section builds trust with customer stories",
-    "steps": [
-      "Scroll to testimonials section",
-      "Verify section heading 'What Our Neighbors Say' or similar",
-      "Verify 2-4 customer testimonials are displayed",
-      "Verify each testimonial shows:",
-      "  - Quote text",
-      "  - Customer name",
-      "  - Optional: customer photo or avatar",
-      "Verify testimonials have cozy, card-style presentation"
-    ],
-    "passes": true
-  },
-  {
-    "category": "functional",
     "description": "Delivery area section shows service coverage",
     "steps": [
       "Scroll to delivery area section",
@@ -92,28 +77,13 @@
   },
   {
     "category": "functional",
-    "description": "Newsletter signup section captures leads",
-    "steps": [
-      "Scroll to newsletter section",
-      "Verify inviting headline like 'Join the Kitchen Family'",
-      "Verify email input field is present",
-      "Verify subscribe button is present",
-      "Verify privacy-friendly messaging",
-      "Verify incentive mention (e.g., '10% off your first order')"
-    ],
-    "passes": true
-  },
-  {
-    "category": "functional",
     "description": "Footer provides essential links and info",
     "steps": [
       "Scroll to footer",
       "Verify Casper's Kitchen logo is displayed",
-      "Verify navigation links: Menu, About, Contact, FAQ",
+      "Verify navigation links: Menu, Locations, Track Order",
       "Verify delivery hours are listed",
-      "Verify contact information (email, phone)",
-      "Verify social media links",
-      "Verify copyright and legal links (Privacy, Terms)"
+      "Verify copyright is displayed"
     ],
     "passes": true
   },

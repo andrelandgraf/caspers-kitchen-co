@@ -16,7 +16,8 @@ export function AddToCartButton({
   price,
   isAvailable,
 }: AddToCartButtonProps) {
-  const { addItem, loading } = useCart();
+  const { addItem, loadingItemId } = useCart();
+  const isLoading = loadingItemId === menuItemId;
 
   const handleClick = async () => {
     await addItem({
@@ -29,20 +30,15 @@ export function AddToCartButton({
 
   if (!isAvailable) {
     return (
-      <Button size="lg" disabled className="w-full md:w-auto">
+      <Button size="lg" disabled>
         Sold Out
       </Button>
     );
   }
 
   return (
-    <Button
-      size="lg"
-      className="w-full md:w-auto"
-      onClick={handleClick}
-      disabled={loading}
-    >
-      {loading ? "Adding..." : "Add to Cart"}
+    <Button size="lg" onClick={handleClick} disabled={isLoading}>
+      {isLoading ? "Adding..." : "Add to Cart"}
     </Button>
   );
 }

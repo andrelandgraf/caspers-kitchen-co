@@ -181,4 +181,16 @@ test.describe("Authentication", () => {
       expect(hasSignIn || hasGetStarted).toBe(true);
     });
   });
+
+  test.describe("Sign In Redirect", () => {
+    // Server-side redirect: authenticated users visiting /sign-in are redirected to /menu
+    // This requires authentication setup to test properly
+    test.skip("authenticated user visiting sign-in is redirected to menu", async ({
+      page,
+    }) => {
+      // Would need authenticated session to test this
+      await page.goto("/sign-in");
+      await expect(page).toHaveURL(/\/menu/);
+    });
+  });
 });

@@ -23,64 +23,40 @@
   },
   {
     "category": "functional",
-    "description": "User can ask about current order status",
+    "description": "User can browse menu through assistant",
     "steps": [
-      "Sign in as user with active order",
       "Open AI assistant",
-      "Ask 'Where is my order?'",
-      "Verify assistant retrieves current order",
-      "Verify response includes order status",
-      "Verify response includes estimated delivery time"
+      "Ask 'What's on the menu?'",
+      "Verify assistant uses getMenu tool",
+      "Verify response lists menu items with names, descriptions, and prices",
+      "Ask 'Show me just the mains'",
+      "Verify filtered results by category"
     ],
     "passes": false
   },
   {
     "category": "functional",
-    "description": "User can ask about past orders",
+    "description": "User can filter menu by dietary preferences",
     "steps": [
-      "Sign in as user with order history",
       "Open AI assistant",
-      "Ask 'What did I order last time?'",
-      "Verify assistant retrieves last order",
-      "Verify response includes items ordered",
-      "Verify response includes order date"
+      "Ask 'Do you have vegetarian options?'",
+      "Verify assistant uses getMenu tool with dietary filter",
+      "Verify only vegetarian/vegan items returned",
+      "Ask 'What about gluten-free?'",
+      "Verify gluten-free items listed"
     ],
     "passes": false
   },
   {
     "category": "functional",
-    "description": "User can ask about specific past order",
+    "description": "User can get menu item details",
     "steps": [
       "Open AI assistant",
-      "Ask 'Show me order #12345'",
-      "Verify assistant retrieves specific order",
-      "Verify full order details displayed",
-      "Verify option to reorder"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "User can get menu recommendations",
-    "steps": [
-      "Open AI assistant",
-      "Ask 'What should I order for dinner?'",
-      "Verify assistant suggests menu items",
-      "Verify suggestions include descriptions",
-      "Ask for vegetarian options",
-      "Verify filtered recommendations"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "User can ask about dietary options",
-    "steps": [
-      "Open AI assistant",
-      "Ask 'Do you have gluten-free options?'",
-      "Verify assistant lists gluten-free items",
-      "Ask 'Is the mac and cheese vegetarian?'",
-      "Verify assistant provides accurate info"
+      "Ask 'Tell me about the Classic Burger'",
+      "Verify assistant uses getMenuItemDetails tool",
+      "Verify response includes description, price, ingredients",
+      "Verify dietary information displayed",
+      "Verify any customization options shown"
     ],
     "passes": false
   },
@@ -90,62 +66,23 @@
     "steps": [
       "Open AI assistant",
       "Ask 'Does the soup contain nuts?'",
-      "Verify assistant checks item allergen info",
+      "Verify assistant uses checkAllergens tool",
       "Verify accurate allergen response",
       "Ask 'What ingredients are in the burger?'",
-      "Verify ingredient list provided"
+      "Verify ingredient list provided from getMenuItemDetails"
     ],
     "passes": false
   },
   {
     "category": "functional",
-    "description": "User can modify or cancel order via assistant",
-    "steps": [
-      "Sign in with active order (status: Received)",
-      "Open AI assistant",
-      "Ask 'Can I cancel my order?'",
-      "Verify assistant checks order status",
-      "Verify assistant offers cancellation option",
-      "Confirm cancellation",
-      "Verify order is cancelled"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "User can add items to cart via assistant",
+    "description": "User can get menu recommendations",
     "steps": [
       "Open AI assistant",
-      "Ask 'Add a large fries to my cart'",
-      "Verify assistant confirms item",
-      "Verify item added to cart",
-      "Verify cart count updates"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "User can place order via assistant",
-    "steps": [
-      "Add items to cart",
-      "Open AI assistant",
-      "Say 'I want to checkout'",
-      "Verify assistant guides through checkout",
-      "Confirm delivery address",
-      "Confirm payment",
-      "Verify order is placed"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "User can ask about delivery times",
-    "steps": [
-      "Open AI assistant",
-      "Ask 'How long will delivery take?'",
-      "Verify assistant provides estimated time",
-      "Ask 'Do you deliver to [address]?'",
-      "Verify assistant checks delivery zone"
+      "Ask 'What should I order for dinner?'",
+      "Verify assistant uses getRecommendations tool",
+      "Verify suggestions include names, descriptions, prices",
+      "Ask for vegetarian options",
+      "Verify filtered recommendations"
     ],
     "passes": false
   },
@@ -155,22 +92,265 @@
     "steps": [
       "Open AI assistant",
       "Ask 'Are you open right now?'",
-      "Verify assistant provides current status",
-      "Ask 'What are your hours?'",
-      "Verify operating hours displayed"
+      "Verify assistant uses getBusinessHours tool",
+      "Verify response includes current open/closed status",
+      "Ask 'What are your hours on Saturday?'",
+      "Verify specific day hours displayed"
     ],
     "passes": false
   },
   {
     "category": "functional",
-    "description": "User can report order issue",
+    "description": "User can view available locations",
     "steps": [
       "Open AI assistant",
-      "Say 'My order is missing an item'",
-      "Verify assistant asks for order details",
+      "Ask 'What locations do you have?'",
+      "Verify assistant uses getLocations tool",
+      "Verify list of locations with addresses shown",
+      "Verify each location shows if currently open"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can set preferred location via assistant",
+    "steps": [
+      "Sign in as user",
+      "Open AI assistant",
+      "Ask 'Set my location to San Francisco'",
+      "Verify assistant uses setUserLocation tool",
+      "Verify confirmation of location change",
+      "Ask 'What's my current location?'",
+      "Verify getUserLocation returns the set location"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can check delivery time estimate",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'How long would delivery take?'",
+      "Verify assistant uses getEstimatedDeliveryTime tool",
+      "Verify response includes time range estimate",
+      "Verify delivery fee is mentioned"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can add item to cart via assistant",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'Add a Classic Burger to my cart'",
+      "Verify assistant uses addToCart tool",
+      "Verify confirmation message with item name and quantity",
+      "Verify cart count updates in UI",
+      "Ask 'Add 2 more Loaded Fries'",
+      "Verify multiple items added successfully"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can view cart contents via assistant",
+    "steps": [
+      "Add items to cart",
+      "Open AI assistant",
+      "Ask 'What's in my cart?'",
+      "Verify assistant uses getCart tool",
+      "Verify response lists all items with quantities and prices",
+      "Verify subtotal is shown"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can update cart item quantity via assistant",
+    "steps": [
+      "Add item to cart",
+      "Open AI assistant",
+      "Ask 'Change the burger quantity to 3'",
+      "Verify assistant uses updateCartItem tool",
+      "Verify confirmation of quantity change",
+      "Verify updated total reflected"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can remove item from cart via assistant",
+    "steps": [
+      "Add multiple items to cart",
+      "Open AI assistant",
+      "Ask 'Remove the fries from my cart'",
+      "Verify assistant uses removeFromCart tool",
+      "Verify confirmation of removal",
+      "Ask 'What's in my cart now?'",
+      "Verify item no longer listed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can clear entire cart via assistant",
+    "steps": [
+      "Add multiple items to cart",
+      "Open AI assistant",
+      "Ask 'Clear my cart'",
+      "Verify assistant uses clearCart tool",
+      "Verify confirmation message",
+      "Ask 'What's in my cart?'",
+      "Verify cart is empty"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can place order via assistant",
+    "steps": [
+      "Add items to cart",
+      "Open AI assistant",
+      "Say 'I want to place my order'",
+      "Verify assistant asks for delivery address",
+      "Provide address details",
+      "Verify assistant uses placeOrder tool",
+      "Verify order confirmation with order number",
+      "Verify cart is cleared after order"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User cannot place order with empty cart",
+    "steps": [
+      "Ensure cart is empty",
+      "Open AI assistant",
+      "Say 'Place my order'",
+      "Verify assistant checks cart with getCart",
+      "Verify assistant explains cart is empty",
+      "Verify assistant suggests adding items or browsing menu"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can check current order status",
+    "steps": [
+      "Sign in as user with active order",
+      "Open AI assistant",
+      "Ask 'Where is my order?'",
+      "Verify assistant uses getOrderStatus tool",
+      "Verify response includes order status",
+      "Verify response includes estimated delivery time"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can check order status by order number",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'What's the status of order CK-20240110-1234?'",
+      "Verify assistant uses getOrderStatus with orderNumber",
+      "Verify order details returned",
+      "Verify items and total shown"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can view order history via assistant",
+    "steps": [
+      "Sign in as user with order history",
+      "Open AI assistant",
+      "Ask 'Show me my past orders'",
+      "Verify assistant uses getUserOrders tool",
+      "Verify list of orders with dates and totals",
+      "Ask 'What did I order last time?'",
+      "Verify most recent order details shown"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Guest user can view orders by order number",
+    "steps": [
+      "Ensure not signed in",
+      "Open AI assistant",
+      "Ask about order status",
+      "Verify assistant asks for order number",
       "Provide order number",
-      "Verify assistant logs issue",
-      "Verify option to get refund or replacement"
+      "Verify assistant retrieves order details"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User can cancel pending order via assistant",
+    "steps": [
+      "Sign in with pending order",
+      "Open AI assistant",
+      "Ask 'Can I cancel my order?'",
+      "Verify assistant checks order status",
+      "Verify assistant offers cancellation for eligible orders",
+      "Confirm cancellation",
+      "Verify assistant uses cancelOrder tool",
+      "Verify cancellation confirmed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User cannot cancel order in preparation",
+    "steps": [
+      "Sign in with order status 'preparing'",
+      "Open AI assistant",
+      "Ask 'Cancel my order'",
+      "Verify assistant uses cancelOrder tool",
+      "Verify appropriate error message",
+      "Verify assistant explains order is too far along"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Assistant guides user through complete ordering flow",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'I'd like to order dinner'",
+      "Verify assistant offers recommendations or asks preferences",
+      "Select an item to add",
+      "Verify item added to cart",
+      "Say 'That's all, I want to checkout'",
+      "Verify assistant asks for delivery details",
+      "Provide address",
+      "Verify order placed successfully"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Assistant handles unavailable items gracefully",
+    "steps": [
+      "Open AI assistant",
+      "Try to add an unavailable item",
+      "Verify assistant uses addToCart tool",
+      "Verify assistant explains item is unavailable",
+      "Verify assistant suggests alternatives"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Assistant maintains conversation context",
+    "steps": [
+      "Open AI assistant",
+      "Ask 'What soups do you have?'",
+      "Receive soup list",
+      "Ask 'Add the first one to my cart'",
+      "Verify assistant understands 'first one' refers to soup",
+      "Verify correct item added to cart"
     ],
     "passes": false
   },
@@ -183,44 +363,6 @@
       "Verify assistant politely redirects",
       "Verify assistant offers relevant suggestions",
       "Verify no error or crash"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "Assistant maintains conversation context",
-    "steps": [
-      "Open AI assistant",
-      "Ask 'What soups do you have?'",
-      "Receive soup list",
-      "Ask 'Is the first one spicy?'",
-      "Verify assistant understands 'first one' refers to soup",
-      "Verify accurate response about soup"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "Guest user assistant functionality",
-    "steps": [
-      "Ensure not signed in",
-      "Open AI assistant",
-      "Ask about menu items",
-      "Verify assistant responds",
-      "Ask about order status",
-      "Verify assistant asks for order number and email"
-    ],
-    "passes": false
-  },
-  {
-    "category": "functional",
-    "description": "Assistant provides quick action buttons",
-    "steps": [
-      "Open AI assistant",
-      "Receive response about an order",
-      "Verify quick action buttons (Track Order, Contact Support)",
-      "Click quick action",
-      "Verify appropriate action taken"
     ],
     "passes": false
   },
@@ -250,6 +392,31 @@
     "passes": false
   },
   {
+    "category": "functional",
+    "description": "Guest user can add to cart via assistant",
+    "steps": [
+      "Ensure not signed in",
+      "Open AI assistant",
+      "Ask 'Add a burger to my cart'",
+      "Verify assistant uses addToCart with sessionId",
+      "Verify item added successfully",
+      "Verify cart persists via session"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Assistant provides quick action buttons",
+    "steps": [
+      "Open AI assistant",
+      "Receive response about an order",
+      "Verify quick action buttons (Track Order, Contact Support)",
+      "Click quick action",
+      "Verify appropriate action taken"
+    ],
+    "passes": false
+  },
+  {
     "category": "ui",
     "description": "Assistant chat interface is user-friendly",
     "steps": [
@@ -259,6 +426,29 @@
       "Verify assistant messages aligned left",
       "Verify timestamps on messages",
       "Verify typing indicator when assistant is thinking"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Tool usage is indicated to user",
+    "steps": [
+      "Open AI assistant",
+      "Ask a question that triggers a tool",
+      "Verify tool indicator shown (e.g., 'Looking up menu...')",
+      "Verify smooth transition to response"
+    ],
+    "passes": false
+  },
+  {
+    "category": "ui",
+    "description": "Cart changes reflect in UI immediately",
+    "steps": [
+      "Open AI assistant alongside cart icon",
+      "Add item via assistant",
+      "Verify cart badge updates in real-time",
+      "Open cart drawer",
+      "Verify new item appears"
     ],
     "passes": false
   },
@@ -320,6 +510,30 @@
       "Verify error message displayed",
       "Reconnect network",
       "Verify retry option or auto-retry"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Cart operations work for signed-in users",
+    "steps": [
+      "Sign in as user",
+      "Open AI assistant",
+      "Add item to cart",
+      "Sign out and sign back in",
+      "Verify cart persists across sessions"
+    ],
+    "passes": false
+  },
+  {
+    "category": "edge-case",
+    "description": "Guest cart merges on sign-in",
+    "steps": [
+      "As guest, add items to cart via assistant",
+      "Sign in",
+      "Open AI assistant",
+      "Ask 'What's in my cart?'",
+      "Verify guest cart items merged with user cart"
     ],
     "passes": false
   },

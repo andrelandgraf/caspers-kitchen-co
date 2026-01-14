@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useSession, signOut } from "@/lib/auth/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -19,10 +20,16 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function UserMenu() {
+  const [mounted, setMounted] = useState(false);
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
-  if (isPending) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Show skeleton during SSR and before mount to prevent hydration mismatch
+  if (!mounted || isPending) {
     return <Skeleton className="size-9 rounded-full" />;
   }
 

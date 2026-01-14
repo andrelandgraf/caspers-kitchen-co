@@ -1,8 +1,9 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, UIMessage, UIMessageChunk } from "ai";
 import { useState, useRef, useEffect, useMemo } from "react";
+import { useChat } from "@ai-sdk/react";
+import { WorkflowChatTransport } from "@workflow/ai";
+import { v7 as uuidv7 } from "uuid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,12 +16,13 @@ import {
 } from "@/components/ui/sheet";
 import { Send, ChefHat, X, RotateCcw, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { ChatAgentUIMessage } from "@/lib/chat/types";
 
 const suggestedPrompts = [
   "What's on the menu?",
-  "Do you have vegetarian options?",
-  "What are your hours?",
-  "Track my order",
+  "Add Nashville Hot Chicken Sandwich to my cart",
+  "What locations do you have?",
+  "Place my order",
 ];
 
 type ChatPanelProps = {
@@ -28,64 +30,62 @@ type ChatPanelProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-// Custom transport that captures conversation ID from response headers
-class ConversationChatTransport extends DefaultChatTransport<UIMessage> {
-  private onConversationId: (id: string) => void;
-  private conversationId: string | null;
-
-  constructor(options: {
-    conversationId: string | null;
-    onConversationId: (id: string) => void;
-  }) {
-    super({
-      api: "/api/chat",
-      body: { conversationId: options.conversationId },
-    });
-    this.conversationId = options.conversationId;
-    this.onConversationId = options.onConversationId;
-  }
-
-  override async sendMessages(
-    options: Parameters<DefaultChatTransport<UIMessage>["sendMessages"]>[0],
-  ): Promise<ReadableStream<UIMessageChunk>> {
-    // Override to intercept response and extract conversation ID
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: options.messages,
-        conversationId: this.conversationId,
-      }),
-      signal: options.abortSignal,
-    });
-
-    const newConversationId = response.headers.get("X-Conversation-Id");
-    if (newConversationId && !this.conversationId) {
-      this.onConversationId(newConversationId);
-    }
-
-    // Process the response stream using the parent class method
-    return this["processResponseStream"](response.body!);
-  }
-}
-
 export function ChatPanel({ open, onOpenChange }: ChatPanelProps) {
-  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [chatId, setChatId] = useState<string>(() => uuidv7());
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const activeRunIdRef = useRef<string | undefined>(undefined);
 
-  const chatTransport = useMemo(
+  // Memoize transport to prevent recreation on every render
+  const transport = useMemo(
     () =>
-      new ConversationChatTransport({
-        conversationId,
-        onConversationId: setConversationId,
+      new WorkflowChatTransport({
+        // Send new messages
+        prepareSendMessagesRequest: ({ messages }) => ({
+          api: `/api/chats/${chatId}/messages`,
+          body: {
+            chatId,
+            message: messages[messages.length - 1],
+          },
+        }),
+
+        // Store the workflow run ID when a message is sent
+        onChatSendMessage: (response) => {
+          const workflowRunId = response.headers.get("x-workflow-run-id");
+          if (workflowRunId) {
+            activeRunIdRef.current = workflowRunId;
+          }
+        },
+
+        // Configure reconnection to use the ref for the latest value
+        prepareReconnectToStreamRequest: ({ api, ...rest }) => {
+          const currentRunId = activeRunIdRef.current;
+          if (!currentRunId) {
+            throw new Error("No active workflow run ID found for reconnection");
+          }
+          return {
+            ...rest,
+            api: `/api/chats/${chatId}/messages/${encodeURIComponent(currentRunId)}/stream`,
+          };
+        },
+
+        // Clear the workflow run ID when the chat stream ends
+        onChatEnd: () => {
+          activeRunIdRef.current = undefined;
+        },
+
+        // Retry up to 5 times on reconnection errors
+        maxConsecutiveErrors: 5,
       }),
-    [conversationId],
+    [chatId],
   );
 
-  const { messages, sendMessage, status, setMessages } = useChat({
-    transport: chatTransport,
-  });
+  const { messages, sendMessage, status, setMessages } =
+    useChat<ChatAgentUIMessage>({
+      transport,
+      id: chatId,
+      generateId: () => uuidv7(),
+    });
 
   const [input, setInput] = useState("");
 
@@ -105,7 +105,8 @@ export function ChatPanel({ open, onOpenChange }: ChatPanelProps) {
 
   const handleNewConversation = () => {
     setMessages([]);
-    setConversationId(null);
+    setChatId(uuidv7());
+    activeRunIdRef.current = undefined;
   };
 
   // Auto-scroll to bottom when new messages arrive
@@ -256,7 +257,11 @@ type MessageBubbleProps = {
       type: string;
       text?: string;
       toolName?: string;
+      toolCallId?: string;
+      args?: unknown;
       result?: unknown;
+      output?: unknown;
+      state?: string;
     }>;
   };
 };
@@ -273,7 +278,14 @@ function MessageBubble({ message }: MessageBubbleProps) {
         )}
       >
         {message.parts?.map((part, index) => {
-          if (part.type === "text" && part.text) {
+          // Skip step markers
+          if (part.type === "step-start") {
+            return null;
+          }
+
+          // Handle text parts (including streaming)
+          if (part.type === "text") {
+            if (!part.text) return null; // Skip empty text during streaming
             return (
               <p
                 key={index}
@@ -283,19 +295,550 @@ function MessageBubble({ message }: MessageBubbleProps) {
               </p>
             );
           }
-          if (part.type === "tool-invocation" && part.toolName) {
+
+          // Handle tool parts - check state property for completed tools
+          // State can be "call", "partial-call", or "result" (also check for output-available)
+          const isToolResult =
+            part.type.startsWith("tool-") &&
+            (part.state === "result" ||
+              part.state === "output-available" ||
+              (part.result !== undefined && part.result !== null));
+
+          if (isToolResult) {
+            const toolName = part.type.replace("tool-", "");
+            const output = (part.result ?? part.output) as Record<
+              string,
+              unknown
+            >;
+
+            // Render menu items
+            if (toolName === "getMenu" && output?.items) {
+              return <MenuItemsDisplay key={index} output={output} />;
+            }
+
+            // Render recommendations
+            if (toolName === "getRecommendations" && output?.recommendations) {
+              return <RecommendationsDisplay key={index} output={output} />;
+            }
+
+            // Render cart
+            if (toolName === "getCart" && output) {
+              return <CartDisplay key={index} output={output} />;
+            }
+
+            // Render add to cart confirmation
+            if (toolName === "addToCart" && output) {
+              return <AddToCartDisplay key={index} output={output} />;
+            }
+
+            // Render locations
+            if (toolName === "getLocations" && output?.locations) {
+              return <LocationsDisplay key={index} output={output} />;
+            }
+
+            // Render user location
+            if (toolName === "getUserLocation" && output) {
+              return <UserLocationDisplay key={index} output={output} />;
+            }
+
+            // Render set location
+            if (toolName === "setUserLocation" && output) {
+              return <SetLocationDisplay key={index} output={output} />;
+            }
+
+            // Render order status
+            if (toolName === "getOrderStatus" && output) {
+              return <OrderStatusDisplay key={index} output={output} />;
+            }
+
+            // Render user orders
+            if (toolName === "getUserOrders" && output) {
+              return <UserOrdersDisplay key={index} output={output} />;
+            }
+
+            // Render place order confirmation
+            if (toolName === "placeOrder" && output) {
+              return <PlaceOrderDisplay key={index} output={output} />;
+            }
+
+            // Default: just show indicator for other tools
+            return (
+              <div
+                key={index}
+                className="text-xs text-muted-foreground/70 italic mt-1 flex items-center gap-1"
+              >
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500" />
+                {formatToolName(toolName)}
+              </div>
+            );
+          }
+
+          // Handle tool in progress - state is "call" or "partial-call" or no result yet
+          const isToolInProgress =
+            part.type.startsWith("tool-") &&
+            !isToolResult &&
+            (part.state === "call" ||
+              part.state === "partial-call" ||
+              part.state === undefined);
+
+          if (isToolInProgress) {
+            const toolName = part.type.replace("tool-", "");
             return (
               <div
                 key={index}
                 className="text-xs text-muted-foreground/70 italic mt-1 flex items-center gap-1"
               >
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary/50 animate-pulse" />
-                Looking up {formatToolName(part.toolName)}...
+                Looking up {formatToolName(toolName)}...
               </div>
             );
           }
+
           return null;
         })}
+      </div>
+    </div>
+  );
+}
+
+type MenuItem = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  price: string;
+  category: string;
+  dietary: string[];
+  featured?: boolean;
+};
+
+function MenuItemsDisplay({ output }: { output: Record<string, unknown> }) {
+  const items = output.items as MenuItem[];
+  const hasMore = output.hasMore as boolean;
+  const totalItems = output.totalItems as number;
+
+  return (
+    <div className="mt-2 space-y-2">
+      <div className="grid gap-2">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="p-2 rounded-lg bg-background/50 border border-border/30"
+          >
+            <div className="flex justify-between items-start gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-medium text-sm truncate">
+                    {item.name}
+                  </span>
+                  {item.featured && (
+                    <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+                      Popular
+                    </span>
+                  )}
+                </div>
+                {item.description && (
+                  <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                    {item.description}
+                  </p>
+                )}
+                {item.dietary.length > 0 && (
+                  <div className="flex gap-1 mt-1">
+                    {item.dietary.map((d) => (
+                      <span
+                        key={d}
+                        className="text-[10px] bg-muted-foreground/10 px-1.5 py-0.5 rounded"
+                      >
+                        {d}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <span className="text-sm font-medium text-primary whitespace-nowrap">
+                {item.price}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      {hasMore && (
+        <p className="text-xs text-muted-foreground text-center">
+          Showing {items.length} of {totalItems} items
+        </p>
+      )}
+    </div>
+  );
+}
+
+function RecommendationsDisplay({
+  output,
+}: {
+  output: Record<string, unknown>;
+}) {
+  const recommendations = output.recommendations as Array<{
+    id: string;
+    name: string;
+    description?: string;
+    price: string;
+    reason?: string;
+  }>;
+
+  return (
+    <div className="mt-2 space-y-2">
+      {recommendations.map((item) => (
+        <div
+          key={item.id}
+          className="p-2 rounded-lg bg-background/50 border border-border/30"
+        >
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex-1">
+              <span className="font-medium text-sm">{item.name}</span>
+              {item.reason && (
+                <span className="text-[10px] ml-1.5 text-muted-foreground">
+                  {item.reason}
+                </span>
+              )}
+              {item.description && (
+                <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                  {item.description}
+                </p>
+              )}
+            </div>
+            <span className="text-sm font-medium text-primary">
+              {item.price}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CartDisplay({ output }: { output: Record<string, unknown> }) {
+  if (output.empty) {
+    return (
+      <p className="text-sm text-muted-foreground mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  const items = output.items as Array<{
+    id: string;
+    name: string;
+    quantity: number;
+    unitPrice: string;
+    totalPrice: string;
+  }>;
+
+  return (
+    <div className="mt-2 space-y-2">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="flex justify-between items-center text-sm p-2 rounded-lg bg-background/50 border border-border/30"
+        >
+          <span>
+            {item.quantity}x {item.name}
+          </span>
+          <span className="font-medium text-primary">{item.totalPrice}</span>
+        </div>
+      ))}
+      <div className="flex justify-between items-center text-sm font-medium pt-1 border-t border-border/30">
+        <span>Subtotal</span>
+        <span className="text-primary">{output.subtotal as string}</span>
+      </div>
+    </div>
+  );
+}
+
+function AddToCartDisplay({ output }: { output: Record<string, unknown> }) {
+  if (!output.success) {
+    return (
+      <p className="text-sm text-destructive mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  const cartItem = output.cartItem as {
+    name: string;
+    quantity: number;
+    unitPrice: string;
+  };
+
+  return (
+    <div className="mt-2 p-2 rounded-lg bg-green-500/10 border border-green-500/30">
+      <div className="flex items-center gap-2 text-sm">
+        <span className="text-green-600">Added to cart:</span>
+        <span className="font-medium">
+          {cartItem.quantity}x {cartItem.name}
+        </span>
+        <span className="text-muted-foreground">({cartItem.unitPrice})</span>
+      </div>
+    </div>
+  );
+}
+
+function LocationsDisplay({ output }: { output: Record<string, unknown> }) {
+  const locations = output.locations as Array<{
+    id: string;
+    name: string;
+    city: string;
+    address: string;
+    isOpen: boolean;
+    deliveryFee: string;
+  }>;
+
+  return (
+    <div className="mt-2 space-y-2">
+      {locations.map((location) => (
+        <div
+          key={location.id}
+          className="p-2 rounded-lg bg-background/50 border border-border/30"
+        >
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">{location.name}</span>
+                <span
+                  className={cn(
+                    "text-[10px] px-1.5 py-0.5 rounded-full",
+                    location.isOpen
+                      ? "bg-green-500/20 text-green-600"
+                      : "bg-red-500/20 text-red-600",
+                  )}
+                >
+                  {location.isOpen ? "Open" : "Closed"}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {location.address}
+              </p>
+            </div>
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
+              {location.deliveryFee} delivery
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function UserLocationDisplay({ output }: { output: Record<string, unknown> }) {
+  if (!output.found) {
+    return (
+      <p className="text-sm text-muted-foreground mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  const location = output.location as {
+    name: string;
+    address: string;
+    city: string;
+    isOpen: boolean;
+    deliveryFee: string;
+  };
+
+  return (
+    <div className="mt-2 p-2 rounded-lg bg-background/50 border border-border/30">
+      <div className="flex items-center gap-2 text-sm">
+        <span className="text-muted-foreground">Your location:</span>
+        <span className="font-medium">{location.name}</span>
+        <span
+          className={cn(
+            "text-[10px] px-1.5 py-0.5 rounded-full",
+            location.isOpen
+              ? "bg-green-500/20 text-green-600"
+              : "bg-red-500/20 text-red-600",
+          )}
+        >
+          {location.isOpen ? "Open" : "Closed"}
+        </span>
+      </div>
+      <p className="text-xs text-muted-foreground mt-0.5">{location.address}</p>
+    </div>
+  );
+}
+
+function SetLocationDisplay({ output }: { output: Record<string, unknown> }) {
+  if (!output.success) {
+    return (
+      <p className="text-sm text-destructive mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  const location = output.location as {
+    name: string;
+    city: string;
+  };
+
+  return (
+    <div className="mt-2 p-2 rounded-lg bg-green-500/10 border border-green-500/30">
+      <div className="flex items-center gap-2 text-sm text-green-600">
+        <span>Location set to:</span>
+        <span className="font-medium">{location.name}</span>
+      </div>
+    </div>
+  );
+}
+
+function OrderStatusDisplay({ output }: { output: Record<string, unknown> }) {
+  if (!output.found) {
+    return (
+      <p className="text-sm text-muted-foreground mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  const order = output.order as {
+    orderNumber: string;
+    status: string;
+    total: string;
+    items: Array<{ name: string; quantity: number; price: string }>;
+    estimatedDelivery?: string;
+  };
+
+  const statusColors: Record<string, string> = {
+    pending: "bg-yellow-500/20 text-yellow-600",
+    confirmed: "bg-blue-500/20 text-blue-600",
+    preparing: "bg-orange-500/20 text-orange-600",
+    ready: "bg-green-500/20 text-green-600",
+    out_for_delivery: "bg-purple-500/20 text-purple-600",
+    delivered: "bg-green-500/20 text-green-600",
+    cancelled: "bg-red-500/20 text-red-600",
+  };
+
+  return (
+    <div className="mt-2 p-2 rounded-lg bg-background/50 border border-border/30 space-y-2">
+      <div className="flex justify-between items-center">
+        <span className="font-medium text-sm">Order {order.orderNumber}</span>
+        <span
+          className={cn(
+            "text-[10px] px-1.5 py-0.5 rounded-full capitalize",
+            statusColors[order.status] || "bg-muted text-muted-foreground",
+          )}
+        >
+          {order.status.replace("_", " ")}
+        </span>
+      </div>
+      <div className="space-y-1">
+        {order.items.map((item, i) => (
+          <div key={i} className="flex justify-between text-xs">
+            <span>
+              {item.quantity}x {item.name}
+            </span>
+            <span className="text-muted-foreground">{item.price}</span>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between items-center text-sm font-medium pt-1 border-t border-border/30">
+        <span>Total</span>
+        <span className="text-primary">{order.total}</span>
+      </div>
+      {order.estimatedDelivery && (
+        <p className="text-xs text-muted-foreground">
+          ETA: {order.estimatedDelivery}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function UserOrdersDisplay({ output }: { output: Record<string, unknown> }) {
+  if (!output.success) {
+    return (
+      <p className="text-sm text-muted-foreground mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  const orders = output.orders as Array<{
+    orderNumber: string;
+    status: string;
+    total: string;
+    itemCount: number;
+    createdAt: string;
+  }>;
+
+  if (orders.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  const statusColors: Record<string, string> = {
+    pending: "bg-yellow-500/20 text-yellow-600",
+    confirmed: "bg-blue-500/20 text-blue-600",
+    preparing: "bg-orange-500/20 text-orange-600",
+    ready: "bg-green-500/20 text-green-600",
+    out_for_delivery: "bg-purple-500/20 text-purple-600",
+    delivered: "bg-green-500/20 text-green-600",
+    cancelled: "bg-red-500/20 text-red-600",
+  };
+
+  return (
+    <div className="mt-2 space-y-2">
+      {orders.map((order) => (
+        <div
+          key={order.orderNumber}
+          className="p-2 rounded-lg bg-background/50 border border-border/30"
+        >
+          <div className="flex justify-between items-start gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">{order.orderNumber}</span>
+                <span
+                  className={cn(
+                    "text-[10px] px-1.5 py-0.5 rounded-full capitalize",
+                    statusColors[order.status] ||
+                      "bg-muted text-muted-foreground",
+                  )}
+                >
+                  {order.status.replace("_", " ")}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {order.itemCount} items &bull; {order.createdAt}
+              </p>
+            </div>
+            <span className="font-medium text-sm text-primary">
+              {order.total}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PlaceOrderDisplay({ output }: { output: Record<string, unknown> }) {
+  if (!output.success) {
+    return (
+      <p className="text-sm text-destructive mt-1">
+        {output.message as string}
+      </p>
+    );
+  }
+
+  return (
+    <div className="mt-2 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+      <div className="text-center space-y-1">
+        <p className="text-sm font-medium text-green-600">Order Placed!</p>
+        <p className="text-lg font-bold">{output.orderNumber as string}</p>
+        <p className="text-xs text-muted-foreground">
+          {output.message as string}
+        </p>
       </div>
     </div>
   );
@@ -319,13 +862,28 @@ function TypingIndicator() {
 
 function formatToolName(toolName: string): string {
   const names: Record<string, string> = {
+    // Menu tools
     getMenu: "menu",
     getMenuItemDetails: "item details",
     checkAllergens: "allergen info",
-    getBusinessHours: "business hours",
-    getOrderStatus: "order status",
-    getEstimatedDeliveryTime: "delivery estimate",
     getRecommendations: "recommendations",
+    // Location tools
+    getLocations: "locations",
+    getUserLocation: "your location",
+    setUserLocation: "setting location",
+    getBusinessHours: "business hours",
+    getEstimatedDeliveryTime: "delivery estimate",
+    // Cart tools
+    getCart: "your cart",
+    addToCart: "adding to cart",
+    updateCartItem: "updating cart",
+    removeFromCart: "removing from cart",
+    clearCart: "clearing cart",
+    // Order tools
+    getOrderStatus: "order status",
+    getUserOrders: "your orders",
+    placeOrder: "placing order",
+    cancelOrder: "cancelling order",
   };
   return names[toolName] ?? toolName;
 }

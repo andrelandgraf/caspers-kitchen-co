@@ -1,13 +1,13 @@
 import { db } from "@/lib/db/client";
 import { menuItems, menuItemDietaryTypes } from "@/lib/menu/schema";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 
 async function seed() {
   console.log("Seeding menu items...");
 
   const items = [
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Classic Mac & Cheese",
       slug: "classic-mac-cheese",
       description:
@@ -20,7 +20,7 @@ async function seed() {
       dietaryTypes: ["vegetarian"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Homestyle Meatloaf",
       slug: "homestyle-meatloaf",
       description:
@@ -33,7 +33,7 @@ async function seed() {
       dietaryTypes: [],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Crispy Chicken Tenders",
       slug: "crispy-chicken-tenders",
       description:
@@ -46,7 +46,7 @@ async function seed() {
       dietaryTypes: [],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Veggie Buddha Bowl",
       slug: "veggie-buddha-bowl",
       description:
@@ -59,7 +59,7 @@ async function seed() {
       dietaryTypes: ["vegetarian", "vegan"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Loaded Cheese Fries",
       slug: "loaded-cheese-fries",
       description:
@@ -72,7 +72,7 @@ async function seed() {
       dietaryTypes: [],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Garden Fresh Salad",
       slug: "garden-fresh-salad",
       description:
@@ -85,7 +85,7 @@ async function seed() {
       dietaryTypes: ["vegetarian", "vegan", "gluten-free"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Garlic Parmesan Wings",
       slug: "garlic-parmesan-wings",
       description:
@@ -97,7 +97,7 @@ async function seed() {
       dietaryTypes: [],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Sweet Potato Fries",
       slug: "sweet-potato-fries",
       description:
@@ -109,7 +109,7 @@ async function seed() {
       dietaryTypes: ["vegetarian", "vegan"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Chocolate Lava Cake",
       slug: "chocolate-lava-cake",
       description:
@@ -121,7 +121,7 @@ async function seed() {
       dietaryTypes: ["vegetarian"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "New York Cheesecake",
       slug: "new-york-cheesecake",
       description:
@@ -133,7 +133,7 @@ async function seed() {
       dietaryTypes: ["vegetarian"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Apple Pie à la Mode",
       slug: "apple-pie-a-la-mode",
       description:
@@ -145,7 +145,7 @@ async function seed() {
       dietaryTypes: ["vegetarian"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Craft Soda Selection",
       slug: "craft-soda-selection",
       description:
@@ -157,7 +157,7 @@ async function seed() {
       dietaryTypes: ["vegetarian", "vegan", "gluten-free"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Fresh Lemonade",
       slug: "fresh-lemonade",
       description:
@@ -169,7 +169,7 @@ async function seed() {
       dietaryTypes: ["vegetarian", "vegan", "gluten-free"],
     },
     {
-      id: nanoid(),
+      id: uuidv7(),
       name: "Iced Coffee",
       slug: "iced-coffee",
       description:
@@ -190,7 +190,7 @@ async function seed() {
     if (dietaryTypes.length > 0) {
       await db.insert(menuItemDietaryTypes).values(
         dietaryTypes.map((type) => ({
-          id: nanoid(),
+          id: uuidv7(),
           menuItemId: item.id,
           dietaryType: type as "vegetarian" | "vegan" | "gluten-free",
         })),

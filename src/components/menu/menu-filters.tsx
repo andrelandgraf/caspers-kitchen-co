@@ -1,20 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, X } from "lucide-react";
 import type { CategoryType, DietaryType } from "@/lib/menu/queries";
-
-interface MenuFiltersProps {
-  selectedCategory: CategoryType | "all";
-  selectedDietaryTypes: DietaryType[];
-  searchQuery: string;
-  onCategoryChange: (category: CategoryType | "all") => void;
-  onDietaryTypeToggle: (type: DietaryType) => void;
-  onSearchChange: (query: string) => void;
-}
 
 const categories: Array<{ value: CategoryType | "all"; label: string }> = [
   { value: "all", label: "All" },
@@ -30,25 +22,67 @@ const dietaryTypes: Array<{ value: DietaryType; label: string }> = [
   { value: "gluten-free", label: "Gluten-Free" },
 ];
 
-export function MenuFilters({
-  selectedCategory,
-  selectedDietaryTypes,
-  searchQuery,
-  onCategoryChange,
-  onDietaryTypeToggle,
-  onSearchChange,
-}: MenuFiltersProps) {
+export function MenuFilters() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const selectedCategory = (searchParams.get("category") ?? "all") as
+    | CategoryType
+    | "all";
+  const selectedDietaryTypes = (searchParams
+    .get("dietary")
+    ?.split(",")
+    .filter(Boolean) ?? []) as DietaryType[];
+  const searchQuery = searchParams.get("search") ?? "";
+
   const [localSearch, setLocalSearch] = useState(searchQuery);
+
+  const updateParams = useCallback(
+    (updates: Record<string, string | null>) => {
+      const params = new URLSearchParams(searchParams.toString());
+      for (const [key, value] of Object.entries(updates)) {
+        if (value === null || value === "" || value === "all") {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      }
+      const queryString = params.toString();
+      router.push(queryString ? `/menu?${queryString}` : "/menu");
+    },
+    [router, searchParams],
+  );
+
+  const handleCategoryChange = (category: CategoryType | "all") => {
+    updateParams({ category: category === "all" ? null : category });
+  };
+
+  const handleDietaryTypeToggle = (type: DietaryType) => {
+    const newTypes = selectedDietaryTypes.includes(type)
+      ? selectedDietaryTypes.filter((t) => t !== type)
+      : [...selectedDietaryTypes, type];
+    updateParams({ dietary: newTypes.length > 0 ? newTypes.join(",") : null });
+  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearchChange(localSearch);
+    updateParams({ search: localSearch || null });
   };
 
   const handleSearchClear = () => {
     setLocalSearch("");
-    onSearchChange("");
+    updateParams({ search: null });
   };
+
+  const handleClearAll = () => {
+    setLocalSearch("");
+    router.push("/menu");
+  };
+
+  const hasActiveFilters =
+    selectedCategory !== "all" ||
+    selectedDietaryTypes.length > 0 ||
+    searchQuery;
 
   return (
     <div className="space-y-6 mb-8">
@@ -82,7 +116,7 @@ export function MenuFilters({
                 selectedCategory === category.value ? "default" : "outline"
               }
               size="sm"
-              onClick={() => onCategoryChange(category.value)}
+              onClick={() => handleCategoryChange(category.value)}
             >
               {category.label}
             </Button>
@@ -102,7 +136,7 @@ export function MenuFilters({
                   : "outline"
               }
               className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-              onClick={() => onDietaryTypeToggle(type.value)}
+              onClick={() => handleDietaryTypeToggle(type.value)}
             >
               {type.label}
             </Badge>
@@ -110,20 +144,10 @@ export function MenuFilters({
         </div>
       </div>
 
-      {(selectedCategory !== "all" ||
-        selectedDietaryTypes.length > 0 ||
-        searchQuery) && (
+      {hasActiveFilters && (
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Active filters:</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              onCategoryChange("all");
-              selectedDietaryTypes.forEach((type) => onDietaryTypeToggle(type));
-              handleSearchClear();
-            }}
-          >
+          <Button variant="ghost" size="sm" onClick={handleClearAll}>
             Clear all
           </Button>
         </div>

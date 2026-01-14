@@ -4,6 +4,14 @@ import { withWorkflow } from "workflow/next";
 const nextConfig: NextConfig = {
   reactCompiler: true,
   serverExternalPackages: ["@node-rs/xxhash"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
+  },
 };
 
 export default withWorkflow(nextConfig);

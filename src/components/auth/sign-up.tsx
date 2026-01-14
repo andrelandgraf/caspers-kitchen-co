@@ -16,12 +16,12 @@ import Image from "next/image";
 import {
   Loader2,
   X,
-  Mail,
   Lock,
   User,
   Eye,
   EyeOff,
   Upload,
+  Mail,
 } from "lucide-react";
 import { signUp } from "@/lib/auth/client";
 import { toast } from "sonner";
@@ -39,7 +39,6 @@ export function SignUp() {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,43 +85,12 @@ export function SignUp() {
           toast.error(ctx.error.message);
         },
         onSuccess: () => {
-          setSuccess(true);
-          toast.success("Account created! Please check your email to verify.");
+          toast.success("Account created! Welcome to Caspers Kitchen.");
+          router.push("/menu");
         },
       },
     );
   };
-
-  if (success) {
-    return (
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1 text-center">
-          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-primary/10">
-            <Mail className="size-8 text-primary" />
-          </div>
-          <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
-          <CardDescription className="text-base">
-            We&apos;ve sent a verification link to <strong>{email}</strong>
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="text-center text-sm text-muted-foreground">
-          <p>
-            Click the link in your email to verify your account and start
-            ordering from Caspers Kitchen.
-          </p>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4 border-t pt-6">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => router.push("/sign-in")}
-          >
-            Back to sign in
-          </Button>
-        </CardFooter>
-      </Card>
-    );
-  }
 
   return (
     <Card className="w-full max-w-md shadow-lg">

@@ -101,5 +101,22 @@ test.describe("Cart", () => {
 
       expect(hasCheckout || isEmpty).toBe(true);
     });
+
+    test("closes cart drawer when proceeding to checkout", async ({ page }) => {
+      const cartButton = page.getByRole("button", { name: /open cart/i });
+      await cartButton.click();
+
+      const checkoutLink = page.getByRole("link", { name: /checkout/i });
+      const isEmpty = await page.getByText(/cart is empty/i).isVisible();
+
+      if (!isEmpty && (await checkoutLink.isVisible())) {
+        await checkoutLink.click();
+        await page.waitForURL("/checkout");
+
+        // Cart drawer should be closed
+        const dialog = page.getByRole("dialog");
+        await expect(dialog).not.toBeVisible();
+      }
+    });
   });
 });

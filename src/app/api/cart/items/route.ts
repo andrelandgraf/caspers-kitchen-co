@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { addItemToCart } from "@/lib/cart/queries";
 import { auth } from "@/lib/auth/server";
 import { cookies, headers } from "next/headers";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     // Create session ID for guest users if not exists
     if (!session && !sessionId) {
-      sessionId = nanoid();
+      sessionId = uuidv7();
       (await cookies()).set("cart_session_id", sessionId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

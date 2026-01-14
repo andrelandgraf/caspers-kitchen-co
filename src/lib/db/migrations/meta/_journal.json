@@ -43,6 +43,13 @@
       "when": 1768141036237,
       "tag": "0005_foamy_malice",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1768362329958,
+      "tag": "0006_cloudy_gorgon",
+      "breakpoints": true
     }
   ]
 }

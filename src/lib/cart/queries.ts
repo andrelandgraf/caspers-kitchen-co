@@ -2,7 +2,7 @@ import { db } from "@/lib/db/client";
 import { carts, cartItems } from "./schema";
 import { menuItems } from "@/lib/menu/schema";
 import { eq, and } from "drizzle-orm";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 
 export interface CartItemWithMenu {
   id: string;
@@ -60,7 +60,7 @@ export async function getOrCreateCart(
   const [newCart] = await db
     .insert(carts)
     .values({
-      id: nanoid(),
+      id: uuidv7(),
       userId,
       sessionId,
     })
@@ -141,7 +141,7 @@ export async function addItemToCart(params: {
   const [newItem] = await db
     .insert(cartItems)
     .values({
-      id: nanoid(),
+      id: uuidv7(),
       cartId,
       menuItemId: params.menuItemId,
       quantity: params.quantity,

@@ -15,7 +15,7 @@ export default async function SignInPage() {
   });
 
   if (session) {
-    redirect("/");
+    redirect("/menu");
   }
 
   return (

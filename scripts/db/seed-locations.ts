@@ -1,11 +1,12 @@
 import { db } from "@/lib/db/client";
 import { locations, menuItemLocations } from "@/lib/locations/schema";
 import { menuItems } from "@/lib/menu/schema";
-import { createId } from "@paralleldrive/cuid2";
+import { v7 as uuidv7 } from "uuid";
 
+// Use predictable IDs for testing and consistency
 const locationsData = [
   {
-    id: createId(),
+    id: "loc_sf",
     name: "San Francisco",
     slug: "san-francisco",
     address: "123 Mission St",
@@ -33,7 +34,7 @@ const locationsData = [
     imageUrl: null,
   },
   {
-    id: createId(),
+    id: "loc_nyc",
     name: "New York",
     slug: "new-york",
     address: "456 Broadway",
@@ -62,7 +63,7 @@ const locationsData = [
     imageUrl: null,
   },
   {
-    id: createId(),
+    id: "loc_la",
     name: "Los Angeles",
     slug: "los-angeles",
     address: "789 Sunset Blvd",
@@ -91,7 +92,7 @@ const locationsData = [
     imageUrl: null,
   },
   {
-    id: createId(),
+    id: "loc_seattle",
     name: "Seattle",
     slug: "seattle",
     address: "321 Pike St",
@@ -136,7 +137,7 @@ async function seedLocations() {
     for (const location of locationsData) {
       for (const item of allMenuItems) {
         menuItemLocationData.push({
-          id: createId(),
+          id: uuidv7(),
           menuItemId: item.id,
           locationId: location.id,
           isAvailable: true,

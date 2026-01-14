@@ -7,7 +7,7 @@
       "Enter valid email and password",
       "Submit the form",
       "Verify successful login",
-      "Verify redirect to /chats"
+      "Verify redirect to landing page"
     ],
     "passes": true
   },
@@ -61,7 +61,7 @@
     "steps": [
       "Sign in as existing user",
       "Navigate to /sign-in page",
-      "Verify redirect to /chats"
+      "Verify redirect to /menu"
     ],
     "passes": true
   },

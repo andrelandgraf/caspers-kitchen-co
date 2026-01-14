@@ -27,8 +27,8 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col">
-        <SheetHeader>
+      <SheetContent className="w-full sm:max-w-lg flex flex-col px-4 sm:px-6">
+        <SheetHeader className="px-0">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
             Your Cart ({items.length})
@@ -50,7 +50,7 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <ScrollArea className="flex-1 -mx-6 px-6">
+            <ScrollArea className="flex-1 -mx-4 px-4 sm:-mx-6 sm:px-6">
               <div className="space-y-4 py-4">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-4">
@@ -143,7 +143,7 @@ export function CartDrawer() {
                 </div>
               </div>
 
-              <Button asChild className="w-full" size="lg">
+              <Button asChild className="w-full" size="lg" onClick={closeCart}>
                 <Link href="/checkout">Proceed to Checkout</Link>
               </Button>
             </div>
