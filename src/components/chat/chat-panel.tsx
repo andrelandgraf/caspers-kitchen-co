@@ -17,6 +17,7 @@ import {
 import { Send, ChefHat, X, RotateCcw, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatAgentUIMessage } from "@/lib/chat/types";
+import { useCart } from "@/lib/cart/context";
 
 const suggestedPrompts = [
   "What's on the menu?",
@@ -35,6 +36,8 @@ export function ChatPanel({ open, onOpenChange }: ChatPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const activeRunIdRef = useRef<string | undefined>(undefined);
+  const processedToolCallsRef = useRef<Set<string>>(new Set());
+  const { refreshCart } = useCart();
 
   // Memoize transport to prevent recreation on every render
   const transport = useMemo(
@@ -107,6 +110,7 @@ export function ChatPanel({ open, onOpenChange }: ChatPanelProps) {
     setMessages([]);
     setChatId(uuidv7());
     activeRunIdRef.current = undefined;
+    processedToolCallsRef.current.clear();
   };
 
   // Auto-scroll to bottom when new messages arrive
@@ -122,6 +126,60 @@ export function ChatPanel({ open, onOpenChange }: ChatPanelProps) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [open]);
+
+  // Refresh cart when cart-modifying tools complete
+  useEffect(() => {
+    const cartModifyingTools = [
+      "addToCart",
+      "updateCartItem",
+      "removeFromCart",
+      "clearCart",
+      "placeOrder",
+    ];
+
+    let shouldRefresh = false;
+
+    for (const message of messages) {
+      for (const part of message.parts ?? []) {
+        if (!part.type.startsWith("tool-")) continue;
+        const toolName = part.type.replace("tool-", "");
+        if (!cartModifyingTools.includes(toolName)) continue;
+
+        // Cast to access tool-specific properties
+        const toolPart = part as {
+          type: string;
+          state?: string;
+          result?: unknown;
+          output?: unknown;
+          toolCallId?: string;
+        };
+
+        // Check if tool has completed with a successful result
+        const isComplete =
+          toolPart.state === "result" ||
+          toolPart.state === "output-available" ||
+          (toolPart.result !== undefined && toolPart.result !== null);
+        if (!isComplete) continue;
+
+        const output = (toolPart.result ?? toolPart.output) as Record<
+          string,
+          unknown
+        >;
+        if (output?.success !== true) continue;
+
+        // Use message ID + tool type as unique identifier
+        const toolKey = `${message.id}-${part.type}`;
+        if (!processedToolCallsRef.current.has(toolKey)) {
+          processedToolCallsRef.current.add(toolKey);
+          shouldRefresh = true;
+        }
+      }
+    }
+
+    if (shouldRefresh) {
+      refreshCart();
+    }
+  }, [messages, refreshCart]);
 
   const isStreaming = status === "streaming";
   const isLoading = status !== "ready";

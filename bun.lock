@@ -7,6 +7,7 @@
         "@ai-sdk/anthropic": "^3.0.9",
         "@ai-sdk/gateway": "^3.0.13",
         "@ai-sdk/react": "^3.0.6",
+        "@databricks/zerobus-ingest-sdk": "^0.1.1",
         "@hookform/resolvers": "^5.2.2",
         "@next/env": "^16.1.1",
         "@paralleldrive/cuid2": "^3.0.6",
@@ -186,6 +187,14 @@
     "@better-auth/utils": ["@better-auth/utils@0.3.0", "", {}, "sha512-W+Adw6ZA6mgvnSnhOki270rwJ42t4XzSK6YWGF//BbVXL6SwCLWfyzBc1lN2m/4RM28KubdBKQ4X5VMoLRNPQw=="],
 
     "@better-fetch/fetch": ["@better-fetch/fetch@1.1.21", "", {}, "sha512-/ImESw0sskqlVR94jB+5+Pxjf+xBwDZF/N5+y2/q4EqD7IARUTSpPfIo8uf39SYpCxyOCtbyYpUrZ3F/k0zT4A=="],
+
+    "@databricks/zerobus-ingest-sdk": ["@databricks/zerobus-ingest-sdk@0.1.1", "", { "optionalDependencies": { "@databricks/zerobus-ingest-sdk-darwin-arm64": "0.1.1", "@databricks/zerobus-ingest-sdk-darwin-x64": "0.1.1", "@databricks/zerobus-ingest-sdk-linux-arm64-gnu": "0.1.1", "@databricks/zerobus-ingest-sdk-linux-arm64-musl": "0.1.1", "@databricks/zerobus-ingest-sdk-linux-x64-gnu": "0.1.1", "@databricks/zerobus-ingest-sdk-linux-x64-musl": "0.1.1", "@databricks/zerobus-ingest-sdk-win32-x64-msvc": "0.1.1" }, "peerDependencies": { "protobufjs": "^7.0.0" }, "optionalPeers": ["protobufjs"] }, "sha512-Lha8Ww3CKZVKrH9CmlPF+NMbzKnxGnmeiVukQNlFs6MhXFa+E3bYI9miYBaNxAMEPd/CCkhfp3lmB4yxmyInig=="],
+
+    "@databricks/zerobus-ingest-sdk-linux-arm64-gnu": ["@databricks/zerobus-ingest-sdk-linux-arm64-gnu@0.1.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-yKDljstnTSfpwnBSujtAUFSg/jLfXubDYBYOR0cPhJxfdQ4qivEjICP2wUjshpTOpEymldYTTq3L9xg0X9ywYw=="],
+
+    "@databricks/zerobus-ingest-sdk-linux-x64-gnu": ["@databricks/zerobus-ingest-sdk-linux-x64-gnu@0.1.1", "", { "os": "linux", "cpu": "x64" }, "sha512-W9KiU04pGcwm5sizxOj+x9O1SNbYL9Fx1FEo/WAutZlBLoV99eBZ1DLkzBiOpPQIhsAsuQQmeTGrvfCbWwStuw=="],
+
+    "@databricks/zerobus-ingest-sdk-win32-x64-msvc": ["@databricks/zerobus-ingest-sdk-win32-x64-msvc@0.1.1", "", { "os": "win32", "cpu": "x64" }, "sha512-k3adEl1+7DlCbkZ7XWHAG4V9M1BxnetKTX9WYK9ou+Agpwl46NSBQdY2g+TltHrcAr0rXY+IsaKD9l3HIN7VqA=="],
 
     "@date-fns/tz": ["@date-fns/tz@1.4.1", "", {}, "sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA=="],
 

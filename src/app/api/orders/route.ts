@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createOrder, CreateOrderInput } from "@/lib/orders/queries";
+import { createOrder, CreateOrderInput, getOrder } from "@/lib/orders/queries";
 import { auth } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { trackOrderCreated } from "@/lib/databricks/zerobus/events";
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,6 +31,23 @@ export async function POST(request: NextRequest) {
     };
 
     const result = await createOrder(orderInput);
+
+    // Get order details for tracking
+    const order = await getOrder(result.orderId);
+    const sessionId = (await cookies()).get("cart_session_id")?.value;
+
+    // Track event (fire and forget)
+    trackOrderCreated({
+      userId: session?.user?.id,
+      sessionId,
+      source: "ui",
+      orderId: result.orderId,
+      orderNumber: result.orderNumber,
+      total: order?.total ?? "0",
+      itemCount: order?.items.length ?? 0,
+      locationId: body.locationId,
+      paymentMethod: body.paymentMethod || "card",
+    }).catch((err) => console.error("Failed to track order_created:", err));
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {

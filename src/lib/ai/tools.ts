@@ -26,6 +26,12 @@ import {
   setUserLocation,
   isLocationOpen,
 } from "@/lib/locations/queries";
+import {
+  trackCartItemAdded,
+  trackCartItemUpdated,
+  trackCartItemRemoved,
+  trackOrderCreated,
+} from "@/lib/databricks/zerobus/events";
 
 // Context passed from API route - userId and sessionId for cart/order operations
 export interface ToolContext {
@@ -593,6 +599,19 @@ export function createKitchenTools(context: ToolContext) {
           customizations,
         });
 
+        // Track event (fire and forget)
+        trackCartItemAdded({
+          userId: context.userId,
+          sessionId: context.sessionId,
+          source: "ai",
+          menuItemId,
+          menuItemName: menuItem.name,
+          quantity,
+          unitPrice: menuItem.price,
+        }).catch((err) =>
+          console.error("Failed to track cart_item_added:", err),
+        );
+
         return {
           success: true,
           cartItem: {
@@ -612,7 +631,25 @@ export function createKitchenTools(context: ToolContext) {
       execute: async (params) => {
         const { cartItemId, quantity } = params;
 
+        // Get current cart to find previous quantity
+        const cart = await getCart(context.userId, context.sessionId);
+        const currentItem = cart?.items.find((item) => item.id === cartItemId);
+        const previousQuantity = currentItem?.quantity ?? 0;
+
         const updatedItem = await updateCartItemQuantity(cartItemId, quantity);
+
+        // Track event (fire and forget)
+        trackCartItemUpdated({
+          userId: context.userId,
+          sessionId: context.sessionId,
+          source: "ai",
+          cartItemId,
+          menuItemName: updatedItem.menuItem.name,
+          previousQuantity,
+          newQuantity: quantity,
+        }).catch((err) =>
+          console.error("Failed to track cart_item_updated:", err),
+        );
 
         return {
           success: true,
@@ -632,7 +669,22 @@ export function createKitchenTools(context: ToolContext) {
       execute: async (params) => {
         const { cartItemId } = params;
 
+        // Get item details before deletion for tracking
+        const cart = await getCart(context.userId, context.sessionId);
+        const itemToRemove = cart?.items.find((item) => item.id === cartItemId);
+
         await removeCartItem(cartItemId);
+
+        // Track event (fire and forget)
+        trackCartItemRemoved({
+          userId: context.userId,
+          sessionId: context.sessionId,
+          source: "ai",
+          cartItemId,
+          menuItemName: itemToRemove?.menuItem.name,
+        }).catch((err) =>
+          console.error("Failed to track cart_item_removed:", err),
+        );
 
         return {
           success: true,
@@ -818,6 +870,22 @@ export function createKitchenTools(context: ToolContext) {
           paymentMethod,
           promoCode,
         });
+
+        // Get order details for tracking
+        const order = await getOrder(result.orderId);
+
+        // Track event (fire and forget)
+        trackOrderCreated({
+          userId: context.userId,
+          sessionId: context.sessionId,
+          source: "ai",
+          orderId: result.orderId,
+          orderNumber: result.orderNumber,
+          total: order?.total ?? "0",
+          itemCount: order?.items.length ?? 0,
+          locationId,
+          paymentMethod,
+        }).catch((err) => console.error("Failed to track order_created:", err));
 
         return {
           success: true,

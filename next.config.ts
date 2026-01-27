@@ -3,7 +3,7 @@ import { withWorkflow } from "workflow/next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  serverExternalPackages: ["@node-rs/xxhash"],
+  serverExternalPackages: ["@node-rs/xxhash", "@databricks/zerobus-ingest-sdk"],
   images: {
     remotePatterns: [
       {

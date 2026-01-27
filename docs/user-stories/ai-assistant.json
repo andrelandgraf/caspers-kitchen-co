@@ -145,11 +145,13 @@
       "Ask 'Add a Classic Burger to my cart'",
       "Verify assistant uses addToCart tool",
       "Verify confirmation message with item name and quantity",
-      "Verify cart count updates in UI",
+      "Verify cart icon badge count updates automatically",
+      "Open cart drawer and verify item appears",
       "Ask 'Add 2 more Loaded Fries'",
-      "Verify multiple items added successfully"
+      "Verify multiple items added successfully",
+      "Verify cart drawer updates without manual refresh"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -173,9 +175,11 @@
       "Ask 'Change the burger quantity to 3'",
       "Verify assistant uses updateCartItem tool",
       "Verify confirmation of quantity change",
-      "Verify updated total reflected"
+      "Verify cart icon badge count updates automatically",
+      "Open cart drawer and verify quantity is updated",
+      "Verify updated total reflected in cart drawer"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -186,10 +190,12 @@
       "Ask 'Remove the fries from my cart'",
       "Verify assistant uses removeFromCart tool",
       "Verify confirmation of removal",
+      "Verify cart icon badge count updates automatically",
+      "Open cart drawer and verify item is removed",
       "Ask 'What's in my cart now?'",
       "Verify item no longer listed"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -200,10 +206,12 @@
       "Ask 'Clear my cart'",
       "Verify assistant uses clearCart tool",
       "Verify confirmation message",
+      "Verify cart icon badge shows 0 or empty state",
+      "Open cart drawer and verify empty state displayed",
       "Ask 'What's in my cart?'",
       "Verify cart is empty"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -216,9 +224,10 @@
       "Provide address details",
       "Verify assistant uses placeOrder tool",
       "Verify order confirmation with order number",
-      "Verify cart is cleared after order"
+      "Verify cart icon badge shows 0 automatically",
+      "Open cart drawer and verify empty state displayed"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -400,9 +409,11 @@
       "Ask 'Add a burger to my cart'",
       "Verify assistant uses addToCart with sessionId",
       "Verify item added successfully",
+      "Verify cart icon badge updates automatically",
+      "Open cart drawer and verify item appears",
       "Verify cart persists via session"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",
@@ -445,12 +456,18 @@
     "description": "Cart changes reflect in UI immediately",
     "steps": [
       "Open AI assistant alongside cart icon",
-      "Add item via assistant",
-      "Verify cart badge updates in real-time",
+      "Add item via assistant (e.g., 'Add a Classic Burger to my cart')",
+      "Verify cart badge count updates automatically without page refresh",
       "Open cart drawer",
-      "Verify new item appears"
+      "Verify new item appears with correct quantity and price",
+      "Update quantity via assistant (e.g., 'Change burger quantity to 3')",
+      "Verify cart drawer updates in real-time",
+      "Remove item via assistant",
+      "Verify item disappears from cart drawer",
+      "Place order via assistant",
+      "Verify cart is cleared and badge shows 0"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "ui",

@@ -3,6 +3,7 @@ import { addItemToCart } from "@/lib/cart/queries";
 import { auth } from "@/lib/auth/server";
 import { cookies, headers } from "next/headers";
 import { v7 as uuidv7 } from "uuid";
+import { trackCartItemAdded } from "@/lib/databricks/zerobus/events";
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,6 +42,17 @@ export async function POST(request: NextRequest) {
       unitPrice,
       customizations,
     });
+
+    // Track event (fire and forget)
+    trackCartItemAdded({
+      userId: session?.user?.id,
+      sessionId,
+      source: "ui",
+      menuItemId,
+      menuItemName: item.menuItem.name,
+      quantity,
+      unitPrice,
+    }).catch((err) => console.error("Failed to track cart_item_added:", err));
 
     return NextResponse.json({ item });
   } catch (error) {

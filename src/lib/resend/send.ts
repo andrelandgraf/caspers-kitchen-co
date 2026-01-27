@@ -9,6 +9,11 @@ type SendEmailParams = {
 };
 
 export async function sendEmail({ to, subject, react, from }: SendEmailParams) {
+  if (!resendConfig.server.apiKey) {
+    console.warn("RESEND_API_KEY not configured - skipping email send to:", to);
+    return null;
+  }
+
   const { data, error } = await resend.emails.send({
     from: from ?? resendConfig.server.fromEmail,
     to: Array.isArray(to) ? to : [to],

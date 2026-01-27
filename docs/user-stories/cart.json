@@ -193,5 +193,25 @@
       "Verify focus returns to cart icon"
     ],
     "passes": true
+  },
+  {
+    "category": "functional",
+    "description": "Cart syncs with AI assistant actions in real-time",
+    "steps": [
+      "Open AI assistant",
+      "Add item via assistant (e.g., 'Add a burger to my cart')",
+      "Verify cart icon badge updates immediately",
+      "Open cart drawer without refreshing",
+      "Verify item appears in cart with correct details",
+      "Use assistant to update quantity",
+      "Verify cart drawer reflects quantity change",
+      "Use assistant to remove item",
+      "Verify cart drawer updates to show item removed",
+      "Use assistant to clear cart",
+      "Verify cart drawer shows empty state",
+      "Use assistant to place order",
+      "Verify cart clears after order is placed"
+    ],
+    "passes": true
   }
 ]

@@ -67,11 +67,16 @@ export default async function LandingPage() {
                 </Button>
               </div>
             </div>
-            <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-right-4 duration-700 delay-150">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 z-10" />
-              <div className="absolute inset-0 flex items-center justify-center text-9xl opacity-20">
-                🍲
-              </div>
+            <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-right-4 duration-700 delay-150 shadow-2xl">
+              <Image
+                src="https://xbxohosubgfzh7xo.public.blob.vercel-storage.com/hero/caspers-kitchen-hero.png"
+                alt="Delicious comfort food spread at Casper's Kitchen"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             </div>
           </div>
         </section>
