@@ -7,10 +7,16 @@ A Next.js food ordering application with AI-powered chat assistant.
 ### Prerequisites
 
 - [Bun](https://bun.sh/) (v1.0+)
-- [Vercel CLI](https://vercel.com/cli) (optional, for pulling env vars)
-- A PostgreSQL database (via [Neon](https://neon.tech/) or Vercel Storage)
+- [Vercel CLI](https://vercel.com/cli)
+- A PostgreSQL database (via [Neon](https://neon.com/))
 
-### 1. Clone and Install
+### 1. Fork
+
+Fork the repository to your own GitHub account.
+
+### 2. Clone and Install
+
+Clone the repository to your local machine.
 
 ```bash
 git clone <repo-url>
@@ -18,60 +24,71 @@ cd caspers-kitchen-co
 bun install
 ```
 
-### 2. Set Up Environment Variables
+### 2. Create a Vercel project
 
-Create a `.env.development` file in the project root:
+Create a new Vercel project and link it to the repository.
+
+### 3. Create a Blob storage
+
+Create a new Blob storage on Verceland link it to the repository. Either use the Vercel CLI or the Vercel dashboard.
+
+### 4. Create a Neon database
+
+Create a new Neon database - easiest to do via the Vercel dashboard's Storage tab. Or use neon.com and create a new database. After, copy the connection string and add it to the Vercel environment variables.
 
 ```bash
-# AI Gateway (one of these is required)
-# Option A: Use Vercel CLI to pull (generates VERCEL_OIDC_TOKEN automatically)
-# Run: vercel env pull .env.development
-#
-# Option B: Get AI_GATEWAY_API_KEY from Vercel dashboard (requires Vercel login)
-AI_GATEWAY_API_KEY="your-ai-gateway-key"
-
-# Authentication
-# Generate a random secret: openssl rand -base64 32
-BETTER_AUTH_SECRET="your-random-secret-here"
-BETTER_AUTH_URL="http://localhost:3000"
-
-# Database (from Vercel Storage tab or neon.tech dashboard)
 DATABASE_URL="postgresql://user:password@host/database?sslmode=require"
+```
 
-# Blob Storage (from Vercel Storage tab)
-BLOB_READ_WRITE_TOKEN="vercel_blob_rw_xxx"
+### 2. Set Up Environment Variables
 
-# Email (optional - emails will be skipped if not configured)
+Create a `.env.development` file in the project root.
+
+Next, authenticate with Vercel and link the project to the repository.
+
+```bash
+vercel login
+vercel link
+```
+
+Then pull the environment variables from the Vercel project.
+
+```bash
+vercel env pull .env.development
+```
+
+This should include the Vercel OIDC token for the AI Gateway, the Blob storage token, and the Neon database connection string.
+
+Also create a `.env.local` file in the project root.
+
+```bash
+BETTER_AUTH_URL="http://localhost:3000"
+```
+
+The `.env.development` can be overridden by the `.env.local` file for local development variables such as the base URL.
+
+### 5. Set Up Email (optional - emails will be skipped if not configured)
+
+Sign up for Resend and create a new API key. Then add the API key to the Vercel environment variables.
+
+```bash
 RESEND_API_KEY="re_xxx"
 RESEND_FROM_EMAIL="Caspers Kitchen <noreply@casperskitchenco.com>"
 ```
 
-#### Quick Setup with Vercel CLI
-
-If you have access to the Vercel project, you can pull all environment variables automatically:
-
-```bash
-vercel link
-vercel env pull .env.development
-```
-
-This will populate most variables including `VERCEL_OIDC_TOKEN` for AI Gateway authentication.
-
-### 3. Set Up the Database
-
-Run database migrations:
+### 6. Run Database Migrations
 
 ```bash
 bun run db:migrate
 ```
 
-Seed the database with menu items:
+### 7. Seed the Database with Menu Items
 
 ```bash
 bun run db:seed:food
 ```
 
-### 4. Start Development Server
+### 8. Start Development Server
 
 ```bash
 bun dev
